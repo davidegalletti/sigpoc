@@ -16,7 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
+from scuelo.admin import sics_site
 urlpatterns = [
     path('admin/', admin.site.urls),
+       path('sics/', sics_site.urls)
 ]
