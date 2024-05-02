@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import  Eleve , Classe, Inscription, AnneeScolaire
+from .models import  Eleve , Classe, Inscription, AnneeScolaire , Paiement
 from django.contrib import admin
 
 
@@ -13,11 +13,31 @@ class SicAdminArea(admin.AdminSite):
 sics_site = SicAdminArea(name='SICS NASSARA')
 
 
+class PaiementInline(admin.TabularInline):  # You can use StackedInline if you prefer a different layout
+    model = Paiement
+    extra = 1  # Number of extra inline forms to display
+    
 
+    
 class  ClasseAdmin(admin.ModelAdmin):
     
-    list_display = ['type_ecole'  ,  'nom']
+    list_display = ['nom'  ,'type_ecole'  ]
 
+class EleveAdmin(admin.ModelAdmin):
+    list_display= ["nom" , "prenom" , 
+                   "date_enquete" , "condition_eleve" , 
+                   "sex" , "date_naissance",
+                   "cs_py" , "hand"  ,
+                   "annee_inscr" , "parent" , 
+                   "tel_parent" , "note_eleve"
+                   ]
+    inlines = (PaiementInline,)
+    
+    def get_inline_instances(self, request, obj=None):
+        if not obj:  # For creating new Eleve objects
+            return super().get_inline_instances(request, obj)
+        # For editing existing Eleve objects, include existing Paiement objects
+        return [inline(self.model, self.admin_site) for inline in self.inlines]
 
 class AnneeScolaireInline(admin.TabularInline):
     model = AnneeScolaire
@@ -27,17 +47,36 @@ class ClasseInline(admin.TabularInline):
     
 class EleveInline(admin.TabularInline):
     model =  Eleve
-    
+    list_display = ["nom" , "prenom" ]
 
-class  InscriptionInline(admin.TabularInline):
+class  InscriptionInline(admin.ModelAdmin):
     model = Inscription
     
     inlines = [ EleveInline, ClasseInline, AnneeScolaireInline ]
 
-sics_site.register(Eleve)
+sics_site.register(Eleve , EleveAdmin )
 sics_site.register(AnneeScolaire)
 sics_site.register(Inscription)
 sics_site.register(Classe ,ClasseAdmin )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 '''
 class EleveAdmin(admin.ModelAdmin):
     fieldsets = (
