@@ -22,16 +22,20 @@ class PaiementInline(admin.TabularInline):  # You can use StackedInline if you p
 class  ClasseAdmin(admin.ModelAdmin):
     
     list_display = ['nom'  ,'type_ecole'  ]
+    ordering = ["type_ecole"]
 
 class EleveAdmin(admin.ModelAdmin):
-    list_display= ["nom" , "prenom" , 
+    list_display= [
+        "nom" , "prenom" , 
                    "date_enquete" , "condition_eleve" , 
                    "sex" , "date_naissance",
                    "cs_py" , "hand"  ,
                    "annee_inscr" , "parent" , 
                    "tel_parent" , "note_eleve"
                    ]
+    #ordering = 
     inlines = (PaiementInline,)
+    
     
     def get_inline_instances(self, request, obj=None):
         if not obj:  # For creating new Eleve objects

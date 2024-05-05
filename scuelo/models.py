@@ -45,8 +45,8 @@ TYPE_ECOLE = (
 
 
 class Classe(models.Model):
-    type_ecole = models.CharField(max_length=14, choices=TYPE_ECOLE)
-    nom = models.CharField(max_length=10, null=False)
+    type_ecole = models.CharField(max_length=14, choices=TYPE_ECOLE ,  default="")
+    nom = models.CharField(max_length=23, null=False , default="")
     
     
 
@@ -67,6 +67,7 @@ class Eleve(models.Model):
     parent = models.CharField(max_length=34, null=False)
     tel_parent = models.CharField(max_length=24, null=False)
     note_eleve = models.CharField(max_length=240, blank=True, default='')
+    classe_nass = models.ForeignKey(Classe ,  on_delete=models.PROTECT   )
 
     def __str__(self):
         return f"{self.nom} {self.prenom}"

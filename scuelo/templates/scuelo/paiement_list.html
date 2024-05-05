@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+{% block title %}Payment List{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2>Payment List for {{ student.nom }} {{ student.prenom }}</h2>
+  <ul>
+    {% for payment in payments %}
+    <li>{{ payment.causal }} - {{ payment.montant }} - {{ payment.date_paiement }}</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

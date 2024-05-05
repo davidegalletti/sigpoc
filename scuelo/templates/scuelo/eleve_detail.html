@@ -1,0 +1,59 @@
+{% extends 'layout.html' %}
+{% block title %}Student Detail: {{ student.nom }} {% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2>Student Detail: {{ student.nom }}</h2>
+  
+  <div class="row">
+    <div class="col-md-6">
+      <h3>Personal Information</h3>
+      <p><strong>Nom:</strong> {{ student.nom }}</p>
+      <p><strong>Prénom:</strong> {{ student.prenom }}</p>
+      <p><strong>Date Enquête:</strong> {{ student.date_enquete }}</p>
+      <p><strong>Condition Élève:</strong> {{ student.condition_eleve }}</p>
+      <p><strong>Sexe:</strong> {{ student.sex }}</p>
+      <p><strong>Date Naissance:</strong> {{ student.date_naissance }}</p>
+      <p><strong>CS_PY:</strong> {{ student.cs_py }}</p>
+      <p><strong>Handicap:</strong> {{ student.hand }}</p>
+      <p><strong>Année Inscription:</strong> {{ student.annee_inscr }}</p>
+    </div>
+    <div class="col-md-6">
+      <h3>Parent Information</h3>
+      <p><strong>Parent:</strong> {{ student.parent }}</p>
+      <p><strong>Téléphone Parent:</strong> {{ student.tel_parent }}</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- Payments section -->
+  <h3>Payments</h3>
+  <table class="table">
+    <!-- Table headers -->
+    <thead>
+      <tr>
+        <th>Causal</th>
+        <th>Montant</th>
+        <!-- Add other headers as needed -->
+      </tr>
+    </thead>
+    <tbody>
+      {% for payment in payments %}
+      <tr>
+        <td>{{ payment.causal }}</td>
+        <td>{{ payment.montant }}</td>
+        <!-- Add other payment details as needed -->
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="2">No payments found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <!-- Button to create a new payment -->
+  <a href="{% url 'create_payment' student.pk %}" class="btn btn-primary">Create Payment</a>
+</div>
+{% endblock %}
