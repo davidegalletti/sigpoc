@@ -8,10 +8,10 @@
 
 
 {% block content %}
+<div>
 
 
-
-<div class="container  border border-dark">
+  <div class="container  border border-dark">
   <div class="row justify-content-center ">
     <div class="col-md-8"> <!-- Adjust the column size -->
       <div class="alert alert-info" role="alert">
@@ -19,7 +19,7 @@
       </div>
     </div>
   </div>
- 
+
   <div class="row justify-content-center">
     <div class="col-md-8"> <!-- Adjust the column size -->
       <div class="row">
@@ -36,8 +36,14 @@
           </div>
         </div>
         {% endfor %}
+
+        <a href="{% url 'create_student' %}" class="btn btn-primary">Create Student</a>
       </div>
     </div>
   </div>
 </div>
+</div>
+
+
+
 {% endblock content %}
