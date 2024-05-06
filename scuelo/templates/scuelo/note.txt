@@ -1,0 +1,9 @@
+what must  be done tommorow 
+
+-  be able to  update the eleve  directly  in the eleve detail page
+-  style more   the existing code  
+-  be add to complete the headers and   be able to    take care  of their differences
+-   add  also the  tenu  selection part
+- the  total of the payment   of each student  down the list of  his paiements 
+-  be able   to  update the paiements  and their informations  in a separate page and take care  of the redirection 
+- be able to  get  something  more  presentful  for the start of the week 

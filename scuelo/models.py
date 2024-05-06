@@ -48,6 +48,9 @@ class Classe(models.Model):
     type_ecole = models.CharField(max_length=14, choices=TYPE_ECOLE ,  default="")
     nom = models.CharField(max_length=23, null=False , default="")
     
+    def __str__( self ):
+        return self.nom
+    
     
 
 
@@ -98,7 +101,7 @@ class Eleve(models.Model):
         #order_by = 'nom_classe'
         
         verbose_name_plural = 'Eleves'
-
+    
     def  __str__(self) -> str:
         return f"{self.nom} {self.prenom}"
 

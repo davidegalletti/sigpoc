@@ -1,13 +1,19 @@
 {% extends 'layout.html' %}
 {% block title %}Student Detail: {{ student.nom }} {% endblock %}
 
+
+{% block header %}
+
+ this is the    student detail page  header
+{% endblock header %}
+
 {% block content %}
 <div class="container">
-  <h2>Student Detail: {{ student.nom }}</h2>
+  <h2 class='mt-5 mb-5'>  detail de   {{ student.nom }} </h2>
   
   <div class="row">
     <div class="col-md-6">
-      <h3>Personal Information</h3>
+      <h3>Information personelle</h3>
       <p><strong>Nom:</strong> {{ student.nom }}</p>
       <p><strong>Prénom:</strong> {{ student.prenom }}</p>
       <p><strong>Date Enquête:</strong> {{ student.date_enquete }}</p>
@@ -24,9 +30,11 @@
       <p><strong>Téléphone Parent:</strong> {{ student.tel_parent }}</p>
     </div>
   </div>
+  
 
+  <a href="{% url 'student_update' pk=student.pk %}" class="btn btn-primary">Update Student</a>
   <hr>
-
+  
   <!-- Payments section -->
   <h3>Payments</h3>
   <table class="table">
@@ -43,16 +51,24 @@
       <tr>
         <td>{{ payment.causal }}</td>
         <td>{{ payment.montant }}</td>
+        <td>
+          <a href="{% url 'update_payment' payment.pk %}" class="btn btn-primary">Update</a>
+          <!-- This will redirect to the update page for the selected payment -->
+      </td>
         <!-- Add other payment details as needed -->
       </tr>
       {% empty %}
       <tr>
         <td colspan="2">No payments found.</td>
       </tr>
+
+      
       {% endfor %}
     </tbody>
   </table>
-
+  
+        
+  <p class="text-black-50">Total Payment: {{ total_payment }}</p>
   <!-- Button to create a new payment -->
   <a href="{% url 'create_payment' student.pk %}" class="btn btn-primary">Create Payment</a>
 </div>

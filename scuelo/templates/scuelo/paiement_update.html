@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+
+
+{% block content %}
+<h2>Update Payment</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}  <!-- Render the form fields as paragraphs -->
+    <button type="submit">Update Payment</button>
+</form>
+{% endblock %}

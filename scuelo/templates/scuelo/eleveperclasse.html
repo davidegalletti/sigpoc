@@ -1,24 +1,35 @@
 {% extends 'layout.html' %}
 {% block title %}Students of {{ classe.nom }}{% endblock %}
 
+
+        {% block header %}
+    <header>
+
+   <div class="head  color-red p-4">
+    Systeme  d'information du Centre Sociale Djicofethis is the header
+   </div>
+
+  </header>
+
+        {% endblock header %}
+
 {% block content %}
-<div class="container">
+<div class=" ">
   <h2>Student List</h2>
-  <table class="table">
+  <table class="table table-striped">
     <thead>
       <tr>
         <th>Nom</th>
         <th>Prénom</th>
-        <th>Date Enquête</th>
-        <th>Condition Élève</th>
+        <th>etat</th>
         <th>Sexe</th>
-        <th>Date Naissance</th>
+        <th>D. naissance</th>
         <th>CS_PY</th>
         <th>Handicap</th>
         <th>Année Inscription</th>
-        <th>Parent</th>
-        <th>Téléphone Parent</th>
-        <th>Note Élève</th>
+
+
+
         <!-- Add other headers as needed -->
       </tr>
     </thead>
@@ -27,16 +38,16 @@
       <tr>
         <td>{{ student.nom }}</td>
         <td>{{ student.prenom }}</td>
-        <td>{{ student.date_enquete }}</td>
+
         <td>{{ student.condition_eleve }}</td>
         <td>{{ student.sex }}</td>
         <td>{{ student.date_naissance }}</td>
         <td>{{ student.cs_py }}</td>
         <td>{{ student.hand }}</td>
         <td>{{ student.annee_inscr }}</td>
-        <td>{{ student.parent }}</td>
-        <td>{{ student.tel_parent }}</td>
-        <td>{{ student.note_eleve }}</td>
+
+
+
         <td>
           <a href="{% url 'student_detail' student.pk %}" class="btn btn-primary">View Details</a>
         </td>

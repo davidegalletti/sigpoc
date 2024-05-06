@@ -7,11 +7,16 @@
 
 
 
+
+{% block header %}
+    <header> this is the header of the site</header>
+{% endblock header %}
+
 {% block content %}
-<div>
 
 
-  <div class="container  border border-dark">
+
+  <div class="container  border  border">
   <div class="row justify-content-center ">
     <div class="col-md-8"> <!-- Adjust the column size -->
       <div class="alert alert-info" role="alert">
@@ -42,8 +47,5 @@
     </div>
   </div>
 </div>
-</div>
-
-
 
 {% endblock content %}
