@@ -36,6 +36,9 @@ class Classe(models.Model):
     type_ecole = models.CharField(max_length=1, choices=TYPE_ECOLE, db_index=True)
     nom = models.CharField(max_length=10, null=False)
 
+    def __str__(self):
+        return '%s %s' % (self.nom, self.get_type_ecole_display())
+
     @property
     def _pk_classe_id(self):
         return '_PK-%s-Nas' % self.nom
@@ -56,7 +59,7 @@ class Eleve(models.Model):
     annee_inscr = models.CharField(max_length=4)  # the inscrption year
     parent = models.CharField(max_length=50, blank=True, null=True)
     tel_parent = models.CharField(max_length=24, blank=True, null=True)
-    note_eleve = models.TextField(blank=True, null=True)
+    note_eleve = models.TextField(blank=True, default='-')
 
     def __str__(self):
         return f"{self.nom} {self.prenom}"
@@ -95,6 +98,9 @@ class AnneeScolaire(models.Model):
     date_finale = models.DateField(blank=True)
     actuel = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.nom
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if self.actuel:
@@ -105,6 +111,9 @@ class Inscription(models.Model):
     eleve = models.ForeignKey(Eleve, on_delete=models.CASCADE)
     classe = models.ForeignKey(Classe, on_delete=models.CASCADE)
     annee_scolaire = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '%s - %s - %s' % (self.annee_scolaire, self.classe, self.eleve)
 
 
 class Paiement(models.Model):

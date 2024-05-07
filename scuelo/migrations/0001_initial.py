@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 ('annee_inscr', models.CharField(max_length=4)),
                 ('parent', models.CharField(max_length=34)),
                 ('tel_parent', models.CharField(max_length=24)),
-                ('note_eleve', models.CharField(blank=True, default='', max_length=240)),
+                ('note_eleve', models.CharField(blank=True, default='-', max_length=240)),
             ],
             options={
                 'verbose_name': 'Eleve',
