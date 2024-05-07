@@ -5,22 +5,18 @@
 
 
 <nav class="navbar navbar-expand-lg navbar-light bg-dark pb-5 mb-5 mt-9">
-  
   <img src="logonassara-removebg-preview.png" alt="">
-  <a class="navbar-brand  text-light " href="#">Systeme dinformation du Centre Social Djicofe</a>
+  <a class="navbar-brand text-light" href="{% url 'home' %}">Systeme d'information du Centre Social Djicofe</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+      <span class="navbar-toggler-icon"></span>
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav">
-      <li class="nav-item active">
-        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Features</a>
-      </li>
-     
-    </ul>
+      <ul class="navbar-nav">
+          <li class="nav-item active">
+              <a class="nav-link text-light" href="{% url 'home' %}">Home <span class="sr-only">(current)</span></a>
+          </li>
+      
+      </ul>
   </div>
 </nav>
 {% endblock header %}
@@ -37,6 +33,8 @@
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary">Confirmer</button>
+    <a href="{% url 'student_detail' pk=student.pk %}" class="btn btn-secondary">Cancel</a>
+        <a href="{% url 'student_detail' pk=student.pk %}" class="btn btn-warning">Reset</a>
 </form>
 
 </div>

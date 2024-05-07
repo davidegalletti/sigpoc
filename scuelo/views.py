@@ -73,22 +73,32 @@ def student_update(request, pk):
             return redirect('student_detail', pk=pk)  # Redirect to student detail page with updated student PK
     else:
         form = StudentUpdateForm(instance=student)
-    
-    return render(request, 'scuelo/eleve_update.html', {'form': form})
+        # Check if reset button is clicked
+        if 'reset' in request.GET:
+            return redirect('student_detail', pk=pk)  # Redirect to student detail page without form submission
+    return render(request, 'scuelo/eleve_update.html', {'form': form , 'student': student})
 
 from .forms import PaiementCreationForm
 
 class CreatePaymentView(CreateView):
+    
     model = Paiement
     form_class = PaiementCreationForm
     template_name = 'scuelo/create_paiement.html'
-
+    
     def form_valid(self, form):
         form.instance.eleve_payment_id = self.kwargs['pk']  # Set the student ID for the payment
         return super().form_valid(form)
-
+    
     def get_success_url(self):
         return reverse_lazy('student_detail', kwargs={'pk': self.kwargs['pk']})
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        eleve = get_object_or_404(Eleve, pk=self.kwargs['pk'])
+        context['eleve'] = eleve
+        return context
+    
 '''
 def student_update(request, pk):
     student = Eleve.objects.get(pk=pk)
@@ -140,4 +150,10 @@ class PaymentUpdateView(UpdateView):
     model = Paiement
     fields = ['causal', 'montant', 'date_paiement', 'note_paiement']  # Specify the fields you want to update
     template_name = 'scuelo/paiement_update.html'  # Add your template name here
-    success_url = reverse_lazy('homepage/student_detail')  # Specify the URL to redirect to after updating
+    success_url = reverse_lazy('homepage/student_detail')  # Specify the URL to redirect to after updatingeleve = get_object_or_404(Eleve, pk=eleve_id)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        paiement = self.get_object()
+        context['eleve'] = paiement.eleve_payment
+        return context
