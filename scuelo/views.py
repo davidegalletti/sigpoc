@@ -75,6 +75,20 @@ def student_update(request, pk):
         form = StudentUpdateForm(instance=student)
     
     return render(request, 'scuelo/eleve_update.html', {'form': form})
+
+from .forms import PaiementCreationForm
+
+class CreatePaymentView(CreateView):
+    model = Paiement
+    form_class = PaiementCreationForm
+    template_name = 'scuelo/create_paiement.html'
+
+    def form_valid(self, form):
+        form.instance.eleve_payment_id = self.kwargs['pk']  # Set the student ID for the payment
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('student_detail', kwargs={'pk': self.kwargs['pk']})
 '''
 def student_update(request, pk):
     student = Eleve.objects.get(pk=pk)
@@ -93,7 +107,7 @@ def student_update(request, pk):
     return render(request, 'scuelo/eleve_update.html', {'form': form})'''
 
 
-class CreatePaymentView(CreateView):
+'''class CreatePaymentView(CreateView):
     model = Paiement
     fields = ['causal', 'montant' ,
               'date_paiement' ,'note_paiement'
@@ -107,7 +121,7 @@ class CreatePaymentView(CreateView):
         return super().form_valid(form)
     
     def get_success_url(self):
-        return reverse_lazy('student_detail', kwargs={'pk': self.kwargs['pk']})
+        return reverse_lazy('student_detail', kwargs={'pk': self.kwargs['pk']})'''
     
     
     

@@ -33,56 +33,11 @@
 
 
 
-<form method="post">
-    <form method="post" class="needs-validation" novalidate>
-      {% csrf_token %}
-      <div class="mb-3 ">
-        <label for="nom" class="form-label ">nom</label>
-        {{ form.nom }}
-      </div>
-      <div class="mb-3">
-        <label for="prenom" class="form-label">prenom</label>
-        {{ form.prenom }}
-      </div>
-      <div class="mb-3">
-          <label for="date_enquete" class="form-label">date enquete</label>
-          {{ form.date_enquete }}
-        </div>
-        <div class="mb-3">
-          <label for="sex" class="form-label" type='textarea'>sex</label>
-          {{ form.sex }}
-        </div>
-        <div class="mb-3">
-            <label for="date_naissance" class="form-label" type='textarea'>date naissance</label>
-            {{ form.date_naissance }}
-          </div>
-          <div class="mb-3">
-            <label for="cspy" class="form-label" type='textarea'>CS PY</label>
-            {{ form.cs_py }}
-          </div>
-          <div class="mb-3">
-            <label for="hand" class="form-label" type='textarea'>hand</label>
-            {{ form.hand }}
-          </div>
-          <div class="mb-3">
-            <label for="annee_inscr" class="form-label" type='textarea'>annee_inscr</label>
-            {{ form.annee_inscr }}
-          </div>
-          <div class="mb-3">
-            <label for="parent" class="form-label accent-blue" type='textarea'>parent</label>
-            {{ form.parent }}
-          </div> 
-          <div class="mb-3">
-            <label for="classe_nass" class="form-label" type='textarea'>classe</label>
-            {{ form.classe_nass }}
-          </div> 
-          <div class="mb-3">
-            <label for="note_eleve" class="form-label" type='textarea'>note_eleve</label>
-            {{ form.note_eleve }}
-          </div> 
-           <!-- Render form fields -->
-    <button type="submit" class="btn btn-primary">confirmer</button>
-  </form>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Confirmer</button>
+</form>
 
 </div>
 {% endblock %}
