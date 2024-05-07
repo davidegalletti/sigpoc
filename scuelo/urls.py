@@ -15,7 +15,7 @@ urlpatterns = [
     path('create_student/', CreateStudentView.as_view(), name='create_student'),
     path('students/<int:pk>/', StudentDetailView.as_view(), name='student_detail'),
     path('students/<int:pk>/payments/', PaymentListView.as_view(), name='payment_list'),
-       path('student/<int:pk>/update/', student_update, name='student_update'),
-     path('students/<int:pk>/create_payment/', CreatePaymentView.as_view(), name='create_payment'),
-     path('payment/<int:pk>/update/', PaymentUpdateView.as_view(), name='update_payment'),
+    path('student/<int:pk>/update/', student_update, name='student_update'),
+    path('students/<int:pk>/create_payment/', CreatePaymentView.as_view(), name='create_payment'),
+    path('payment/<int:pk>/update/', PaymentUpdateView.as_view(), name='update_payment'),
 ]# Add other URL patterns for your CRUD operations and other views

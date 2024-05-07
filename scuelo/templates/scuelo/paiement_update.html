@@ -1,11 +1,44 @@
 {% extends 'layout.html' %}
 
 
+{% block header %}
+<nav class="navbar navbar-light bg-light">
+  <a class="navbar-brand" href="#">
+    <img src="/img/logonassara-removebg-preview.png" width="30" height="30" class="d-inline-block align-top" alt="">
+    Bootstrap
+  </a>
+   this  
+</nav>
+{% endblock header %}
+
+
 {% block content %}
-<h2>Update Payment</h2>
-<form method="post">
+<div class="container">
+  <h2 class="mt-5 mb-3">Mettre à jour le paiement</h2>
+  <form method="post" class="needs-validation" novalidate>
     {% csrf_token %}
-    {{ form.as_p }}  <!-- Render the form fields as paragraphs -->
-    <button type="submit">Update Payment</button>
-</form>
+    <div class="mb-3">
+      <label for="causal" class="form-label">Causal</label>
+      {{ form.causal }}
+    </div>
+    <div class="mb-3">
+      <label for="montant" class="form-label">Montant</label>
+      {{ form.montant }}
+    </div>
+    <div class="mb-3">
+        <label for="date_paiement" class="form-label" type='date'>date paiement</label>
+        {{ form.date_paiement }}
+      </div>
+      <div class="mb-3">
+        <label for="note_paiement" class="form-label">note paiement</label>
+        {{ form.note_paiement }}
+      </div>
+    <!-- Add other form fields as needed -->
+    
+    <button type="submit" class="btn btn-primary">Mettre à jour</button>
+  </form>
+</div>
 {% endblock %}
+
+
+

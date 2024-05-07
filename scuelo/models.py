@@ -15,6 +15,7 @@ CAUSUAL = (
 )
 
 HAND = (
+      ("", ""),
     ("DA", "DA"),
     ("DM", "DM"),
     ("DL", "DL"),
@@ -65,7 +66,7 @@ class Eleve(models.Model):
     sex = models.CharField(max_length=1, choices=SEX)
     date_naissance = models.DateField()
     cs_py = models.CharField(max_length=6, choices=CS_PY)
-    hand = models.CharField(max_length=2, choices=HAND, default="")
+    hand = models.CharField(max_length=2, choices=HAND, blank=True ,default="")
     annee_inscr = models.CharField(max_length=4)  # the inscrption year
     parent = models.CharField(max_length=34, null=False)
     tel_parent = models.CharField(max_length=24, null=False)

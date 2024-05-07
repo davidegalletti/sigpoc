@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 {%  load static  %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -20,24 +23,25 @@
             
         {% endblock title %}
 
-        {% load bootstrap5 %}
-  {% bootstrap_css %}
-  {% bootstrap_javascript %}
+        
+
             
     </title>
   
 </head>
 
-<body>
+<body >
 
   {% block header %}
-
+ 
+  
   {% endblock header %}
 
   
      
 
      {% block content %}
+      
      
 
      {% endblock content %}

@@ -1,25 +1,37 @@
 {% extends 'layout.html' %}
-{% block title %}Students of {{ classe.nom }}{% endblock %}
+{% block title %}eleve de la {{ classe.nom }}{% endblock %}
 
 
         {% block header %}
-    <header>
-
-   <div class="head  color-red p-4">
-    Systeme  d'information du Centre Sociale Djicofethis is the header
-   </div>
-
-  </header>
-
+   
+        <nav class="navbar navbar-expand-lg navbar-light bg-dark pb-5 mb-5 mt-9">
+  
+          <img src="logonassara-removebg-preview.png" alt="">
+          <a class="navbar-brand  text-light " href="#">Systeme dinformation du Centre Social Djicofe</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">Features</a>
+              </li>
+             
+            </ul>
+          </div>
+        </nav>
         {% endblock header %}
 
 {% block content %}
 <div class=" ">
-  <h2>Student List</h2>
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Nom</th>
+  <h2  class='pb-5 ml-3 h1 font-weight-bold'>list des eleves</h2>
+  <table class="table table-striped  ml-3">
+    <thead class="bg-dark">
+      <tr class="text-white">
+        <th >Nom</th>
         <th>Prénom</th>
         <th>etat</th>
         <th>Sexe</th>
@@ -47,9 +59,9 @@
         <td>{{ student.annee_inscr }}</td>
 
 
-
+        
         <td>
-          <a href="{% url 'student_detail' student.pk %}" class="btn btn-primary">View Details</a>
+          <a href="{% url 'student_detail' student.pk %}" class="btn btn-primary">details</a>
         </td>
         <!-- Add other columns as needed -->
       </tr>
