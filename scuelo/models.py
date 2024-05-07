@@ -47,7 +47,7 @@ class Classe(models.Model):
 class Eleve(models.Model):
     nom = models.CharField(max_length=34, null=False)
     prenom = models.CharField(max_length=34, null=False)
-    date_enquete = models.DateTimeField(blank=True)  # is  added right after
+    date_enquete = models.DateField(blank=True)  # is  added right after
     condition_eleve = models.CharField(
         max_length=4,
         choices=CONDITION_ELEVE
@@ -123,11 +123,12 @@ class Paiement(models.Model):
         ("ten", "tenue"),
         ("can", "cantine"),
     )
-    causal = models.CharField(max_length=34, choices=CAUSAL, db_index=True)
+    causal = models.CharField(max_length=5, choices=CAUSAL, db_index=True)
     montant = models.PositiveBigIntegerField()
-    date_paiement = models.DateTimeField(db_index=True)
-    note_paiement = models.CharField(max_length=200, blank=True)
-    eleve_payment = models.ForeignKey(Eleve, on_delete=models.CASCADE, default=1)
+    date = models.DateField(db_index=True)
+    note = models.CharField(max_length=200, blank=True)
+    eleve = models.ForeignKey(Eleve, on_delete=models.CASCADE)
+    inscription = models.ForeignKey(Inscription, on_delete=models.CASCADE)
 
     class Meta:
         verbose_name = 'Paiement'

@@ -14,10 +14,17 @@ sics_site = SicAdminArea(name='SICS NASSARA')
 
 class PaimentInline(admin.TabularInline):
     model = Paiement
-    '''raw_id_fields = ['causal', 'montant',
-                    'date_paiement',
-                    'note_paiement']
-    '''
+    extra = 0
+    classes = ['collapse']
+
+
+class InscriptionInline(admin.TabularInline):
+    model = Inscription
+    autocomplete_fields = ['eleve']
+    extra = 0
+
+    def get_queryset(self, request):
+        return super(InscriptionInline, self).get_queryset(request).filter(annee_scolaire__actuel=True)
 
 
 class EleveAdmin(admin.ModelAdmin):
@@ -39,27 +46,23 @@ class EleveAdmin(admin.ModelAdmin):
         }
          )
     )
-
-    list_display = [
-        'nom', 'prenom', 'condition_eleve',
-        'sex'
-    ]
-
-    jazzmin_section_order = 'nom_class'
-    # list_select_related =
+    list_display = ['id', 'nom', 'prenom', 'condition_eleve', 'sex', 'date_naissance', 'cs_py', 'tot_pag', 'tenues']
     search_fields = ['nom', 'prenom']
-    # list_filter = ['nom_classe']
-    # ordering = ["nom_classe"]
-    # list_select_related = ['paiment_set']
-    # list_select_related = ['paiement_set']
-    # Add 'nom_classe' to filter by class
-    inlines = [PaimentInline, ]
+    inlines = [PaimentInline, InscriptionInline]
+
+    def tot_pag(self, instance):
+        return 'Total payed during current year?'
+    tot_pag.short_description = "Tot pag"
+
+    def tenues(self, instance):
+        return 'What is it?'
+    tenues.short_description = "Tenues"
 
 
 class PaiementAdmin(admin.ModelAdmin):
     list_display = [
         'causal', 'montant',
-        'date_paiement', 'note_paiement'
+        'date', 'note'
     ]
     # filter_horizontal = True
 
