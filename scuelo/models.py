@@ -48,12 +48,9 @@ TYPE_ECOLE = (
 class Classe(models.Model):
     type_ecole = models.CharField(max_length=14, choices=TYPE_ECOLE ,  default="")
     nom = models.CharField(max_length=23, null=False , default="")
-    
+      
     def __str__( self ):
         return self.nom
-    
-    
-
 
 class Eleve(models.Model):
     nom = models.CharField(max_length=34, null=False)
@@ -80,12 +77,7 @@ class Eleve(models.Model):
     def an_insc(self):
         return self.annee_inscr.year
     
-    '''
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        messages.success(request, f'vous avez enregister l\'eleve {self.nom} {self.prenom} de la classe  de  {self.nom_classe}') 
-    '''
-
+    
     def get_queryset(self, request):
         # Group students by nom_classe
         queryset = Eleve.objects.all().prefetch_related('nom_classe')  # Prefetch for efficiency
@@ -99,8 +91,6 @@ class Eleve(models.Model):
     
     class Meta:
         verbose_name = 'Eleve'
-        #order_by = 'nom_classe'
-        
         verbose_name_plural = 'Eleves'
     
     def  __str__(self) -> str:
@@ -117,8 +107,6 @@ class AnneeScolaire(models.Model):
         if self.actuel:
             AnneeScolaire.objects.filter(actuel=True).exclude(pk=self.pk).update(actuel=False)
     
-    
-    
     class Meta:
         verbose_name = 'Anneescolaire'
         verbose_name_plural = 'Anneescolaire'
@@ -128,7 +116,6 @@ class AnneeScolaire(models.Model):
  
 class Paiement(models.Model):
     causal = models.CharField(max_length=34, choices=CAUSUAL)
-
     montant = models.PositiveBigIntegerField()
     date_paiement = models.DateTimeField()
     note_paiement = models.CharField(max_length=200, blank=True)
@@ -137,8 +124,6 @@ class Paiement(models.Model):
     
     class Meta:
         verbose_name = 'Paiement'
-        #order_by = 'nom_classe'
-        
         verbose_name_plural = 'Paiements'
         
 class Inscription(models.Model):
@@ -152,3 +137,6 @@ class Inscription(models.Model):
     class Meta:
         verbose_name = "Inscription"
         verbose_name_plural = 'Inscriptions'
+        
+        
+
