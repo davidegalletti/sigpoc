@@ -25,12 +25,30 @@ class CreateStudentView(CreateView):
     def form_valid(self, form):
         # Add any additional logic here
         return super().form_valid(form)
-
-def student_list(request, classe_id):
+    
+    
+def student_list(request , classe_id ):
+    
+    classes = Classe.objects.all()
     classe = get_object_or_404(Classe, pk=classe_id)
     students = classe.eleve_set.all()
-    return render(request, 'scuelo/eleveperclasse.html', {'classe': classe, 'students': students})
-
+    total_students = students.count()
+    total_girls = students.filter(sex='F').count()
+    total_boys = students.filter(sex='M').count()
+    class_student_counts = []
+    for classe in classes:
+        total_students = classe.eleve_set.count()
+        class_student_counts.append({'classe': classe, 'total_students': total_students})
+    
+    context = {
+        'class_student_counts': class_student_counts,
+        'classe': classe,
+        'students': students,
+        'total_students': total_students,
+        'total_girls': total_girls,
+        'total_boys': total_boys,
+    }
+    return render(request, 'scuelo/eleveperclasse.html', context)
 
 class StudentDetailView(DetailView):
     model = Eleve
@@ -73,7 +91,6 @@ def student_update(request, pk):
 
 
 class CreatePaymentView(CreateView):
-    
     model = Paiement
     form_class = PaiementCreationForm
     template_name = 'scuelo/create_paiement.html'
@@ -100,8 +117,6 @@ class PaymentListView(ListView):
     def get_queryset(self):
         student_id = self.kwargs.get('pk')
         return Paiement.objects.filter(eleve_payment_id=student_id)
-    
-
 
 class PaymentUpdateView(UpdateView):
     model = Paiement

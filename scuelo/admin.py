@@ -27,11 +27,11 @@ class  ClasseAdmin(admin.ModelAdmin):
 class EleveAdmin(admin.ModelAdmin):
     list_display= [
         "nom" , "prenom" , 
-                   "date_enquete" , "condition_eleve" , 
-                   "sex" , "date_naissance",
-                   "cs_py" , "hand"  ,
-                   "annee_inscr" , "parent" , 
-                   "tel_parent" , "note_eleve"
+        "date_enquete" , "condition_eleve" , 
+        "sex" , "date_naissance",
+        "cs_py" , "hand"  ,
+        "annee_inscr" , "parent" , 
+        "tel_parent" , "note_eleve"
                    ]
     #ordering = 
     inlines = (PaiementInline,)

@@ -7,3 +7,18 @@ what must  be done tommorow
 - the  total of the payment   of each student  down the list of  his paiements 
 -  be able   to  update the paiements  and their informations  in a separate page and take care  of the redirection 
 - be able to  get  something  more  presentful  for the start of the week 
+
+
+
+8 may
+
+for tommorow    i need to focus  myself on the annee  inscription
+and the inscription  part in the student creation  process
+add some more  functionalities like ,
+add also the   tenu part  and  also ask  to  davide about some tricks
+start the deployment  on the virtual machine
+and  insure  understanding the steps
+
+
+after  1 pm start configuring the  pc  of rodrigue  for the  wordpress
+to  flutter process , stop  it at  6 7 pm

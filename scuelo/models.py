@@ -69,10 +69,10 @@ class Eleve(models.Model):
     tel_parent = models.CharField(max_length=24, null=False)
     note_eleve = models.CharField(max_length=240, blank=True, default='')
     classe_nass = models.ForeignKey(Classe ,  on_delete=models.PROTECT   )
-
+    
     def __str__(self):
         return f"{self.nom} {self.prenom}"
-
+    
     @property
     def an_insc(self):
         return self.annee_inscr.year
