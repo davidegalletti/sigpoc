@@ -1,5 +1,6 @@
 from django import forms
-from .models import Eleve  , Paiement
+from .models import  (Eleve  , Paiement , 
+                      Inscription)
 
 class StudentCreationForm(forms.ModelForm):
      class Meta:
@@ -69,7 +70,10 @@ class PaiementCreationForm(forms.ModelForm):
 
 
 
-class   InscriptionForm(forms.CaseForm):
+class   InscriptionForm(forms.ModelForm):
     
-    pass
+    class  Meta:
+        model =  Inscription
+        fields = '__all__'
+       
 

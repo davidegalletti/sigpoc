@@ -2,10 +2,13 @@
 
 from django.urls import path
 from .views import ( home_view ,# eleve_create_view ,
-                    student_list ,StudentDetailView  ,PaymentListView ,
+                    student_list ,StudentDetailView  ,
+                    PaymentListView ,
                 CreatePaymentView , student_update , 
                 CreateStudentView ,
-                PaymentUpdateView)
+                PaymentUpdateView ,
+                
+                )
 
 urlpatterns = [
     path('acceuil/', home_view, name='home'),
@@ -18,4 +21,5 @@ urlpatterns = [
     path('student/<int:pk>/update/', student_update, name='student_update'),
     path('students/<int:pk>/create_payment/', CreatePaymentView.as_view(), name='create_payment'),
     path('payment/<int:pk>/update/', PaymentUpdateView.as_view(), name='update_payment'),
+   # path('students/<int:pk>/inscription/', StudentInscriptionView.as_view(), name='student_inscription'),
 ]# Add other URL patterns for your CRUD operations and other views

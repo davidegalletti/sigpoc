@@ -49,6 +49,21 @@
   
 
   <hr>
+
+  <h2>Inscriptions</h2>
+  <table>
+    <tr>
+      <th>Classe</th>
+      <th>Année Scolaire</th>
+    </tr>
+    {% for inscription in inscriptions %}
+    <tr>
+      <td>{{ inscription.classe }}</td>
+      <td>{{ inscription.annee_scolaire }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+<hr>
   
   <!-- Payments section -->
   <h3>Payments</h3>

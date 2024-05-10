@@ -69,9 +69,12 @@ class StudentDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         student_id = self.kwargs['pk']
         payments = Paiement.objects.filter(eleve_payment_id=student_id)
+        student = Eleve.objects.get(pk=student_id)
         total_payment = payments.aggregate(total=Sum('montant'))['total'] or 0  # Calculate total payment
         context['payments'] = payments
         context['total_payment'] = total_payment  # Add total payment to context
+        
+        context['inscriptions'] = student.inscriptions.all() 
         return context
     
     def post(self, request, *args, **kwargs):
@@ -142,7 +145,35 @@ class PaymentUpdateView(UpdateView):
         paiement = self.get_object()
         context['eleve'] = paiement.eleve_payment
         return context
-    
+ 
+ 
+ 
+ 
+from django.shortcuts import render, redirect
+from .models import Inscription, Classe, AnneeScolaire, Eleve
+
+def add_inscription(request, student_pk):
+    student = Eleve.objects.get(pk=student_pk)  # Retrieve student for pre-population
+    classes = Classe.objects.all()
+    annees_scolaires = AnneeScolaire.objects.all()
+    context = {'student': student, 'classes': classes, 'annees_scolaires': annees_scolaires}
+
+    if request.method == 'POST':
+        classe_id = request.POST.get('classe')
+        annee_scolaire_id = request.POST.get('annee_scolaire')
+
+        classe = Classe.objects.get(pk=classe_id)
+        annee_scolaire = AnneeScolaire.objects.get(pk=annee_scolaire_id)
+        Inscription.objects.create(
+            eleve=student, classe=classe, annee_scolaire=annee_scolaire
+        )
+        return redirect('success_url')  # Redirect to a success page after creation
+
+    return render(request, 'add_inscription.html', context)
+
+
+
+'''
     
 class StudentInscriptionView(CreateView):
     model = Inscription
@@ -154,4 +185,4 @@ class StudentInscriptionView(CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('student_detail', kwargs={'pk': self.kwargs['pk']})
+        return reverse('student_detail', kwargs={'pk': self.kwargs['pk']})'''

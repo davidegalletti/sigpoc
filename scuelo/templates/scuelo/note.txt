@@ -22,3 +22,20 @@ and  insure  understanding the steps
 
 after  1 pm start configuring the  pc  of rodrigue  for the  wordpress
 to  flutter process , stop  it at  6 7 pm
+
+
+
+####################
+
+what i need to  have 
+
+
+each student  has his  detail page
+then 
+
+there is  a  process  of  recording  students
+
+after that  the student i need to have  an inscription 
+it  means  his classe   year of inscription  
+
+this  can be recorded later after the recording process
