@@ -66,3 +66,10 @@ class PaiementCreationForm(forms.ModelForm):
 
 
 
+
+
+
+class   InscriptionForm(forms.CaseForm):
+    
+    pass
+

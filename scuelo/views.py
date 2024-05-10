@@ -1,13 +1,23 @@
 # views.py
 from django.db.models import Sum
 from django.shortcuts import render
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Eleve , Classe ,Paiement
-from .forms import StudentCreationForm , StudentUpdateForm , PaiementCreationForm
-from django.views.generic import DetailView, ListView
-from django.views.generic import UpdateView
+from django.shortcuts import  (render, redirect,
+                               get_object_or_404 )
+from .models import ( 
+                     Eleve , Classe ,
+                     Paiement  , Inscription
+                    )
+from .forms import ( StudentCreationForm , StudentUpdateForm , 
+                    PaiementCreationForm , InscriptionForm 
+                    
+                )
+
+from django.views.generic import (
+    DetailView, ListView ,UpdateView 
+                                  )
+
 from django.views.generic.edit import CreateView
-from django.urls import reverse_lazy 
+from django.urls import reverse_lazy    , reverse
 
 
 def home_view(request):
@@ -71,7 +81,9 @@ class StudentDetailView(DetailView):
   
         Paiement.objects.create(montant=montant, causal=causal, eleve_payment_id=student_id)
         return redirect('student_detail', pk=student_id)
-    
+
+
+
 
 def student_update(request, pk):
     student = Eleve.objects.get(pk=pk)
@@ -87,6 +99,7 @@ def student_update(request, pk):
         if 'reset' in request.GET:
             return redirect('student_detail', pk=pk)  # Redirect to student detail page without form submission
     return render(request, 'scuelo/eleve_update.html', {'form': form , 'student': student})
+
 
 
 
@@ -129,3 +142,16 @@ class PaymentUpdateView(UpdateView):
         paiement = self.get_object()
         context['eleve'] = paiement.eleve_payment
         return context
+    
+    
+class StudentInscriptionView(CreateView):
+    model = Inscription
+    form_class = InscriptionForm
+    template_name = 'scuelo/student_inscription.html'
+
+    def form_valid(self, form):
+        form.instance.eleve_id = self.kwargs['pk']
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('student_detail', kwargs={'pk': self.kwargs['pk']})
