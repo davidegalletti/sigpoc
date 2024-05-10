@@ -168,21 +168,35 @@ def add_inscription(request, student_pk):
             eleve=student, classe=classe, annee_scolaire=annee_scolaire
         )
         return redirect('success_url')  # Redirect to a success page after creation
-
+    
     return render(request, 'add_inscription.html', context)
 
 
 
-'''
-    
-class StudentInscriptionView(CreateView):
-    model = Inscription
-    form_class = InscriptionForm
-    template_name = 'scuelo/student_inscription.html'
+#### annee scolaire creation    views  
+# 
+#
+# 
+class CreateClasseView(CreateView):
+    model = Classe
+    fields = ['type_ecole', 'nom']
+    template_name = 'scuelo/classe_create.html'
+    success_url = '/acceuil/'
 
-    def form_valid(self, form):
-        form.instance.eleve_id = self.kwargs['pk']
-        return super().form_valid(form)
+class UpdateClasseView(UpdateView):
+    model = Classe
+    fields = ['type_ecole', 'nom']
+    template_name = 'scuelo/classe_update.html'
+    success_url = '/acceuil/'
 
-    def get_success_url(self):
-        return reverse('student_detail', kwargs={'pk': self.kwargs['pk']})'''
+class CreateAnneeScolaireView(CreateView):
+    model = AnneeScolaire
+    fields = ['nom', 'date_initiale', 'date_finale', 'actuel']
+    template_name = 'scuelo/annee_scolaire_create.html'
+    success_url = '/acceuil/'
+
+class UpdateAnneeScolaireView(UpdateView):
+    model = AnneeScolaire
+    fields = ['nom', 'date_initiale', 'date_finale', 'actuel']
+    template_name = 'scuelo/annee_scolaire_update.html'
+    success_url = '/acceuil/'

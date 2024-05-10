@@ -7,6 +7,10 @@ from .views import ( home_view ,# eleve_create_view ,
                 CreatePaymentView , student_update , 
                 CreateStudentView ,
                 PaymentUpdateView ,
+                CreateClasseView,
+                CreateAnneeScolaireView ,
+                UpdateClasseView ,
+                UpdateAnneeScolaireView
                 
                 )
 
@@ -22,4 +26,10 @@ urlpatterns = [
     path('students/<int:pk>/create_payment/', CreatePaymentView.as_view(), name='create_payment'),
     path('payment/<int:pk>/update/', PaymentUpdateView.as_view(), name='update_payment'),
    # path('students/<int:pk>/inscription/', StudentInscriptionView.as_view(), name='student_inscription'),
+#    
+# 
+  path('create_classe/', CreateClasseView.as_view(), name='create_classe'),
+    path('update_classe/<int:pk>/', UpdateClasseView.as_view(), name='update_classe'),
+    path('create_annee_scolaire/', CreateAnneeScolaireView.as_view(), name='create_annee_scolaire'),
+    path('update_annee_scolaire/<int:pk>/', UpdateAnneeScolaireView.as_view(), name='update_annee_scolaire'),
 ]# Add other URL patterns for your CRUD operations and other views

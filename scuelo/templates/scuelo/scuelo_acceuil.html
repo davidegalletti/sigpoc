@@ -30,7 +30,7 @@
 {% block content %}
 
 
-
+  
   <div class="container  border  border">
   <div class="row justify-content-center ">
     <div class="col-md-8"> <!-- Adjust the column size -->
@@ -39,7 +39,7 @@
       </div>
     </div>
   </div>
-
+  
   <div class="row justify-content-center">
     <div class="col-md-8"> <!-- Adjust the column size -->
       <div class="row">
@@ -56,6 +56,14 @@
         
         <a href="{% url 'create_student' %}" class="btn btn-primary">ajouter etudiant</a>
       
+      </div>
+
+      <div class="col-md-4 mb-2">
+        <a href="{% url 'create_classe' %}" class="btn btn-primary">Ajouter classe</a>
+      </div>
+      <!-- Button to create a new school year -->
+      <div class="col-md-4 mb-2">
+        <a href="{% url 'create_annee_scolaire' %}" class="btn btn-primary">Ajouter année scolaire</a>
       </div>
     </div>
   </div>
