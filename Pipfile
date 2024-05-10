@@ -5,6 +5,10 @@ name = "pypi"
 
 [packages]
 django = "*"
+django-jazzmin = "*"
+django-crispy-forms = "*"
+django-bootstrap-v5 = "*"
+crispy-bootstrap5 = "*"
 
 [dev-packages]
 
