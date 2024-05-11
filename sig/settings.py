@@ -43,8 +43,15 @@ INSTALLED_APPS = [
     'bootstrap5',
     'crispy_forms',
     'crispy_bootstrap5',
+       'import_export',
     
 ]
+
+
+import django
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'scuelo.settings')
+django.setup()
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -275,3 +282,5 @@ JAZZMIN_SETTINGS = {
     #"language_chooser": True,
     "theme": "darkly",
 }
+
+#export DJANGO_SETTINGS_MODULE=scuelo.settings

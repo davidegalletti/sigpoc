@@ -133,13 +133,8 @@ class Inscription(models.Model):
     
     def __str__(self):
         return f"{self.eleve}  {self.classe} {self.annee_scolaire}"
-    
+
     class Meta:
         verbose_name = "Inscription"
         verbose_name_plural = 'Inscriptions'
-        
-
-
-
-        
 
