@@ -138,5 +138,8 @@ class Inscription(models.Model):
         verbose_name = "Inscription"
         verbose_name_plural = 'Inscriptions'
         
+
+
+
         
 

@@ -36,7 +36,7 @@
       <p><strong>Date Naissance:</strong> {{ student.date_naissance }}</p>
       <p><strong>CS_PY:</strong> {{ student.cs_py }}</p>
       <p><strong>Handicap:</strong> {{ student.hand }}</p>
-      <p><strong>Année Inscription:</strong> {{ student.annee_inscr }}</p>
+      
     </div>
     <div class="col-md-6 ">
       <h3 class="mb-5">Parent Information</h3>
@@ -49,22 +49,33 @@
   
 
   <hr>
-
-  <h2>Inscriptions</h2>
-  <table>
-    <tr>
-      <th>Classe</th>
-      <th>Année Scolaire</th>
-    </tr>
-    {% for inscription in inscriptions %}
-    <tr>
-      <td>{{ inscription.classe }}</td>
-      <td>{{ inscription.annee_scolaire }}</td>
-    </tr>
-    {% endfor %}
-  </table>
-<hr>
   
+  <!-- Display inscriptions -->
+  <h2>Inscriptions</h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Classe</th>
+        <th>Année Scolaire</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for inscription in inscriptions %}
+      <tr>
+        <td>{{ inscription.classe }}</td>
+        <td>{{ inscription.annee_scolaire }}</td>
+        
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="2">Pas d'inscription pour le moment</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    
+  </table>
+  <a href="{% url 'add_inscription' student.pk %}" class="btn btn-success">Ajouter Inscription</a>
+  <hr>
   <!-- Payments section -->
   <h3>Payments</h3>
   <table class="table">

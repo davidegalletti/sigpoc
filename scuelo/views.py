@@ -24,7 +24,22 @@ def home_view(request):
     classes = Classe.objects.all()
     return render(request, 'scuelo/scuelo_acceuil.html' , {'classes' :classes})
 
+
 class CreateStudentView(CreateView):
+    form_class = StudentCreationForm
+    template_name = 'scuelo/eleve_create.html'
+    success_url = '/homepage/acceuil/'
+
+    def form_valid(self, form):
+        eleve = form.save(commit=False)
+        classe = form.cleaned_data['classe']
+        annee_scolaire = form.cleaned_data['annee_scolaire']
+        eleve.save()
+        # Create the inscription object
+        Inscription.objects.create(eleve=eleve, classe=classe, annee_scolaire=annee_scolaire)
+        return super().form_valid(form)
+
+'''class CreateStudentView(CreateView):
     form_class = StudentCreationForm
     template_name = 'scuelo/eleve_create.html'
     success_url = '/homepage/acceuil/'
@@ -35,7 +50,7 @@ class CreateStudentView(CreateView):
     def form_valid(self, form):
         # Add any additional logic here
         return super().form_valid(form)
-    
+    '''
     
 def student_list(request , classe_id ):
     
@@ -60,6 +75,7 @@ def student_list(request , classe_id ):
     }
     return render(request, 'scuelo/eleveperclasse.html', context)
 
+
 class StudentDetailView(DetailView):
     model = Eleve
     template_name = 'scuelo/eleve_detail.html'
@@ -67,25 +83,56 @@ class StudentDetailView(DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        student_id = self.kwargs['pk']
-        payments = Paiement.objects.filter(eleve_payment_id=student_id)
-        student = Eleve.objects.get(pk=student_id)
+        student = self.object
+        
+        # Fetching payments for the student
+        payments = Paiement.objects.filter(eleve_payment=student)
         total_payment = payments.aggregate(total=Sum('montant'))['total'] or 0  # Calculate total payment
         context['payments'] = payments
         context['total_payment'] = total_payment  # Add total payment to context
         
-        context['inscriptions'] = student.inscriptions.all() 
+        # Fetching inscriptions for the student
+        context['inscriptions'] = student.inscription_set.all()  # Assuming 'inscription_set' is the related name for Inscription model
+        return context
+
+    def post(self, request, *args, **kwargs):
+        student_id = self.kwargs['pk']
+        montant = request.POST.get('montant')
+        causal = request.POST.get('causal')
+
+        # Ensure proper validation and error handling here
+
+        Paiement.objects.create(montant=montant, causal=causal, eleve_payment_id=student_id)
+        return redirect('student_detail', pk=student_id)
+
+'''
+class StudentDetailView(DetailView):
+    model = Eleve
+    template_name = 'scuelo/eleve_detail.html'
+    context_object_name = 'student'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        student = self.object
+        payments = Paiement.objects.filter(eleve_payment_id=student.pk)
+        total_payment = payments.aggregate(total=Sum('montant'))['total'] or 0  # Calculate total payment
+        context['payments'] = payments
+        context['total_payment'] = total_payment  # Add total payment to context
+        
+        # Retrieve inscriptions for the student
+        context['inscriptions'] = student.inscriptions.all()  # Assuming 'inscriptions' is a ManyToManyField
         return context
     
     def post(self, request, *args, **kwargs):
         student_id = self.kwargs['pk']
         montant = request.POST.get('montant')
         causal = request.POST.get('causal')
+        
   
         Paiement.objects.create(montant=montant, causal=causal, eleve_payment_id=student_id)
         return redirect('student_detail', pk=student_id)
 
-
+'''
 
 
 def student_update(request, pk):
@@ -157,7 +204,7 @@ def add_inscription(request, student_pk):
     classes = Classe.objects.all()
     annees_scolaires = AnneeScolaire.objects.all()
     context = {'student': student, 'classes': classes, 'annees_scolaires': annees_scolaires}
-
+    
     if request.method == 'POST':
         classe_id = request.POST.get('classe')
         annee_scolaire_id = request.POST.get('annee_scolaire')
@@ -167,10 +214,9 @@ def add_inscription(request, student_pk):
         Inscription.objects.create(
             eleve=student, classe=classe, annee_scolaire=annee_scolaire
         )
-        return redirect('success_url')  # Redirect to a success page after creation
+        return redirect('student_detail', pk=student_pk)  # Redirect to the student detail page after creation
     
     return render(request, 'add_inscription.html', context)
-
 
 
 #### annee scolaire creation    views  

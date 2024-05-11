@@ -22,40 +22,102 @@
 {% endblock header %}
 
 {% block content %}
-
-
-
-
-<div class="">
-  <div class="">
-    <div class="container border-0 bg-orange">
-      <div class="card  mt-5 ">
-        <div class="card-header  text-dark">
-          <h2 >enregistrer  un eleve </h2>
-        </div>
-        <div class="card-body">
-          <form method="post">
-            {% csrf_token %}
-            {% for field in form %}
-              <div class="form-group ">
-                {{ field.label }}<br>
-                {{ field }}
-                {% if field.errors %}
-                  <div class="text-danger">
-                    {{ field.errors }}
-                  </div>
-                {% endif %}
+<div class="container border border">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h2>Create New Student</h2>
+      <form method="post">
+        {% csrf_token %}
+        
+        <div class="row">
+          <!-- Personal Information Section -->
+          <div class="col-md-6">
+            <fieldset>
+              <legend>Personal Information</legend>
+              <div class="form-group">
+                <label for="{{ form.nom.id_for_label }}">Nom</label>
+                {{ form.nom }}
               </div>
-            {% endfor %}
-            <div class="text-center mt-3 border-dark">
-              <button type="submit" class="btn btn-primary">enregistrer</button>
-              <button type="reset" class="btn btn-danger">Reset</button> 
-            </div>
-          </form>
+              <div class="form-group">
+                <label for="{{ form.prenom.id_for_label }}">Prenom</label>
+                {{ form.prenom }}
+              </div>
+              <div class="form-group">
+                <label for="{{ form.sex.id_for_label }}">sex</label>
+                {{ form.sex }}
+              </div>
+              <!-- Add other personal information fields -->
+            </fieldset>
+          </div>
+          
+          <!-- Contact Information Section -->
+          <div class="col-md-6">
+            <fieldset>
+              <legend>Contact Information</legend>
+              <div class="form-group">
+                <label for="{{ form.parent.id_for_label }}">Parent</label>
+                {{ form.parent }}
+              </div>
+              <div class="form-group">
+                <label for="{{ form.tel_parent.id_for_label }}">Tel Parent</label>
+                {{ form.tel_parent }}
+              </div>
+              <div class="form-group">
+                <label for="{{ form.date_enquete.id_for_label }}">date enquete</label>
+                {{ form.date_enquete }}
+              </div>
+              
+              <!-- Add other contact information fields -->
+            </fieldset>
+          </div>
         </div>
-      </div>
+        
+        <div class="row">
+          <!-- Additional Information Section -->
+          <div class="col-md-6">
+            <fieldset>
+              <legend>Additional Information</legend>
+              <div class="form-group">
+                <label for="{{ form.cs_py.id_for_label }}">CS PY</label>
+                {{ form.cs_py }}
+              </div>
+              <div class="form-group">
+                <label for="{{ form.condition_eleve.id_for_label }}">condition_eleve</label>
+                {{ form.condition_eleve }}
+              </div>
+              <div class="form-group">
+                <label for="{{ form.hand.id_for_label }}">Hand</label>
+                {{ form.hand }}
+              
+              </div>
+            
+              <!-- Add other additional information fields -->
+            </fieldset>
+          </div>
+          
+          <!-- Inscription Information Section -->
+          <div class="col-md-6">
+            <fieldset>
+              <legend>Inscription Information</legend>
+              <div class="form-group">
+                <label for="id_classe">Class</label>
+                {{ form.classe }}
+              </div>
+              <div class="form-group">
+                <label for="id_annee_scolaire">School Year</label>
+                <select name="annee_scolaire" class="form-control">
+                  {% for annee in form.annee_scolaire.field.queryset %}
+                    <option value="{{ annee.pk }}">{{ annee.nom }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
     </div>
   </div>
 </div>
-
-{% endblock %}
+{% endblock content %}

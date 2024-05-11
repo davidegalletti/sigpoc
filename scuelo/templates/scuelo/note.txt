@@ -4,7 +4,7 @@ what must  be done tommorow
 -  style more   the existing code  
 -  be add to complete the headers and   be able to    take care  of their differences
 -   add  also the  tenu  selection part
-- the  total of the payment   of each student  down the list of  his paiements 
+"../../mixtures/templates/scuelo"- the  total of the payment   of each student  down the list of  his paiements 
 -  be able   to  update the paiements  and their informations  in a separate page and take care  of the redirection 
 - be able to  get  something  more  presentful  for the start of the week 
 
@@ -13,9 +13,9 @@ what must  be done tommorow
 8 may
 
 for tommorow    i need to focus  myself on the annee  inscription
-and the inscription  part in the student creation  process
+and the inscription  part "../../mixtures/templates/scuelo"in the student creation  process
 add some more  functionalities like ,
-add also the   tenu part  and  also ask  to  davide about some tricks
+add also the   tenu part  "../../mixtures/templates/scuelo"and  also ask  to  davide about some tricks
 start the deployment  on the virtual machine
 and  insure  understanding the steps
 

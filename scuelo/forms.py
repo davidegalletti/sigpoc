@@ -1,14 +1,15 @@
 from django import forms
 from .models import  (Eleve  , Paiement , 
-                      Inscription)
+                      Inscription ,Classe  ,  AnneeScolaire)
+
 
 class StudentCreationForm(forms.ModelForm):
-     class Meta:
+    classe = forms.ModelChoiceField(queryset=Classe.objects.all(), empty_label=None, widget=forms.Select(attrs={'class': 'form-control'}))
+    annee_scolaire = forms.ModelChoiceField(queryset=AnneeScolaire.objects.all(), empty_label=None, widget=forms.Select(attrs={'class': 'form-control'}))
+    
+    class Meta:
         model = Eleve
-        fields = ['nom', 'prenom', 'date_enquete', 'condition_eleve', 'sex', 'date_naissance',
-                  'cs_py', 'hand', 'annee_inscr', 'parent', 
-                  'tel_parent', 'note_eleve', 'classe_nass'
-        ]
+        fields = ['nom', 'prenom', 'date_enquete', 'condition_eleve', 'sex', 'date_naissance', 'cs_py', 'hand', 'parent', 'tel_parent', 'note_eleve']
         widgets = {
             'nom': forms.TextInput(attrs={'class': 'form-control'}),
             'prenom': forms.TextInput(attrs={'class': 'form-control'}),
@@ -18,25 +19,21 @@ class StudentCreationForm(forms.ModelForm):
             'date_naissance': forms.DateInput(attrs={'class': 'form-control'}),
             'cs_py': forms.Select(attrs={'class': 'form-control'}),
             'hand': forms.Select(attrs={'class': 'form-control'}),
-            'annee_inscr': forms.TextInput(attrs={'class': 'form-control'}),
             'parent': forms.TextInput(attrs={'class': 'form-control'}),
             'tel_parent': forms.TextInput(attrs={'class': 'form-control'}),
             'note_eleve': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'classe_nass': forms.Select(attrs={'class': 'form-control'}),
         }
 
 
-            
 
 
 class StudentUpdateForm(forms.ModelForm):
+    classe = forms.ModelChoiceField(queryset=Classe.objects.all(), empty_label=None, widget=forms.Select(attrs={'class': 'form-control'}))
+    annee_scolaire = forms.ModelChoiceField(queryset=AnneeScolaire.objects.all(), empty_label=None, widget=forms.Select(attrs={'class': 'form-control'}))
+    
     class Meta:
         model = Eleve
-        fields = ['nom', 'prenom', 'date_enquete', 'condition_eleve', 'sex', 'date_naissance',
-                  'cs_py', 'hand', 'annee_inscr', 'parent',
-                  'tel_parent', 'note_eleve', 'classe_nass'
-                  ]
-        
+        fields = ['nom', 'prenom', 'date_enquete', 'condition_eleve', 'sex', 'date_naissance', 'cs_py', 'hand', 'parent', 'tel_parent', 'note_eleve']
         widgets = {
             'nom': forms.TextInput(attrs={'class': 'form-control'}),
             'prenom': forms.TextInput(attrs={'class': 'form-control'}),
@@ -46,12 +43,12 @@ class StudentUpdateForm(forms.ModelForm):
             'date_naissance': forms.DateInput(attrs={'class': 'form-control'}),
             'cs_py': forms.Select(attrs={'class': 'form-control'}),
             'hand': forms.Select(attrs={'class': 'form-control'}),
-            'annee_inscr': forms.TextInput(attrs={'class': 'form-control'}),
             'parent': forms.TextInput(attrs={'class': 'form-control'}),
             'tel_parent': forms.TextInput(attrs={'class': 'form-control'}),
             'note_eleve': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
-            'classe_nass': forms.Select(attrs={'class': 'form-control'}),
         }
+
+
 
 
 class PaiementCreationForm(forms.ModelForm):
@@ -69,11 +66,7 @@ class PaiementCreationForm(forms.ModelForm):
 
 
 
-
-class   InscriptionForm(forms.ModelForm):
-    
-    class  Meta:
-        model =  Inscription
-        fields = '__all__'
-       
-
+class InscriptionForm(forms.ModelForm):
+    class Meta:
+        model = Inscription
+        fields = ['classe', 'annee_scolaire']

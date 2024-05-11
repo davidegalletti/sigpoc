@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+{% block title %}Add Inscription{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Add Inscription</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="classe">Classe:</label>
+            <select class="form-control" id="classe" name="classe">
+                {% for classe in classes %}
+                <option value="{{ classe.id }}">{{ classe.nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="annee_scolaire">Année Scolaire:</label>
+            <select class="form-control" id="annee_scolaire" name="annee_scolaire">
+                {% for annee_scolaire in annees_scolaires %}
+                <option value="{{ annee_scolaire.id }}">{{ annee_scolaire.nom }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+{% endblock %}
