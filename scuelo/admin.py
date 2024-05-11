@@ -62,11 +62,11 @@ class EleveAdmin(admin.ModelAdmin):
 class PaiementAdmin(admin.ModelAdmin):
     list_display = [
         'causal', 'montant',
-        'date', 'note'
+        'date_paye', 'note'
     ]
     # filter_horizontal = True
 
-    list_select_related = ["eleve_payment"]
+    list_select_related = ["eleve"]
     # inlines = [ EleveInline ,]
     # readonly_fields = ["elevepayment"]
 

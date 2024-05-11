@@ -35,19 +35,17 @@ TYPE_ECOLE = (
 class Classe(models.Model):
     type_ecole = models.CharField(max_length=1, choices=TYPE_ECOLE, db_index=True)
     nom = models.CharField(max_length=10, null=False)
+    ordre = models.IntegerField(blank=True, null=True)
+    legacy_id = models.CharField(max_length=100, blank=True, null=True, db_index=True, unique=True)
 
     def __str__(self):
         return '%s %s' % (self.nom, self.get_type_ecole_display())
-
-    @property
-    def _pk_classe_id(self):
-        return '_PK-%s-Nas' % self.nom
 
 
 class Eleve(models.Model):
     nom = models.CharField(max_length=34, null=False)
     prenom = models.CharField(max_length=34, null=False)
-    date_enquete = models.DateField(blank=True)  # is  added right after
+    date_enquete = models.DateField(null=True, blank=True)  # is  added right after
     condition_eleve = models.CharField(
         max_length=4,
         choices=CONDITION_ELEVE
@@ -55,11 +53,12 @@ class Eleve(models.Model):
     sex = models.CharField(max_length=1, choices=SEX)
     date_naissance = models.DateField(blank=True, null=True)
     cs_py = models.CharField(max_length=1, choices=CS_PY)
-    hand = models.CharField(max_length=2, choices=HAND, blank=True)
-    annee_inscr = models.CharField(max_length=4)  # the inscrption year
+    hand = models.CharField(max_length=2, choices=HAND, null=True, blank=True)
+    annee_inscr = models.SmallIntegerField(blank=True, null=True)
     parent = models.CharField(max_length=50, blank=True, null=True)
     tel_parent = models.CharField(max_length=24, blank=True, null=True)
-    note_eleve = models.TextField(blank=True, default='-')
+    note_eleve = models.TextField(blank=True, null=True, default='-')
+    legacy_id = models.CharField(max_length=100, blank=True, null=True, db_index=True, unique=True)
 
     def __str__(self):
         return f"{self.nom} {self.prenom}"
@@ -109,7 +108,7 @@ class AnneeScolaire(models.Model):
 
 class Inscription(models.Model):
     eleve = models.ForeignKey(Eleve, on_delete=models.CASCADE)
-    classe = models.ForeignKey(Classe, on_delete=models.CASCADE)
+    classe = models.ForeignKey(Classe, on_delete=models.CASCADE, blank=True, null=True)
     annee_scolaire = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -125,10 +124,11 @@ class Paiement(models.Model):
     )
     causal = models.CharField(max_length=5, choices=CAUSAL, db_index=True)
     montant = models.PositiveBigIntegerField()
-    date = models.DateField(db_index=True)
-    note = models.CharField(max_length=200, blank=True)
+    date_paye = models.DateField(db_index=True)
+    note = models.CharField(max_length=200, null=True, blank=True)
     eleve = models.ForeignKey(Eleve, on_delete=models.CASCADE)
-    inscription = models.ForeignKey(Inscription, on_delete=models.CASCADE)
+    inscription = models.ForeignKey(Inscription, on_delete=models.CASCADE, blank=True, null=True)
+    legacy_id = models.CharField(max_length=100, blank=True, null=True, db_index=True, unique=True)
 
     class Meta:
         verbose_name = 'Paiement'
