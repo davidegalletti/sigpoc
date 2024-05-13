@@ -118,10 +118,10 @@ class Inscription(models.Model):
 
 class Paiement(models.Model):
     CAUSAL = (
-        ("insc", "inscription"),
-        ("sco", "scolarite"),
-        ("ten", "tenue"),
-        ("can", "cantine"),
+        ("INS", "Inscription"),
+        ("SCO", "Scolarite"),
+        ("TEN", "Tenue"),
+        ("CAN", "Cantine"),
     )
     causal = models.CharField(max_length=5, choices=CAUSAL, db_index=True)
     montant = models.PositiveBigIntegerField()
