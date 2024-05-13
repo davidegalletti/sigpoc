@@ -61,7 +61,7 @@ class Eleve(models.Model):
     legacy_id = models.CharField(max_length=100, blank=True, null=True, db_index=True, unique=True)
 
     def __str__(self):
-        return f"{self.nom} {self.prenom}"
+        return f"{self.nom} {self.prenom} ({self.legacy_id})"
 
     @property
     def an_insc(self):
@@ -93,6 +93,7 @@ class Eleve(models.Model):
 
 class AnneeScolaire(models.Model):
     nom = models.CharField(max_length=100)
+    nom_bref = models.CharField(max_length=10)
     date_initiale = models.DateField(blank=True)
     date_finale = models.DateField(blank=True)
     actuel = models.BooleanField(default=False)
@@ -112,7 +113,7 @@ class Inscription(models.Model):
     annee_scolaire = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE)
 
     def __str__(self):
-        return '%s - %s - %s' % (self.annee_scolaire, self.classe, self.eleve)
+        return '%s - %s - %s' % (self.annee_scolaire.nom_bref, self.classe, self.eleve)
 
 
 class Paiement(models.Model):
@@ -126,15 +127,13 @@ class Paiement(models.Model):
     montant = models.PositiveBigIntegerField()
     date_paye = models.DateField(db_index=True)
     note = models.CharField(max_length=200, null=True, blank=True)
-    eleve = models.ForeignKey(Eleve, on_delete=models.CASCADE)
     inscription = models.ForeignKey(Inscription, on_delete=models.CASCADE, blank=True, null=True)
     legacy_id = models.CharField(max_length=100, blank=True, null=True, db_index=True, unique=True)
 
     class Meta:
         verbose_name = 'Paiement'
-        # order_by = 'nom_classe'
-
         verbose_name_plural = 'Paiements'
+        ordering = ["-date_paye"]
 
     def __str__(self):
         return f"{self.causal} {self.montant}"

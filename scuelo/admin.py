@@ -23,8 +23,17 @@ class InscriptionInline(admin.TabularInline):
     autocomplete_fields = ['eleve']
     extra = 0
 
+    def get_formset(self, request, obj=None, **kwargs):
+        # obj è il MediciZone
+        formset = super(InscriptionInline, self).get_formset(request, obj, **kwargs)
+        # formset.form.base_fields['a'].queryset
+        self.eleve = obj
+        return formset
+
     def get_queryset(self, request):
-        return super(InscriptionInline, self).get_queryset(request).filter(annee_scolaire__actuel=True)
+        qs = super(InscriptionInline, self).get_queryset(request)
+        return qs
+        # return qs.filter(annee_scolaire__actuel=True)
 
 
 class EleveAdmin(admin.ModelAdmin):
@@ -48,47 +57,31 @@ class EleveAdmin(admin.ModelAdmin):
     )
     list_display = ['id', 'nom', 'prenom', 'condition_eleve', 'sex', 'date_naissance', 'cs_py', 'tot_pag', 'tenues']
     search_fields = ['nom', 'prenom']
-    inlines = [PaimentInline, InscriptionInline]
+    inlines = [InscriptionInline]
 
     def tot_pag(self, instance):
         return 'Total payed during current year?'
+
     tot_pag.short_description = "Tot pag"
 
     def tenues(self, instance):
         return 'What is it?'
+
     tenues.short_description = "Tenues"
 
 
 class PaiementAdmin(admin.ModelAdmin):
     list_display = [
-        'causal', 'montant',
-        'date_paye', 'note'
+        'get_causal_display', 'montant',
+        'date_paye', 'inscription'
     ]
-    # filter_horizontal = True
-
-    list_select_related = ["eleve"]
-    # inlines = [ EleveInline ,]
-    # readonly_fields = ["elevepayment"]
-
-    '''def get_list_display(self, request):
-        # Add 'section' to list_display
-        return super().get_list_display(request) + ['section']
-
-    def section(self, obj):
-        # Custom method to display the class section
-        return obj.nom_classe
-
-    section.admin_order_field = 'nom_classe'  # Enable sorting by section
-
-    def get_list_display_links(self, request, list_display):
-        # Disable editing links for 'section' column
-        return ['nom_classe']
-        '''
+    search_fields = ['inscription__eleve__nom', 'inscription__eleve__prenom']
+    list_select_related = ['inscription']
+    list_filter = ['inscription__annee_scolaire']
 
 
 class InscriptionAdmin(admin.ModelAdmin):
     autocomplete_fields = ['eleve']
-
 
 
 sics_site.register(Paiement, PaiementAdmin)

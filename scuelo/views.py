@@ -5,4 +5,4 @@ from django.http import HttpResponse
 def index(request):
     from django.core import management
     management.call_command('fixtures')
-    return HttpResponse("Hello, world. You're at the polls index.")
+    return HttpResponse("Hello, world.")

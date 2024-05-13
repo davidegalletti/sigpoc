@@ -46,14 +46,14 @@ class Command(BaseCommand):
                                                    is_superuser=True,
                                                    is_staff=True,
                                                    email='davide@c4k.it')
-            superuser.set_password('superuser')
+            superuser.set_password('3g3rKD8naG')
             superuser.save()
             operateur, _ = User.objects.get_or_create(username='operateur',
                                                    first_name='Operateur',
                                                    last_name='Sics Nassara',
                                                    is_staff=True,
                                                    email='davide@c4k.it')
-            operateur.set_password('operateur')
+            operateur.set_password('3g3rKD8naG')
             operateur.groups.add(gr_operateur)
             operateur.save()
             modelli_autorisations_complet = [
