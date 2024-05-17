@@ -1,0 +1,45 @@
+what can  be  done next
+
+--  be able to able to list the
+    students  based  on their classe
+    in that  list page add certain informations  related to 
+    the  total student , 
+    numbers  of girls ,  the total amount of fees that their paid 
+    the  sum of  cs py 
+
+
+--  be able to display the classes
+    of the school then
+
+--  be able to create student ,
+    delete , update them
+
+--  take  care of the fields  that  must  be
+    added  in the  eleve table
+
+--  think  the eleve  detail page will  be organized
+    firstly the detail primary informations
+    then the paiment  informations (possibility to
+    add delete and update  )
+    then the  inscriptions  (
+      the possibility to add  update and list
+    )
+
+--  be add to create update the classes
+
+--  be  able to  create update and  so delete
+    the annee_scolaire dynamically
+
+--  create paiement  and get the list of the  student
+    the main goal of that  technic is to  be  able to
+    turn easy the link to eleve dynamically
+
+--  be able to get the list  of the inscription
+    of  each particular student into his detail  page
+
+--  display the inscription update  option  and add
+    dynamically the inscription
+    NB: the inscription  is related to   a student
+
+--  be
+

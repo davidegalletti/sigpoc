@@ -20,6 +20,7 @@ class PaimentInline(admin.TabularInline):
 
 class InscriptionInline(admin.TabularInline):
     model = Inscription
+    #list_display = [''
     autocomplete_fields = ['eleve']
     extra = 0
 
@@ -55,13 +56,13 @@ class EleveAdmin(admin.ModelAdmin):
         }
          )
     )
-    list_display = ['id', 'nom', 'prenom', 'condition_eleve', 'sex', 'date_naissance', 'cs_py', 'tot_pag', 'tenues']
-    search_fields = ['nom', 'prenom']
+    list_display = ['id', 'nom', 'prenom', 'condition_eleve', 'sex', 'date_naissance', 'tot_pag' , 'tenues' , 'cs_py' , 'hand'] #
+    search_fields = ['nom', 'prenom' , 'cs_py']
     inlines = [InscriptionInline]
 
     def tot_pag(self, instance):
-        return 'Total payed during current year?'
-
+        return 'tot pag'
+  
     tot_pag.short_description = "Tot pag"
 
     def tenues(self, instance):

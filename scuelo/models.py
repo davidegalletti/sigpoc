@@ -37,7 +37,7 @@ class Classe(models.Model):
     nom = models.CharField(max_length=10, null=False)
     ordre = models.IntegerField(blank=True, null=True)
     legacy_id = models.CharField(max_length=100, blank=True, null=True, db_index=True, unique=True)
-
+    
     def __str__(self):
         return '%s %s' % (self.nom, self.get_type_ecole_display())
 
@@ -52,27 +52,27 @@ class Eleve(models.Model):
     )
     sex = models.CharField(max_length=1, choices=SEX)
     date_naissance = models.DateField(blank=True, null=True)
-    cs_py = models.CharField(max_length=1, choices=CS_PY)
+    cs_py = models.CharField(max_length=7, choices=CS_PY)
     hand = models.CharField(max_length=2, choices=HAND, null=True, blank=True)
     annee_inscr = models.SmallIntegerField(blank=True, null=True)
     parent = models.CharField(max_length=50, blank=True, null=True)
     tel_parent = models.CharField(max_length=24, blank=True, null=True)
     note_eleve = models.TextField(blank=True, null=True, default='-')
     legacy_id = models.CharField(max_length=100, blank=True, null=True, db_index=True, unique=True)
-
+    
     def __str__(self):
         return f"{self.nom} {self.prenom} ({self.legacy_id})"
-
+    
     @property
     def an_insc(self):
         return self.annee_inscr.year
-
+    
     '''
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         messages.success(request, f'vous avez enregister l\'eleve {self.nom} {self.prenom} de la classe  de  {self.nom_classe}') 
     '''
-
+    
     def get_queryset(self, request):
         # Group students by nom_classe
         queryset = Eleve.objects.all().prefetch_related('nom_classe')  # Prefetch for efficiency
@@ -83,24 +83,24 @@ class Eleve(models.Model):
                 grouped_queryset[classe] = []
             grouped_queryset[classe].append(eleve)
         return grouped_queryset
-
+    
     class Meta:
         verbose_name = 'Eleve'
         # order_by = 'nom_classe'
-
+        
         verbose_name_plural = 'Eleves'
 
 
 class AnneeScolaire(models.Model):
     nom = models.CharField(max_length=100)
-    nom_bref = models.CharField(max_length=10)
+    nom_bref = models.CharField(max_length=10 , default='')
     date_initiale = models.DateField(blank=True)
     date_finale = models.DateField(blank=True)
     actuel = models.BooleanField(default=False)
-
+    
     def __str__(self):
         return self.nom
-
+    
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         if self.actuel:
@@ -129,11 +129,11 @@ class Paiement(models.Model):
     note = models.CharField(max_length=200, null=True, blank=True)
     inscription = models.ForeignKey(Inscription, on_delete=models.CASCADE, blank=True, null=True)
     legacy_id = models.CharField(max_length=100, blank=True, null=True, db_index=True, unique=True)
-
+    
     class Meta:
         verbose_name = 'Paiement'
         verbose_name_plural = 'Paiements'
         ordering = ["-date_paye"]
-
+    
     def __str__(self):
         return f"{self.causal} {self.montant}"

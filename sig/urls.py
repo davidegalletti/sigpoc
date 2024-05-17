@@ -20,7 +20,7 @@ from scuelo.admin import  sics_site
 
 urlpatterns = [
     path('', sics_site.urls),
-    # path('sics/', sics_site.urls),
-    path("scuelo/", include("scuelo.urls")),
+    path('sics/', sics_site.urls),
+    
 
 ]
