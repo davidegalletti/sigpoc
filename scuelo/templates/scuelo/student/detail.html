@@ -1,75 +1,112 @@
 {% extends "/home/humbu/sigpoc/templates/layout.html" %}
 
-
 {% block content %}
 
-  <h1>Details for {{ student.nom }} {{ student.prenom }}</h1>
-  
-  <div class="student-detail-container">
-    <div class="student-info">
-  <h2>Basic Information</h2>
-  <p>Nom: {{ student.nom }}</p>
-  <p>Prénom: {{ student.prenom }}</p>
-  <p>Condition: {{ student.get_condition_eleve_display }}</p>
-  <p>Sex: {{ student.get_sex_display }}</p>
-  <p>Date de Naissance: {{ student.date_naissance }}</p>
-  <p>CS PY: {{ student.get_cs_py_display }}</p>
-  <p>Hand: {{ student.get_hand_display }}</p>
-  <h2>Additional Information</h2>
-  <p>Parents: {{ parents }}</p>
-  <p>Notes: {{ notes }}</p>
-  <hr>
-  <h2>Update Student Information</h2>
-  <a href="{% url 'student_update' pk=student.pk %}" class="btn btn-primary">Update Student</a>
-  <hr>
-  
-  <h2>Inscriptions</h2>
-  <ul>
-    {% for inscription in inscriptions %}
-      <li>{{ inscription.classe }} - {{ inscription.annee_scolaire }}</li>
-      <!-- Add more information about the inscription as needed -->
-    {% empty %}
-      <li>No inscriptions found</li>
-    {% endfor %}
-  </ul>
-
-  <h2>Add New Inscription</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Add Inscription</button>
-  </form>
-
-  <div class="student-payments">
-      <h2>Payments</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Amount</th>
-            <th>Causal</th>
-            <!-- Add more payment table headers as needed -->
-          </tr>
-        </thead>
-        <tbody>
-          {% for payment in payments %}
-            <tr>
-              <td>{{ payment.date_paye }}</td>
-              <td>{{ payment.montant }}</td>
-              <td>{{ payment.causal }}</td>
-              <!-- Add more payment table data as needed -->
-            </tr>
-          {% empty %}
-            <tr>
-              <td colspan="3">No payments found</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <!-- Logo -->
+    <div class="d-flex align-items-center">
+        <a class="navbar-brand" href="#">
+            <img src="path/to/your/logo.png" alt="Logo" width="30" height="30" class="d-inline-block align-top">
+        </a>
+        <h1 class="ms-2 mb-0 text-white">Details for {{ student.nom }} {{ student.prenom }}</h1>
     </div>
-  </div>
+</nav>
 
+<!-- Container with Reduced Margins -->
+<div class="container mt-4" style="max-width: 95%; margin: 0 auto;">
+    <div class="row">
+        <!-- Basic Information -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Basic Information
+                </div>
+                <div class="card-body">
+                    <p><strong>Nom:</strong> {{ student.nom }}</p>
+                    <p><strong>Prénom:</strong> {{ student.prenom }}</p>
+                    <p><strong>Condition:</strong> {{ student.get_condition_eleve_display }}</p>
+                    <p><strong>Sex:</strong> {{ student.get_sex_display }}</p>
+                    <p><strong>Date de Naissance:</strong> {{ student.date_naissance }}</p>
+                    <p><strong>CS PY:</strong> {{ student.get_cs_py_display }}</p>
+                    <p><strong>Hand:</strong> {{ student.get_hand_display }}</p>
+                    <p><strong>Parents:</strong> {{ parents }}</p>
+                    <p><strong>Notes:</strong> {{ notes }}</p>
+                </div>
+               
+            </div>
+            
+        </div>
 
-  <a href="{% url 'student_per_classe' class_id=clicked_class.id %}">Back to Class</a>
-  
+        <!-- Inscriptions -->
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Inscriptions
+                </div>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% for inscription in inscriptions %}
+                            <li class="list-group-item">{{ inscription.classe }} - {{ inscription.annee_scolaire }}</li>
+                        {% empty %}
+                            <li class="list-group-item">No inscriptions found</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Add New Inscription -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    Add New Inscription
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary">Add Inscription</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Payments -->
+        <div class="col-md-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    Payments
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Causal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in payments %}
+                                <tr>
+                                    <td>{{ payment.date_paye }}</td>
+                                    <td>{{ payment.montant }}</td>
+                                    <td>{{ payment.causal }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3">No payments found</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a href="{% url 'student_per_classe' class_id=clicked_class.id %}" class="btn btn-secondary">Back to Class</a>
+</div>
+
 {% endblock %}

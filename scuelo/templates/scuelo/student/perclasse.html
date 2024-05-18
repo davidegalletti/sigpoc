@@ -1,47 +1,129 @@
 
-{% extends "/home/humbu/sigpoc/templates/layout.html" %}
-{% block content %}
-  <h1>Students in Class: {{ clicked_class.nom }}</h1>
-  
-  <p>Total Students: {{ total_students }}</p>
-  <p>Number of Girls: {{ total_girls }}</p>
-  <p>Total Fees Paid: {{ total_fees }}</p>
-  <p>Sum of CS PY: {{ cs_py_sum }}</p>
 
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Nom</th>
-        <th>Prénom</th>
-        <th>Condition</th>
-        <th>Sex</th>
-        <th>Date de Naissance</th>
-        <th>Total Payments</th>
-        <th>Uniform Payments</th>
-        <th>CS PY</th>
-        <th>Hand</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for student in students %}
-        <tr>
-          <td>{{ student.id }}</td>
-          <td>{{ student.nom }}</td>
-          <td>{{ student.prenom }}</td>
-          <td>{{ student.get_condition_eleve_display }}</td>
-          <td>{{ student.get_sex_display }}</td>
-          <td>{{ student.date_naissance }}</td>
-          <td>{{ student.tot_pag }}</td>
-          <td>{{ student.tenues }}</td>
-          <td>{{ student.get_cs_py_display }}</td>
-          <td>{{ student.get_hand_display }}</td>
-          <td>
-            <a href="{% url 'student_detail_in_per_classe' pk=student.id class_id=clicked_class.id %}">Details</a>
-          </td>
-        </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-{% endblock %}
+{% extends "/home/humbu/sigpoc/templates/layout.html" %}
+
+
+
+{% block content %}
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark pb-5">
+  <!-- Logo -->
+  <div class="d-flex align-items-center  mt-5">
+      <a class="navbar-brand" href="#">
+          <img src="path/to/your/logo.png" alt="Logo" width="30" height="30" class="d-inline-block align-top">
+      </a>
+      <h1 class="ms-2 mb-0">Students in Class: {{ clicked_class.nom }}</h1>
+  </div>
+  <!-- Stats -->
+  <div class="navbar-nav ms-auto">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+              <a class="nav-link" href="#">Total Students: {{ total_students }}</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="#">Girls: {{ total_girls }}</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="#">Boys: {{ total_boys }}</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="#">Total Fees: {{ total_fees }}</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" href="#">CS PY Sum: {{ cs_py_sum }}</a>
+          </li>
+      </ul>
+  </div>
+</nav>
+
+
+<h1 class="ms-2 mb-0">Students in Class: {{ clicked_class.nom }}</h1>
+<form class="d-flex mb-3 mt-4">
+  <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q">
+  <button class="btn btn-outline-success" type="submit">Search</button>
+</form>
+
+        <div class="row table-container">
+
+            <div class="col">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Condition</th>
+                                <th>Sex</th>
+                                <th>Date de Naissance</th>
+                                <th>Total Payments</th>
+                                <th>Uniform Payments</th>
+                                <th>CS PY</th>
+                                <th>Hand</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                                <tr>
+                                    <td>{{ student.id }}</td>
+                                    <td>{{ student.nom }}</td>
+                                    <td>{{ student.prenom }}</td>
+                                    <td>{{ student.get_condition_eleve_display }}</td>
+                                    <td>{{ student.get_sex_display }}</td>
+                                    <td>{{ student.date_naissance }}</td>
+                                    <td>{{ student.tot_pag }}</td>
+                                    <td>{{ student.tenues }}</td>
+                                    <td>{{ student.get_cs_py_display }}</td>
+                                    <td>{% if student.handicap %}
+                                      {{ student.get_hand_display }}
+                                  {% else %}
+                                      <!-- Display blank if no handicap -->
+                                  {% endif %}
+                              </td>
+                                    <td>
+                                        <a href="{% url 'student_detail_in_per_classe' pk=student.id class_id=clicked_class.id %}" class="btn btn-primary btn-sm">Details</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                       
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% if is_paginated %}
+        <div class="d-flex justify-content-center mt-4">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1">&laquo; First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                </li>
+                {% endif %}
+                {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+{% endblock content %}

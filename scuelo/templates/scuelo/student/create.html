@@ -1,0 +1,154 @@
+{% extends "/home/humbu/sigpoc/templates/layout.html" %}
+
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Create Student</h2>
+    <form id="student-form" method="post">
+        {% csrf_token %}
+        <!-- Student Information -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h3>Student Information</h3>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="id_nom" class="form-label">Nom</label>
+                        <input type="text" class="form-control" id="id_nom" name="nom" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_prenom" class="form-label">Prenom</label>
+                        <input type="text" class="form-control" id="id_prenom" name="prenom" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="id_date_naissance" class="form-label">Date de Naissance</label>
+                        <input type="date" class="form-control" id="id_date_naissance" name="date_naissance" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_sex" class="form-label">Sex</label>
+                        <select class="form-select" id="id_sex" name="sex" required>
+                            <option value="M">Male</option>
+                            <option value="F">Female</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="id_cs_py" class="form-label">CS PY</label>
+                        <input type="text" class="form-control" id="id_cs_py" name="cs_py">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_hand" class="form-label">Hand</label>
+                        <input type="text" class="form-control" id="id_hand" name="hand">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="id_condition_eleve" class="form-label">Condition Eleve</label>
+                        <input type="text" class="form-control" id="id_condition_eleve" name="condition_eleve">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_date_enquete" class="form-label">Date Enquete</label>
+                        <input type="date" class="form-control" id="id_date_enquete" name="date_enquete">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="id_parent" class="form-label">Parent</label>
+                        <input type="text" class="form-control" id="id_parent" name="parent">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="id_tel_parent" class="form-label">Tel Parent</label>
+                        <input type="text" class="form-control" id="id_tel_parent" name="tel_parent">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inscription Information -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h3>Inscriptions</h3>
+            </div>
+            <div class="card-body">
+                <div id="inscription-formset" data-total-forms="{{ inscription_formset.total_form_count }}">
+                    {{ inscription_formset.management_form }}
+                    {% for form in inscription_formset %}
+                    <div class="row mb-3 inscription-form">
+                        <div class="col-md-5">
+                            <label class="form-label">Classe</label>
+                            <select class="form-select" name="{{ form.prefix }}-classe" required>
+                                {% for classe in classes %}
+                                <option value="{{ classe.id }}" {% if form.instance.classe == classe %}selected{% endif %}>{{ classe.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label">Année Scolaire</label>
+                            <input type="text" class="form-control" name="{{ form.prefix }}-annee_scolaire" value="{{ form.instance.annee_scolaire }}" required>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger remove-inscription">Remove</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <button type="button" id="add-inscription" class="btn btn-primary">Add Inscription</button>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Function to add a new inscription form
+    function addInscriptionForm() {
+        var formset = document.getElementById('inscription-formset');
+        var totalForms = parseInt(formset.dataset.totalForms);
+        var newForm = formset.children[1].cloneNode(true);
+
+        // Clear input values
+        var inputs = newForm.querySelectorAll('input, select');
+        inputs.forEach(function(input) {
+            input.value = '';
+        });
+
+        // Update formset index
+        var classeInput = newForm.querySelector('select');
+        var anneeInput = newForm.querySelector('input');
+        classeInput.setAttribute('name', 'form-' + totalForms + '-classe');
+        anneeInput.setAttribute('name', 'form-' + totalForms + '-annee_scolaire');
+        totalForms++;
+
+        // Update totalForms attribute
+        formset.dataset.totalForms = totalForms;
+        formset.children[0].value = totalForms;
+
+        // Add remove button
+        var removeBtn = newForm.querySelector('.remove-inscription');
+        removeBtn.addEventListener('click', function() {
+            formset.removeChild(newForm);
+        });
+
+        // Append the new form
+        formset.appendChild(newForm);
+    }
+
+    // Function to handle the click event on the Add Inscription button
+    document.getElementById('add-inscription').addEventListener('click', addInscriptionForm);
+
+    // Function to handle the click event on the Remove button for dynamically added forms
+    document.addEventListener('click', function(event) {
+        if (event.target.classList.contains('remove-inscription')) {
+            event.target.parentElement.parentElement.remove();
+        }
+    });
+</script>
+{% endblock %}

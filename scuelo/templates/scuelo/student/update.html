@@ -1,47 +1,50 @@
 {% extends "/home/humbu/sigpoc/templates/layout.html" %}
 
-{% load static %}
-
 {% block content %}
-  <div class="container">
+<div class="container mt-4" style="max-width: 95%; margin: 0 auto;">
     <h1>Update Student Information</h1>
+    
     <form method="post">
-      {% csrf_token %}
-      {{ form.as_p }}
-      {{ inscription_formset.management_form }}
-      <div class="inscriptions">
-        {% for form in inscription_formset %}
-          {{ form.as_p }}
-        {% endfor %}
-      </div>
-      <button type="submit" class="btn btn-primary">Update Student</button>
-      <button type="button" class="btn btn-secondary" id="add-inscription">Add Inscription</button>
+        {% csrf_token %}
+        
+        <!-- Student Update Form -->
+        <div class="card mb-4">
+            <div class="card-header">Basic Information</div>
+            <div class="card-body">
+                {{ form.as_p }}
+            </div>
+        </div>
+
+        <!-- Inscription Formset -->
+        <div class="card mb-4">
+            <div class="card-header">Inscriptions</div>
+            <div class="card-body">
+                {{ inscription_formset.management_form }}
+                {% for form in inscription_formset %}
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            {{ form.as_p }}
+                        </div>
+                    </div>
+                {% endfor %}
+                <button type="button" class="btn btn-secondary" id="add-inscription">Add Inscription</button>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
-  </div>
 
-  <script src="{% static 'js/jquery.min.js' %}"></script>
-  <script>
-    $(document).ready(function() {
-      $('#add-inscription').click(function() {
-        var totalForms = $('#id_form-TOTAL_FORMS').val();
-        var newFormNum = parseInt(totalForms) + 1;
+    <a href="{% url 'student_detail' pk=object.pk class_id=object.classe.id %}" class="btn btn-secondary mt-3">Back to Details</a>
+</div>
 
-        // Clone the last form and update its attributes
-        var newForm = $('.inscriptions .form-row:last').clone();
-        newForm.find(':input').each(function() {
-          var name = $(this).attr('name').replace('-' + (newFormNum - 1) + '-', '-' + newFormNum + '-');
-          $(this).attr({'name': name, 'id': 'id_' + name});
-          $(this).val('');
-        });
-        newForm.find('label').each(function() {
-          var newFor = $(this).attr('for').replace('-' + (newFormNum - 1) + '-', '-' + newFormNum + '-');
-          $(this).attr('for', newFor);
-        });
-
-        // Update the total form count
-        $('#id_form-TOTAL_FORMS').val(newFormNum);
-        $('.inscriptions').append(newForm);
-      });
+<script>
+    document.getElementById('add-inscription').addEventListener('click', function() {
+        var totalForms = document.getElementById('id_inscription_set-TOTAL_FORMS');
+        var currentCount = parseInt(totalForms.value);
+        var newForm = document.createElement('div');
+        newForm.innerHTML = '{{ inscription_formset.empty_form.as_p|escapejs }}'.replace(/__prefix__/g, currentCount);
+        totalForms.value = currentCount + 1;
+        this.parentNode.insertBefore(newForm, this);
     });
-  </script>
+</script>
 {% endblock %}
