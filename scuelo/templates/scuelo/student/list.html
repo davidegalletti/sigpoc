@@ -1,13 +1,22 @@
 {% extends "/home/humbu/sigpoc/templates/layout.html" %}
+
+
 {% block content %}
   <h1>Student List</h1>
 
   <p>Total Students: {{ total_students }}</p>
   <p>Number of Girls: {{ total_girls }}</p>
+<p>  Number  of  boys {{ total_boys}}</p>
   <p>Total Fees Paid: {{ total_fees }}</p>
-  <p>Sum of CS PY: {{ cs_py_sum }}</p>
 
-  <table>
+  <p>Sum of CS PY: {{ cs_py_sum }}</p>
+  <form method="get">
+    <input type="text" name="q" value="{{ search_term }}" placeholder="Search...">
+    <button type="submit">Search</button>
+  </form>
+  
+  <div class="table-responsive table-full-width">
+  <table class="table table-hover table-striped">
     <thead>
       <tr>
         <th>ID</th>
@@ -35,8 +44,29 @@
           <td>{{ student.tenues }}</td>
           <td>{{ student.cs_py }}</td>
           <td>{{ student.hand }}</td>
+          <td>
+            <a href="{% url 'student_detail' student.pk %}" class="btn btn-primary">View Details</a>
+          </td>
         </tr>
       {% endfor %}
     </tbody>
   </table>
+
+  <div class="pagination">
+    <span class="step-links">
+      {% if students.has_previous %}
+        <a href="?page=1">&laquo; first</a>
+        <a href="?page={{ students.previous_page_number }}">previous</a>
+      {% endif %}
+
+      <span class="current">
+        Page {{ students.number }} of {{ students.paginator.num_pages }}.
+      </span>
+
+      {% if students.has_next %}
+        <a href="?page={{ students.next_page_number }}">next</a>
+        <a href="?page={{ students.paginator.num_pages }}">last &raquo;</a>
+      {% endif %}
+    </span>
+  </div>
 {% endblock %}

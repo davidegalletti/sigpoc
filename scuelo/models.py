@@ -55,8 +55,8 @@ class Eleve(models.Model):
     cs_py = models.CharField(max_length=7, choices=CS_PY)
     hand = models.CharField(max_length=2, choices=HAND, null=True, blank=True)
     annee_inscr = models.SmallIntegerField(blank=True, null=True)
-    parent = models.CharField(max_length=50, blank=True, null=True)
-    tel_parent = models.CharField(max_length=24, blank=True, null=True)
+    parent = models.CharField(max_length=100, blank=True, null=True)
+    tel_parent = models.CharField(max_length=100, blank=True, null=True)
     note_eleve = models.TextField(blank=True, null=True, default='-')
     legacy_id = models.CharField(max_length=100, blank=True, null=True, db_index=True, unique=True)
     

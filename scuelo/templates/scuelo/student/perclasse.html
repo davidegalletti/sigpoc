@@ -1,0 +1,47 @@
+
+{% extends "/home/humbu/sigpoc/templates/layout.html" %}
+{% block content %}
+  <h1>Students in Class: {{ clicked_class.nom }}</h1>
+  
+  <p>Total Students: {{ total_students }}</p>
+  <p>Number of Girls: {{ total_girls }}</p>
+  <p>Total Fees Paid: {{ total_fees }}</p>
+  <p>Sum of CS PY: {{ cs_py_sum }}</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Condition</th>
+        <th>Sex</th>
+        <th>Date de Naissance</th>
+        <th>Total Payments</th>
+        <th>Uniform Payments</th>
+        <th>CS PY</th>
+        <th>Hand</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for student in students %}
+        <tr>
+          <td>{{ student.id }}</td>
+          <td>{{ student.nom }}</td>
+          <td>{{ student.prenom }}</td>
+          <td>{{ student.get_condition_eleve_display }}</td>
+          <td>{{ student.get_sex_display }}</td>
+          <td>{{ student.date_naissance }}</td>
+          <td>{{ student.tot_pag }}</td>
+          <td>{{ student.tenues }}</td>
+          <td>{{ student.get_cs_py_display }}</td>
+          <td>{{ student.get_hand_display }}</td>
+          <td>
+            <a href="{% url 'student_detail_in_per_classe' pk=student.id class_id=clicked_class.id %}">Details</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

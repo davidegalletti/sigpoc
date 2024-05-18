@@ -1,0 +1,15 @@
+{% extends "/home/humbu/sigpoc/templates/layout.html" %}
+
+
+{% block content %}
+  <h1>School Classes</h1>
+  
+  <ul>
+    {% for classe in classes %}
+      <li><a href="{% url 'student_per_classe' classe.id %}">{{ classe.nom }}</a></li>
+    {% endfor %}
+  </ul>
+
+
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "/home/humbu/sigpoc/templates/layout.html" %}
+
+{% load static %}
+
+{% block content %}
+  <div class="container">
+    <h1>Update Student Information</h1>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      {{ inscription_formset.management_form }}
+      <div class="inscriptions">
+        {% for form in inscription_formset %}
+          {{ form.as_p }}
+        {% endfor %}
+      </div>
+      <button type="submit" class="btn btn-primary">Update Student</button>
+      <button type="button" class="btn btn-secondary" id="add-inscription">Add Inscription</button>
+    </form>
+  </div>
+
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script>
+    $(document).ready(function() {
+      $('#add-inscription').click(function() {
+        var totalForms = $('#id_form-TOTAL_FORMS').val();
+        var newFormNum = parseInt(totalForms) + 1;
+
+        // Clone the last form and update its attributes
+        var newForm = $('.inscriptions .form-row:last').clone();
+        newForm.find(':input').each(function() {
+          var name = $(this).attr('name').replace('-' + (newFormNum - 1) + '-', '-' + newFormNum + '-');
+          $(this).attr({'name': name, 'id': 'id_' + name});
+          $(this).val('');
+        });
+        newForm.find('label').each(function() {
+          var newFor = $(this).attr('for').replace('-' + (newFormNum - 1) + '-', '-' + newFormNum + '-');
+          $(this).attr('for', newFor);
+        });
+
+        // Update the total form count
+        $('#id_form-TOTAL_FORMS').val(newFormNum);
+        $('.inscriptions').append(newForm);
+      });
+    });
+  </script>
+{% endblock %}
