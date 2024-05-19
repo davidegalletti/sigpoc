@@ -3,6 +3,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django_filters.views import FilterView
 from django.urls import reverse_lazy ,  reverse
 from django.views.generic.edit import UpdateView
+from django.db import models
 from django.core.paginator import Paginator
 from django.views.generic import CreateView
 from django.views.generic import DetailView , ListView 
@@ -10,7 +11,7 @@ from django.db.models import Count, Sum , Prefetch
 from django.db.models import Q
 from .forms import InscriptionForm , EleveUpdateForm, InscriptionFormSet , EleveCreateForm
 from  .filters import EleveFilter
-from .models import Eleve, Classe, Inscription, Paiement
+from .models import Eleve, Classe, Inscription, Paiement , AnneeScolaire
 from django.forms import inlineformset_factory
 
 def home(request):
@@ -58,46 +59,6 @@ class StudentListView(FilterView):
         return context
 
 
-class StudentDetailView(DetailView):
-    model = Eleve
-    template_name = 'scuelo/student/detail.html'
-    context_object_name = 'student'
-
-    def get_queryset(self):
-        # Get the clicked class ID from the URL parameter
-        class_id = self.kwargs.get('class_id')
-        # Filter students by the clicked class ID
-        return Eleve.objects.filter(inscription__classe__id=class_id).select_related('inscription__classe')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        
-        # Fetch the clicked class
-        class_id = self.kwargs.get('class_id')
-        clicked_class = Classe.objects.get(pk=class_id)
-
-        # Calculate aggregate values for students in the clicked class
-        students = self.get_queryset()
-        total_students = students.count()
-        total_girls = students.filter(sex='F').count()
-        total_boys = students.filter(sex='M').count()
-        total_fees = Paiement.objects.filter(inscription__classe__id=class_id).aggregate(total_fees=Sum('montant'))['total_fees'] or 0
-        cs_py_sum = students.aggregate(cs_py_sum=Sum('cs_py'))['cs_py_sum'] or 0
-        
-        context.update({
-            'total_students': total_students,
-            'total_girls': total_girls,
-            'total_boys': total_boys,
-            'total_fees': total_fees,
-            'cs_py_sum': cs_py_sum,
-            'clicked_class': clicked_class,  # Pass the clicked class to the template
-        })
-        ''' inscriptions = student.inscription_set.all()
-        
-        context['inscriptions'] = inscriptions
-        '''
-        
-        return context
     
 class StudentPerClasseView(ListView):
     model = Eleve
@@ -248,34 +209,28 @@ class EleveUpdateView(UpdateView):
         else:
             return self.render_to_response(self.get_context_data(form=form))
         
-        
 class StudentCreateView(CreateView):
     model = Eleve
     form_class = EleveCreateForm
     template_name = 'scuelo/student/create.html'
 
-    def get_success_url(self):
-        return reverse_lazy('student_detail', kwargs={'pk': self.object.pk})
-
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        InscriptionFormSet = inlineformset_factory(Eleve, Inscription, fields=('classe', 'annee_scolaire'), extra=1)
-
+        data = super().get_context_data(**kwargs)
         if self.request.POST:
-            context['inscription_formset'] = InscriptionFormSet(self.request.POST)
+            data['inscription_formset'] = InscriptionFormSet(self.request.POST)
         else:
-            context['inscription_formset'] = InscriptionFormSet()
-        
-        return context
+            data['inscription_formset'] = InscriptionFormSet()
+        data['classes'] = Classe.objects.all()
+        data['annees_scolaires'] = AnneeScolaire.objects.all()
+        return data
 
     def form_valid(self, form):
         context = self.get_context_data()
         inscription_formset = context['inscription_formset']
-
-        if form.is_valid() and inscription_formset.is_valid():
+        if inscription_formset.is_valid():
             self.object = form.save()
             inscription_formset.instance = self.object
             inscription_formset.save()
-            return redirect(self.get_success_url())
+            return redirect('student_detail_in_per_classe', pk=self.object.pk)  # Corrected redirection
         else:
             return self.render_to_response(self.get_context_data(form=form))

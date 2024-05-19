@@ -32,7 +32,7 @@ class EleveUpdateForm(forms.ModelForm):
 class EleveCreateForm(forms.ModelForm):
     class Meta:
         model = Eleve
-        fields = ['nom', 'prenom', 'date_naissance', 'sex', 'condition_eleve', 'cs_py', 'hand', 'date_enquete', 'parent', 'tel_parent']
+        fields = ['nom', 'prenom', 'date_naissance', 'sex', 'condition_eleve', 'cs_py', 'hand', 'date_enquete', 'parent', 'tel_parent' , 'note_eleve']
         widgets = {
             'date_naissance': forms.DateInput(attrs={'type': 'date'}),
             'date_enquete': forms.DateInput(attrs={'type': 'date'}),
