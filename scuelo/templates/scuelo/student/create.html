@@ -1,13 +1,80 @@
 {% extends "/home/humbu/sigpoc/templates/layout.html" %}
-
 {% load crispy_forms_tags %}
+{% block header %}
+<nav class="navbar navbar-expand-lg shadow-sm pb-5 bg-black">
+  <div class="container-fluid mt-5">
+    <a class="navbar-brand" href="#">Your School Name</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  
+{% endblock header %}
+
 {% block content %}
 <div class="container mt-5">
     <h2>Create Student</h2>
     <form id="student-form" method="post">
         {% csrf_token %}
         <!-- Student Information -->
-        {{ form.as_p }}
+        <div class="row">
+            <div class="col-md-6">
+                {{ form.nom|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.prenom|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form.date_enquete|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.condition_eleve|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form.sex|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.date_naissance|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form.cs_py|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.hand|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form.annee_inscr|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.parent|as_crispy_field }}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                {{ form.tel_parent|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.note_eleve|as_crispy_field }}
+            </div>
+        </div>
+  
+
         <!-- Inscription Information -->
         <div class="card mb-3">
             <div class="card-header">
@@ -19,20 +86,14 @@
                     {% for form in inscription_formset %}
                     <div class="row mb-3 inscription-form">
                         <div class="col-md-5">
-                            <label class="form-label">Classe</label>
                             {{ form.classe|as_crispy_field }}
                         </div>
                         <div class="col-md-5">
-                            <label class="form-label">Année Scolaire</label>
                             {{ form.annee_scolaire|as_crispy_field }}
-                        </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <button type="button" class="btn btn-danger remove-inscription">Remove</button>
                         </div>
                     </div>
                     {% endfor %}
                 </div>
-                <button type="button" id="add-inscription" class="btn btn-primary">Add Inscription</button>
             </div>
         </div>
 
@@ -42,49 +103,4 @@
         </div>
     </form>
 </div>
-
-<script>
-  function addInscriptionForm() {
-    var formset = document.getElementById('inscription-formset');
-    var totalForms = parseInt(formset.dataset.totalForms);
-    var newForm = formset.children[0].cloneNode(true);
-
-    // Clear input values
-    var inputs = newForm.querySelectorAll('input, select');
-    inputs.forEach(function (input) {
-      input.value = '';
-    });
-
-    // Update formset index
-    newForm.querySelector('select').setAttribute('name', 'form-' + totalForms + '-classe');
-    newForm.querySelector('input').setAttribute('name', 'form-' + totalForms + '-annee_scolaire');
-    totalForms++;
-
-    // Add remove button
-    var removeBtn = document.createElement('button');
-    removeBtn.setAttribute('type', 'button');
-    removeBtn.classList.add('btn', 'btn-danger', 'remove-inscription');
-    removeBtn.textContent = 'Remove';
-    removeBtn.addEventListener('click', function () {
-      formset.removeChild(newForm);
-    });
-    newForm.appendChild(removeBtn);
-
-    // Append the new form
-    formset.appendChild(newForm);
-
-    // Update totalForms attribute
-    formset.dataset.totalForms = totalForms;
-  }
-
-  // Function to handle the click event on the "Add Inscription" button
-  document.getElementById('add-inscription').addEventListener('click', addInscriptionForm);
-
-  // Function to handle the click event on the "Remove" button for dynamically added forms
-  document.addEventListener('click', function (event) {
-    if (event.target.classList.contains('remove-inscription')) {
-      event.target.parentElement.remove();
-    }
-  });
-</script>
 {% endblock %}

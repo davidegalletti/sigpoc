@@ -2,39 +2,54 @@
 
 {% extends "/home/humbu/sigpoc/templates/layout.html" %}
 
+{% block header %}
 
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark pb-5">
+    <!-- Logo -->
+    <div class="d-flex align-items-center mt-5">
+        <a class="navbar-brand" href="#">
+            <img src="path/to/your/logo.png" alt="Logo" width="30" height="30" class="d-inline-block align-top">
+        </a>
+        <h1 class="ms-2 mb-0">Students in Class: {{ clicked_class.nom }}</h1>
+    </div>
+    <!-- Stats -->
+    <div class="navbar-nav ms-auto">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+                <a class="nav-link" href="#">Total Students: {{ total_students }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Girls: {{ total_girls }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Boys: {{ total_boys }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Total Fees: {{ total_fees }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Py-{{ total_py }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">  Cs-{{ total_cs }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">  Bravo-{{ total_bravo }}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">  Cs-{{ total_extra }}</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+{% endblock header %}
 
 {% block content %}
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark pb-5">
-  <!-- Logo -->
-  <div class="d-flex align-items-center  mt-5">
-      <a class="navbar-brand" href="#">
-          <img src="path/to/your/logo.png" alt="Logo" width="30" height="30" class="d-inline-block align-top">
-      </a>
-      <h1 class="ms-2 mb-0">Students in Class: {{ clicked_class.nom }}</h1>
-  </div>
-  <!-- Stats -->
-  <div class="navbar-nav ms-auto">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-              <a class="nav-link" href="#">Total Students: {{ total_students }}</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="#">Girls: {{ total_girls }}</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="#">Boys: {{ total_boys }}</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="#">Total Fees: {{ total_fees }}</a>
-          </li>
-          <li class="nav-item">
-              <a class="nav-link" href="#">CS PY Sum: {{ cs_py_sum }}</a>
-          </li>
-      </ul>
-  </div>
-</nav>
+
 
 
 <h1 class="ms-2 mb-0">Students in Class: {{ clicked_class.nom }}</h1>

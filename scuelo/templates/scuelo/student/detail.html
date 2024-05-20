@@ -1,17 +1,16 @@
 {% extends "/home/humbu/sigpoc/templates/layout.html" %}
 
+
+{% block header %}
+<nav class="navbar navbar-expand-lg pb-5 bg-black">
+    
+    <a class="navbar-brand" href="{% url 'home' %}">Home</a>
+</nav>
+{% endblock header %}
 {% block content %}
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <!-- Logo -->
-    <div class="d-flex align-items-center">
-        <a class="navbar-brand" href="#">
-            <img src="path/to/your/logo.png" alt="Logo" width="30" height="30" class="d-inline-block align-top">
-        </a>
-        <h1 class="ms-2 mb-0 text-white">Details for {{ student.nom }} {{ student.prenom }}</h1>
-    </div>
-</nav>
+
 
 <!-- Container with Reduced Margins -->
 <div class="container mt-4" style="max-width: 95%; margin: 0 auto;">
@@ -30,6 +29,7 @@
                     <p><strong>Date de Naissance:</strong> {{ student.date_naissance }}</p>
                     <p><strong>CS PY:</strong> {{ student.get_cs_py_display }}</p>
                     <p><strong>Hand:</strong> {{ student.get_hand_display }}</p>
+                    <p><strong>Date enquete:</strong> {{ student.date_enquete }}</p>
                     <p><strong>Parents:</strong> {{ parents }}</p>
                     <p><strong>Notes:</strong> {{ notes }}</p>
                 </div>
@@ -55,19 +55,7 @@
                 </div>
             </div>
 
-            <!-- Add New Inscription -->
-            <div class="card mb-4">
-                <div class="card-header">
-                    Add New Inscription
-                </div>
-                <div class="card-body">
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit" class="btn btn-primary">Add Inscription</button>
-                    </form>
-                </div>
-            </div>
+            <a href="{% url 'student_update' pk=student.pk %}" class="btn btn-primary">Update Student</a>
         </div>
     </div>
 

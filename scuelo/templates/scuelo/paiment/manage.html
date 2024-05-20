@@ -1,0 +1,110 @@
+{% extends "/home/humbu/sigpoc/templates/layout.html" %}
+
+
+{% block content %}
+<style>
+    /* Style for the form */
+    .payment-form {
+        margin-bottom: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .payment-form input[type="text"],
+    .payment-form input[type="number"],
+    .payment-form select {
+        width: calc(50% - 10px);
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .payment-form button[type="submit"] {
+        width: 100%;
+        background-color: #007bff; /* Bootstrap primary color */
+        color: #fff;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .payment-form button[type="submit"]:hover {
+        background-color: #0056b3; /* Darker shade of primary color on hover */
+    }
+</style>
+<div>
+   
+    <div class="container">
+        <h2>Manage Payments</h2>
+        
+        <!-- Payment Form -->
+        <div>
+            <h3>Create Payment</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Create</button>
+            </form>
+        </div>
+        
+        <!-- Inscription Formset -->
+        <div>
+            <h3>Add Inscriptions</h3>
+            <form method="post">
+                {% csrf_token %}
+                {{ formset.management_form }}
+                {% for form in formset.forms %}
+                    {{ form.as_p }}
+                {% endfor %}
+                <button type="submit" class="btn btn-primary">Save Inscriptions</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<h2>Manage Payments</h2>
+
+<!-- Payment List -->
+<h3>All Payments</h3>
+<table class="table payments-table">
+    <thead class="thead-light">
+        <tr>
+            <th scope="col">Causal</th>
+            <th scope="col">Montant</th>
+            <th scope="col">Date Paye</th>
+            <th scope="col">Note</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for payment in payments %}
+        <tr>
+            <td>{{ payment.causal }}</td>
+            <td>{{ payment.montant }}</td>
+            <td>{{ payment.date_paye }}</td>
+            <td>{{ payment.note }}</td>
+            <td>
+                <!-- Update Form -->
+                <form action="{% url 'paiement_update' payment.pk %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <button type="submit">Update</button>
+                </form>
+                <!-- Delete Form -->
+                <form action="{% url 'paiement_delete' payment.pk %}" method="post" style="display: inline;">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.path }}">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Create Form -->
+
+{% endblock content %}

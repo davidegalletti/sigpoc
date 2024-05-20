@@ -52,7 +52,7 @@ class Eleve(models.Model):
     )
     sex = models.CharField(max_length=1, choices=SEX)
     date_naissance = models.DateField(blank=True, null=True)
-    cs_py = models.CharField(max_length=7, choices=CS_PY)
+    cs_py = models.CharField(max_length=7, choices=CS_PY, default="C" )
     hand = models.CharField(max_length=2, choices=HAND, null=True, blank=True)
     annee_inscr = models.SmallIntegerField(blank=True, null=True)
     parent = models.CharField(max_length=100, blank=True, null=True)
