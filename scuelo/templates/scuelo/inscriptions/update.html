@@ -1,0 +1,11 @@
+{% extends "/home/humbu/sigpoc/templates/layout.html" %}
+
+{% block content %}
+  <h1>Update Inscription</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Update Inscription</button>
+  </form>
+  <a href="{% url 'student_detail_in_per_classe' pk=form.instance.eleve.pk class_id=form.instance.classe.id %}">Cancel</a>
+{% endblock %}

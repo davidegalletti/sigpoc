@@ -1,7 +1,6 @@
 from django.contrib import admin
-from .models import  Eleve , Classe, Inscription, AnneeScolaire , Paiement
-from django.contrib import admin
-
+from .models import Classe, Eleve, AnneeScolaire, Inscription, Paiement
+from django.contrib.auth.models import User, Group
 
 
 class SicAdminArea(admin.AdminSite):
@@ -13,91 +12,42 @@ class SicAdminArea(admin.AdminSite):
 sics_site = SicAdminArea(name='SICS NASSARA')
 
 
-class PaiementInline(admin.TabularInline):  # You can use StackedInline if you prefer a different layout
+class PaimentInline(admin.TabularInline):
     model = Paiement
-    extra = 1  # Number of extra inline forms to display
-    
+    extra = 0
+    classes = ['collapse']
 
-    
-class  ClasseAdmin(admin.ModelAdmin):
-    
-    list_display = ['nom'  ,'type_ecole'  ]
-    ordering = ["type_ecole"]
 
-class EleveAdmin(admin.ModelAdmin):
-    list_display= [
-        "nom" , "prenom" , 
-        "date_enquete" , "condition_eleve" , 
-        "sex" , "date_naissance",
-        "cs_py" , "hand"  ,
-        "annee_inscr" , "parent" , 
-        "tel_parent" , "note_eleve"
-                   ]
-    #ordering = 
-    inlines = (PaiementInline,)
-    
-    
-    def get_inline_instances(self, request, obj=None):
-        if not obj:  # For creating new Eleve objects
-            return super().get_inline_instances(request, obj)
-        # For editing existing Eleve objects, include existing Paiement objects
-        return [inline(self.model, self.admin_site) for inline in self.inlines]
-
-class AnneeScolaireInline(admin.TabularInline):
-    model = AnneeScolaire
-    
-class ClasseInline(admin.TabularInline):
-    model =  Classe 
-    
-class EleveInline(admin.TabularInline):
-    model =  Eleve
-    list_display = ["nom" , "prenom" ]
-
-class  InscriptionInline(admin.ModelAdmin):
+class InscriptionInline(admin.TabularInline):
     model = Inscription
-    
-    inlines = [ EleveInline, ClasseInline, AnneeScolaireInline ]
+    #list_display = [''
+    autocomplete_fields = ['eleve']
+    extra = 0
 
-sics_site.register(Eleve , EleveAdmin )
-sics_site.register(AnneeScolaire)
-sics_site.register(Inscription)
-sics_site.register(Classe ,ClasseAdmin )
+    def get_formset(self, request, obj=None, **kwargs):
+        # obj è il MediciZone
+        formset = super(InscriptionInline, self).get_formset(request, obj, **kwargs)
+        # formset.form.base_fields['a'].queryset
+        self.eleve = obj
+        return formset
 
-
-
-
-
-
-
-
-
-
+    def get_queryset(self, request):
+        qs = super(InscriptionInline, self).get_queryset(request)
+        return qs
+        # return qs.filter(annee_scolaire__actuel=True)
 
 
-
-
-
-
-
-
-
-'''
 class EleveAdmin(admin.ModelAdmin):
     fieldsets = (
         ('INFORMATIONS DE  BASE', {
             'fields': ('nom', 'prenom', 'sex',
                        'date_naissance'
-            ),
-        }
-         ),
-        ('INFORMATION   CLASSE', {
-            'fields': ('type_ecole', 'nom_classe'
-                       ,'annee_inscr'),
+                       ),
         }
          ),
         ('INFORMATION SOCIALE', {
-            'fields': ('condition_eleve', 'cs_py' ,'hand'
-                       ,'date_enquete'),
+            'fields': ('condition_eleve', 'cs_py', 'hand'
+                       , 'date_enquete'),
         }
          ),
         ('INFORMATION PARENT', {
@@ -106,35 +56,44 @@ class EleveAdmin(admin.ModelAdmin):
         }
          )
     )
-    
-    
-    
-    
+    list_display = ['id', 'nom', 'prenom', 'condition_eleve', 'sex', 'date_naissance', 'tot_pag' , 'tenues' , 'cs_py' , 'hand'] #
+    search_fields = ['nom', 'prenom' , 'cs_py']
+    inlines = [InscriptionInline]
+
+    def tot_pag(self, instance):
+        return 'tot pag'
+  
+    tot_pag.short_description = "Tot pag"
+
+    def tenues(self, instance):
+        return 'What is it?'
+
+    tenues.short_description = "Tenues"
+
+
+class PaiementAdmin(admin.ModelAdmin):
     list_display = [
-        'nom', 'prenom', 'condition_eleve',
-        'sex','type_ecole', 'nom_classe'
+        'get_causal_display', 'montant',
+        'date_paye', 'inscription'
     ]
-    
-    jazzmin_section_order = ('nom_class')
-    #list_select_related =
-    search_fields = ['nom', 'prenom']
-    list_filter = ['nom_classe']
-    ordering= ["nom_classe"]
-    #list_select_related = ['paiment_set']
-    #list_select_related = ['paiement_set']
-    # Add 'nom_classe' to filter by class
-   # inlines =[PaimentInline ,]
-    
-    def __str__( self ):
-        return self.name'''
-   
+    search_fields = ['inscription__eleve__nom', 'inscription__eleve__prenom']
+    list_select_related = ['inscription']
+    list_filter = ['inscription__annee_scolaire', 'causal']
+
+    def get_causal_display(self, obj):
+        return obj.get_causal_display()
+
+    get_causal_display.short_description = 'Causal'
 
 
-
-#admin.site.register(Eleve, EleveAdmin)
-#admin.site.site_header = 'SICS NASSARA'
-#admin.site.site_title = 'SICS NASSARA'
-#admin.site.index_title = 'SICS NASSARA'
+class InscriptionAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['eleve']
 
 
-#admin.site. = 'Admin Customization'
+sics_site.register(Paiement, PaiementAdmin)
+sics_site.register(Eleve, EleveAdmin)
+sics_site.register(Classe)
+sics_site.register(AnneeScolaire)
+sics_site.register(Inscription, InscriptionAdmin)
+sics_site.register(User)
+sics_site.register(Group)

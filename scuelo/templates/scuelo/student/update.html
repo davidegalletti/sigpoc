@@ -1,0 +1,111 @@
+{% extends "/home/humbu/sigpoc/templates/layout.html" %}
+
+{% load crispy_forms_tags %}
+
+
+{% block header %}
+    
+<nav class="navbar navbar-expand-lg pb-5 bg-black">
+    
+    <a class="navbar-brand" href="{% url 'home' %}">Home</a>
+</nav>
+{% endblock header %}
+    
+{% block content %}
+
+<div class="container mt-5">
+    <h2>Update Student</h2>
+    <form id="student-form" method="post">
+        {% csrf_token %}
+        <!-- Student Information -->
+        <div class="row">
+            <div class="col-md-6">
+                {{ form.nom|as_crispy_field }}
+                {{ form.prenom|as_crispy_field }}
+                {{ form.date_naissance|as_crispy_field }}
+                {{ form.sex|as_crispy_field }}
+                {{ form.cs_py|as_crispy_field }}
+            </div>
+            <div class="col-md-6">
+                {{ form.hand|as_crispy_field }}
+                {{ form.condition_eleve|as_crispy_field }}
+        
+                {{ form.parent|as_crispy_field }}
+                {{ form.tel_parent|as_crispy_field }}
+                {{ form.note_eleve|as_crispy_field }}
+                {{ form.date_enquete|as_crispy_field }}
+            </div>
+        </div>
+
+        <!-- Inscription Information -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <h3>Inscriptions</h3>
+            </div>
+            <div class="card-body">
+                <div id="inscription-formset" data-total-forms="{{ inscription_formset.total_form_count }}">
+                    {{ inscription_formset.management_form }}
+                    {% for form in inscription_formset %}
+                    <div class="row mb-3 inscription-form">
+                        <div class="col-md-5">
+                            <label class="form-label">Classe</label>
+                            {{ form.classe|as_crispy_field }}
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label">Année Scolaire</label>
+                            {{ form.annee_scolaire|as_crispy_field }}
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger remove-inscription">Remove</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
+</div>
+
+<script>
+  function addInscriptionForm() {
+    var formset = document.getElementById('inscription-formset');
+    var totalForms = parseInt(formset.dataset.totalForms);
+    var newForm = formset.children[1].cloneNode(true); // Clone the first actual form
+
+    // Clear input values
+    var inputs = newForm.querySelectorAll('input, select');
+    inputs.forEach(function (input) {
+      input.value = '';
+    });
+
+    // Update formset index
+    newForm.querySelectorAll('select, input').forEach(function (input) {
+      var name = input.getAttribute('name').replace('-' + (totalForms - 1) + '-', '-' + totalForms + '-');
+      var id = input.getAttribute('id').replace('-' + (totalForms - 1) + '-', '-' + totalForms + '-');
+      input.setAttribute('name', name);
+      input.setAttribute('id', id);
+    });
+
+    totalForms++;
+    formset.dataset.totalForms = totalForms;
+
+    // Append the new form
+    formset.appendChild(newForm);
+  }
+
+  // Add event listener for the "Add Inscription" button
+  document.getElementById('add-inscription').addEventListener('click', addInscriptionForm);
+
+  // Add event listener for "Remove" buttons on dynamically added forms
+  document.addEventListener('click', function (event) {
+    if (event.target.classList.contains('remove-inscription')) {
+      event.target.closest('.inscription-form').remove();
+    }
+  });
+</script>
+{% endblock %}

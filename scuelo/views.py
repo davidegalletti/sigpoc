@@ -1,202 +1,262 @@
-# views.py
-from django.db.models import Sum
-from django.shortcuts import render
-from django.shortcuts import  (render, redirect,
-                               get_object_or_404 )
-from .models import ( 
-                     Eleve , Classe ,
-                     Paiement  , Inscription
-                    )
-from .forms import ( StudentCreationForm , StudentUpdateForm , 
-                    PaiementCreationForm , InscriptionForm 
-                    
-                )
 
-from django.views.generic import (
-    DetailView, ListView ,UpdateView 
-                                  )
-
-from django.views.generic.edit import CreateView
-from django.urls import reverse_lazy    , reverse
+from django.shortcuts import render, redirect
+from django_filters.views import FilterView
+from django.views.generic import FormView
+from django.urls import reverse_lazy ,  reverse
+from django.views.generic.edit import UpdateView
+from django.db import  transaction
+from django.views.generic import CreateView
+from django.views.generic import ( DetailView , ListView  ,TemplateView,  
+                                ListView, CreateView, UpdateView, DeleteView 
+)
+from django.db.models import Q  , Max , F , Sum
+from .forms import  ( InscriptionForm , InscriptionFormSet 
+    , EleveCreateForm ,  EleveUpdateForm , PaiementForm 
+)
+from  .filters import EleveFilter
+from .models import Eleve, Classe, Inscription, Paiement , AnneeScolaire
+from django.forms import inlineformset_factory
 
 
-def home_view(request):
+def home(request):
     classes = Classe.objects.all()
-    return render(request, 'scuelo/scuelo_acceuil.html' , {'classes' :classes})
+    return render(request, 'scuelo/home.html', {'classes': classes})
 
-class CreateStudentView(CreateView):
-    form_class = StudentCreationForm
-    template_name = 'scuelo/eleve_create.html'
-    success_url = '/homepage/acceuil/'
-    
-    # Optionally, you can override form_valid method to add additional 
-    #logic after successful form submission
-    
+class StudentCreateView(CreateView):
+    model = Eleve
+    form_class = EleveCreateForm
+    template_name = 'scuelo/student/create.html'
+
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data['inscription_formset'] = InscriptionFormSet(self.request.POST)
+        else:
+            data['inscription_formset'] = InscriptionFormSet()
+        data['classes'] = Classe.objects.all()
+        data['annees_scolaires'] = AnneeScolaire.objects.all()
+        return data
+
     def form_valid(self, form):
-        # Add any additional logic here
-        return super().form_valid(form)
+        context = self.get_context_data()
+        inscription_formset = context['inscription_formset']
+        if inscription_formset.is_valid():
+            with transaction.atomic():
+                self.object = form.save()
+                inscription_formset.instance = self.object
+                inscription_formset.save()
+            return redirect('home')  # Use reverse for redirection reverse('student_detail', kwargs={'pk': self.object.pk})
+        else:
+            return self.render_to_response(self.get_context_data(form=form))
+
+
     
+class StudentPerClasseView(ListView):
+    model = Eleve
+    template_name = 'scuelo/student/perclasse.html'
+    context_object_name = 'students'
+    #paginate_by = 12  # Number of students per page
+
+    def get_queryset(self):
+        class_id = self.kwargs.get('class_id')
+
+        # Get the latest inscription for each student in the specified class
+        latest_inscriptions = Inscription.objects.filter(classe_id=class_id).values('eleve_id').annotate(last_inscription=Max('date_inscription'))
+
+        # Get the IDs of the students with the latest inscription in the specified class
+        student_ids = [inscription['eleve_id'] for inscription in latest_inscriptions]
+
+        # Exclude students who have an earlier inscription for the same class
+        queryset = Eleve.objects.filter(id__in=student_ids)
+
+        query = self.request.GET.get('q')
+        if query:
+            queryset = queryset.filter(
+                Q(nom__icontains=query) | Q(prenom__icontains=query)
+            )
+        return queryset
     
-def student_list(request , classe_id ):
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        class_id = self.kwargs.get('class_id')
+        clicked_class = Classe.objects.get(pk=class_id)
+
+        students = self.get_queryset()
+        total_students = students.count()
+        total_girls = students.filter(sex='F').count()
+        total_boys = students.filter(sex='M').count()
+        
+        total_fees = Paiement.objects.filter(inscription__classe__id=class_id).aggregate(total_fees=Sum('montant'))['total_fees'] or 0
+        cs_py_sum = students.aggregate(cs_py_sum=Sum('cs_py'))['cs_py_sum'] or 0
+
+        context.update({
+            'total_students': total_students,
+            'total_girls': total_girls,
+            'total_fees': total_fees,
+            'total_boys' : total_boys,
+            'cs_py_sum': cs_py_sum,
+            'clicked_class': clicked_class,
+        })
+
+        return context
     
-    classes = Classe.objects.all()
-    classe = get_object_or_404(Classe, pk=classe_id)
-    students = classe.eleve_set.all()
-    total_students = students.count()
-    total_girls = students.filter(sex='F').count()
-    total_boys = students.filter(sex='M').count()
-    class_student_counts = []
-    for classe in classes:
-        total_students = classe.eleve_set.count()
-        class_student_counts.append({'classe': classe, 'total_students': total_students})
-    
-    context = {
-        'class_student_counts': class_student_counts,
-        'classe': classe,
-        'students': students,
-        'total_students': total_students,
-        'total_girls': total_girls,
-        'total_boys': total_boys,
-    }
-    return render(request, 'scuelo/eleveperclasse.html', context)
 
 class StudentDetailView(DetailView):
     model = Eleve
-    template_name = 'scuelo/eleve_detail.html'
+    template_name = 'scuelo/student/detail.html'
     context_object_name = 'student'
-    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        student_id = self.kwargs['pk']
-        payments = Paiement.objects.filter(eleve_payment_id=student_id)
-        student = Eleve.objects.get(pk=student_id)
-        total_payment = payments.aggregate(total=Sum('montant'))['total'] or 0  # Calculate total payment
+        student = self.object
+
+        # Fetch inscriptions related to the student
+        inscriptions = Inscription.objects.filter(eleve=student)
+
+        # Fetch payments related to the student (via inscriptions)
+        payments = Paiement.objects.filter(inscription__in=inscriptions)
+
+        context['inscriptions'] = inscriptions
         context['payments'] = payments
-        context['total_payment'] = total_payment  # Add total payment to context
-        
-        context['inscriptions'] = student.inscriptions.all() 
         return context
-    
-    def post(self, request, *args, **kwargs):
-        student_id = self.kwargs['pk']
-        montant = request.POST.get('montant')
-        causal = request.POST.get('causal')
-  
-        Paiement.objects.create(montant=montant, causal=causal, eleve_payment_id=student_id)
-        return redirect('student_detail', pk=student_id)
 
+'''
+class StudentDetailInPerClasseView(DetailView):
+    model = Eleve
+    template_name = 'scuelo/student/detail.html'
+    context_object_name = 'student'
 
-
-
-def student_update(request, pk):
-    student = Eleve.objects.get(pk=pk)
-    
-    if request.method == 'POST':
-        form = StudentUpdateForm(request.POST, instance=student)
-        if form.is_valid():
-            form.save()
-            return redirect('student_detail', pk=pk)  # Redirect to student detail page with updated student PK
-    else:
-        form = StudentUpdateForm(instance=student)
-        # Check if reset button is clicked
-        if 'reset' in request.GET:
-            return redirect('student_detail', pk=pk)  # Redirect to student detail page without form submission
-    return render(request, 'scuelo/eleve_update.html', {'form': form , 'student': student})
-
-
-
-
-class CreatePaymentView(CreateView):
-    model = Paiement
-    form_class = PaiementCreationForm
-    template_name = 'scuelo/create_paiement.html'
-    
-    def form_valid(self, form):
-        form.instance.eleve_payment_id = self.kwargs['pk']  # Set the student ID for the payment
-        return super().form_valid(form)
-    
-    def get_success_url(self):
-        return reverse_lazy('student_detail', kwargs={'pk': self.kwargs['pk']})
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        eleve = get_object_or_404(Eleve, pk=self.kwargs['pk'])
-        context['eleve'] = eleve
-        return context
-    
-    
-class PaymentListView(ListView):
-    model = Paiement
-    template_name = 'scuelo/payment_list.html'
-    context_object_name = 'payments'
-    
     def get_queryset(self):
+        class_id = self.kwargs.get('class_id')
         student_id = self.kwargs.get('pk')
-        return Paiement.objects.filter(eleve_payment_id=student_id)
+        return Eleve.objects.filter(inscription__classe__id=class_id, pk=student_id).distinct()
 
-class PaymentUpdateView(UpdateView):
-    model = Paiement
-    fields = ['causal', 'montant', 'date_paiement', 'note_paiement']  # Specify the fields you want to update
-    template_name = 'scuelo/paiement_update.html'  # Add your template name here
-    success_url = reverse_lazy('homepage/student_detail')  # Specify the URL to redirect to after updatingeleve = get_object_or_404(Eleve, pk=eleve_id)
-    
+
+    def get_queryset(self):
+        class_id = self.kwargs.get('class_id')
+        return Eleve.objects.filter(inscription__classe__id=class_id).distinct()
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        paiement = self.get_object()
-        context['eleve'] = paiement.eleve_payment
-        return context
- 
- 
- 
- 
-from django.shortcuts import render, redirect
-from .models import Inscription, Classe, AnneeScolaire, Eleve
+        
+        class_id = self.kwargs.get('class_id')
+        clicked_class = Classe.objects.get(pk=class_id)
 
-def add_inscription(request, student_pk):
-    student = Eleve.objects.get(pk=student_pk)  # Retrieve student for pre-population
-    classes = Classe.objects.all()
-    annees_scolaires = AnneeScolaire.objects.all()
-    context = {'student': student, 'classes': classes, 'annees_scolaires': annees_scolaires}
+        student = self.object
+        inscriptions = student.inscription_set.all()
+        payments = Paiement.objects.filter(inscription__in=inscriptions)
 
-    if request.method == 'POST':
-        classe_id = request.POST.get('classe')
-        annee_scolaire_id = request.POST.get('annee_scolaire')
+        total_students = Eleve.objects.filter(inscription__classe__id=class_id).count()
+        total_girls = Eleve.objects.filter(inscription__classe__id=class_id, sex='F').count()
+        total_boys = Eleve.objects.filter(inscription__classe__id=class_id, sex='M').count()
+        
+        total_fees = payments.aggregate(total_fees=Sum('montant'))['total_fees'] or 0
+        cs_py_sum = Eleve.objects.filter(inscription__classe__id=class_id).aggregate(cs_py_sum=Sum('cs_py'))['cs_py_sum'] or 0
 
-        classe = Classe.objects.get(pk=classe_id)
-        annee_scolaire = AnneeScolaire.objects.get(pk=annee_scolaire_id)
-        Inscription.objects.create(
-            eleve=student, classe=classe, annee_scolaire=annee_scolaire
-        )
-        return redirect('success_url')  # Redirect to a success page after creation
+        # Additional information
+        parents = f"{student.parent} ({student.tel_parent})"
+        notes = student.note_eleve
+
+        context.update({
+            'inscriptions': inscriptions,
+            'payments': payments,
+            'total_students': total_students,
+            'total_girls': total_girls,
+            'total_boys': total_boys,
+            'total_fees': total_fees,
+            'cs_py_sum': cs_py_sum,
+            'clicked_class': clicked_class,
+            'parents': parents,
+            'notes': notes,
+        })
+
+        # Initialize the form
+        form = InscriptionForm()
+
+        if self.request.method == 'POST':
+            form = InscriptionForm(self.request.POST)
+            if form.is_valid():
+                new_inscription = form.save(commit=False)
+                new_inscription.eleve = student
+                new_inscription.save()
+                return redirect('student_detail_in_per_classe', pk=student.id, class_id=class_id)
+        
+        # Pass the form to the context
+        context['form'] = form
+        
+        return context'''
+
     
-    return render(request, 'add_inscription.html', context)
+
+class StudentListView(FilterView):
+    model = Eleve
+    template_name = 'scuelo/student/list.html'
+    context_object_name = 'students'
+    filterset_class = EleveFilter
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        query = self.request.GET.get('q')
+        if query:
+            queryset = queryset.filter(
+                Q(nom__icontains=query) | Q(prenom__icontains=query)
+            )
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        students = self.get_queryset()
+        total_students = students.count()
+        total_girls = students.filter(sex='F').count()
+        total_boys = students.filter(sex='M').count()
+        
+        context['search_term'] = self.request.GET.get('q', '')
+        total_fees = Paiement.objects.aggregate(total_fees=Sum('montant'))['total_fees'] or 0
+        cs_py_sum = students.aggregate(cs_py_sum=Sum('cs_py'))['cs_py_sum'] or 0
+        
+        
+        context.update({
+            'total_students': total_students,
+            'total_girls': total_girls,
+            'total_boys': total_boys,
+            'total_fees': total_fees,
+            'cs_py_sum': cs_py_sum,
+        })
+        
+        return context
 
 
+    
 
-#### annee scolaire creation    views  
-# 
-#
-# 
-class CreateClasseView(CreateView):
-    model = Classe
-    fields = ['type_ecole', 'nom']
-    template_name = 'scuelo/classe_create.html'
-    success_url = '/acceuil/'
+class StudentUpdateView(UpdateView):
+    model = Eleve
+    form_class = EleveUpdateForm
+    template_name = 'scuelo/student/update.html'
+    context_object_name = 'student'
 
-class UpdateClasseView(UpdateView):
-    model = Classe
-    fields = ['type_ecole', 'nom']
-    template_name = 'scuelo/classe_update.html'
-    success_url = '/acceuil/'
+    def get_context_data(self, **kwargs):
+        data = super().get_context_data(**kwargs)
+        if self.request.POST:
+            data['inscription_formset'] = InscriptionFormSet(self.request.POST, instance=self.object)
+        else:
+            data['inscription_formset'] = InscriptionFormSet(instance=self.object)
+        data['classes'] = Classe.objects.all()
+        data['annees_scolaires'] = AnneeScolaire.objects.all()
+        return data
 
-class CreateAnneeScolaireView(CreateView):
-    model = AnneeScolaire
-    fields = ['nom', 'date_initiale', 'date_finale', 'actuel']
-    template_name = 'scuelo/annee_scolaire_create.html'
-    success_url = '/acceuil/'
+    def form_valid(self, form):
+        context = self.get_context_data()
+        inscription_formset = context['inscription_formset']
+        if inscription_formset.is_valid():
+            with transaction.atomic():
+                self.object = form.save()
+                # Remove the student from the previous class if the class has changed
+                inscription_formset.instance = self.object
+                inscription_formset.save()
+            return redirect(reverse('student_detail', kwargs={'pk': self.object.pk}))
+        else:
+            return self.render_to_response(self.get_context_data(form=form))  
 
-class UpdateAnneeScolaireView(UpdateView):
-    model = AnneeScolaire
-    fields = ['nom', 'date_initiale', 'date_finale', 'actuel']
-    template_name = 'scuelo/annee_scolaire_update.html'
-    success_url = '/acceuil/'
+
+    
