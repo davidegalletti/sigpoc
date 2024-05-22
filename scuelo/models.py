@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils  import timezone
 
 CONDITION_ELEVE = (
     ("CONF", "CONF"),
@@ -51,6 +52,7 @@ class Eleve(models.Model):
         choices=CONDITION_ELEVE
     )
     sex = models.CharField(max_length=1, choices=SEX)
+    
     date_naissance = models.DateField(blank=True, null=True)
     cs_py = models.CharField(max_length=7, choices=CS_PY, default="C" )
     hand = models.CharField(max_length=2, choices=HAND, null=True, blank=True)
@@ -58,6 +60,7 @@ class Eleve(models.Model):
     parent = models.CharField(max_length=100, blank=True, null=True)
     tel_parent = models.CharField(max_length=100, blank=True, null=True)
     note_eleve = models.TextField(blank=True, null=True, default='-')
+    #tenues = models.CharField(choices=3   ,  max_length=2 blank=True , null = True)
     legacy_id = models.CharField(max_length=100, blank=True, null=True, db_index=True, unique=True)
     
     def __str__(self):
@@ -111,7 +114,9 @@ class Inscription(models.Model):
     eleve = models.ForeignKey(Eleve, on_delete=models.CASCADE)
     classe = models.ForeignKey(Classe, on_delete=models.CASCADE, blank=True, null=True)
     annee_scolaire = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE)
-
+    date_inscription = models.DateTimeField(default=timezone.now  )  # Add this field
+    
+    
     def __str__(self):
         return '%s - %s - %s' % (self.annee_scolaire.nom_bref, self.classe, self.eleve)
 

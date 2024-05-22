@@ -22,7 +22,7 @@ class PaiementForm(forms.ModelForm):
 class EleveCreateForm(forms.ModelForm):
     class Meta:
         model = Eleve
-        fields = ['nom', 'prenom', 'date_enquete', 'condition_eleve', 'sex', 'date_naissance', 'cs_py', 'hand', 'annee_inscr', 'parent', 'tel_parent', 'note_eleve', 'legacy_id']
+        fields = ['nom', 'prenom', 'date_enquete', 'condition_eleve', 'sex', 'date_naissance', 'cs_py', 'hand','parent', 'tel_parent', 'note_eleve', 'legacy_id']
         widgets = {
             'date_enquete': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
             'date_naissance': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
@@ -59,25 +59,29 @@ InscriptionFormSet = inlineformset_factory(Eleve, Inscription, fields=('classe',
 class EleveUpdateForm(forms.ModelForm):
     class Meta:
         model = Eleve
-        fields = ['nom', 'prenom', 'date_naissance', 'condition_eleve', 'sex', 'cs_py',  'date_enquete' , 'hand',  'parent', 'tel_parent', 'note_eleve']  # Include fields for update
+        fields = [
+            'nom', 'prenom', 'date_naissance', 'condition_eleve', 'sex', 
+            'cs_py', 'date_enquete', 'hand', 'parent', 'tel_parent', 
+            'note_eleve'
+        ]  # Include fields for update
         widgets = {
             'cs_py': forms.Select(choices=CS_PY),
             'hand': forms.Select(choices=HAND),
             'condition_eleve': forms.Select(choices=CONDITION_ELEVE),
             'sex': forms.Select(choices=SEX),
-             'note_eleve': forms.Textarea(attrs={'rows': 4, 'cols': 40}),
-                'date_naissance': forms.DateInput(attrs={'type': 'date'}),
+            'note_eleve': forms.Textarea(attrs={'rows': 4, 'cols': 40}),
+            'date_naissance': forms.DateInput(attrs={'type': 'date'}),
             'date_enquete': forms.DateInput(attrs={'type': 'date'}),
             # Add widgets for other fields if necessary
         }
-
 
     def __init__(self, *args, **kwargs):
         super(EleveUpdateForm, self).__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
             if self.instance and hasattr(self.instance, field_name):
                 field.initial = getattr(self.instance, field_name)
-       
+                
+                
 InscriptionFormSet = inlineformset_factory(
     Eleve,
     Inscription,

@@ -28,52 +28,22 @@
         <div class="row">
             <div class="col-md-6">
                 {{ form.nom|as_crispy_field }}
-            </div>
-            <div class="col-md-6">
                 {{ form.prenom|as_crispy_field }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                {{ form.date_enquete|as_crispy_field }}
-            </div>
-            <div class="col-md-6">
-                {{ form.condition_eleve|as_crispy_field }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                {{ form.sex|as_crispy_field }}
-            </div>
-            <div class="col-md-6">
                 {{ form.date_naissance|as_crispy_field }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
+                {{ form.sex|as_crispy_field }}
                 {{ form.cs_py|as_crispy_field }}
             </div>
             <div class="col-md-6">
                 {{ form.hand|as_crispy_field }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                {{ form.annee_inscr|as_crispy_field }}
-            </div>
-            <div class="col-md-6">
+                {{ form.condition_eleve|as_crispy_field }}
+        
                 {{ form.parent|as_crispy_field }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
                 {{ form.tel_parent|as_crispy_field }}
-            </div>
-            <div class="col-md-6">
+                {{ form.date_enquete|as_crispy_field }}
                 {{ form.note_eleve|as_crispy_field }}
+                
             </div>
         </div>
-  
 
         <!-- Inscription Information -->
         <div class="card mb-3">
@@ -86,10 +56,15 @@
                     {% for form in inscription_formset %}
                     <div class="row mb-3 inscription-form">
                         <div class="col-md-5">
+                            <label class="form-label">Classe</label>
                             {{ form.classe|as_crispy_field }}
                         </div>
                         <div class="col-md-5">
+                            <label class="form-label">Année Scolaire</label>
                             {{ form.annee_scolaire|as_crispy_field }}
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger remove-inscription">Remove</button>
                         </div>
                     </div>
                     {% endfor %}
