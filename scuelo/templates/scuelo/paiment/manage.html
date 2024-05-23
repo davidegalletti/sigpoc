@@ -1,5 +1,4 @@
 {% extends "/home/humbu/sigpoc/templates/layout.html" %}
-
 {% block content %}
 <style>
     /* Style for the form */
@@ -40,37 +39,68 @@
     }
 </style>
 
-<div class="container">
+<div >
+ <a href="{% url 'manage_inscriptions' %}" class="btn btn-primary">Manage Inscriptions</a>
 
-
-    <h2>Manage Payments</h2>
-    
-    <!-- Payment Form -->
-    <div class="payment-form mb-4">
-        
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Create</button>
-        </form>
+ <div class="row">
+    <!-- Payment Form Column -->
+    <div class="col-md-6">
+        <!-- Payment Form -->
+        <div class="payment-form mb-4">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Create</button>
+            </form>
+        </div>
     </div>
 
-    <hr>
-    <!-- Display total montant of all payments -->
-<p>Total montant of all payments: {{ total_montant_all_payments }}</p>
-    <!-- Display total number of payments -->
-<p>Total number of payments: {{ total_payments_count }}</p>
+    <!-- Statistics Section Column -->
+    <div class="col-md-6">
+        <!-- Statistics Section -->
+        <hr>
+        <!-- Total Montant of All Payments -->
+        <div class="card text-center mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Total Montant of All Payments</h5>
+                <p class="card-text display-4">{{ total_montant_all_payments }}</p>
+            </div>
+        </div>
 
-    <h3>Total Montant per Causal Category</h3>
-    <ul>
-        {% for item in total_montant_per_causal %}
-        <li>{{ item.causal }}: {{ item.total_montant }}</li>
-        {% endfor %}
-    </ul>
+        <!-- Total Number of Payments -->
+        <div class="card text-center mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Total Number of Payments</h5>
+                <p class="card-text display-4">{{ total_payments_count }}</p>
+            </div>
+        </div>
 
-    <h3>Total Number of Tenues</h3>
-    <p>{{ total_tenues }}</p>
-    <hr>
+        <!-- Total Montant per Causal Category -->
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Total Montant per Causal Category</h3>
+                <ul class="list-group">
+                    {% for item in total_montant_per_causal %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ item.causal }}
+                        <span class="badge badge-primary badge-pill">{{ item.total_montant }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Total Number of Tenues -->
+        <div class="card text-center mt-4">
+            <div class="card-body">
+                <h3 class="card-title">Total Number of Tenues</h3>
+                <p class="card-text display-4">{{ total_tenues }}</p>
+            </div>
+        </div>
+        <hr>
+    </div>
+</div>
+
     <form class="form-inline mb-4" method="GET" action="{% url 'manage_payments' %}">
         <div class="form-group mr-2">
             <input type="text" class="form-control" name="search" placeholder="Search by student name...">

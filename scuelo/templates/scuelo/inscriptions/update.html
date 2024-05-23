@@ -1,11 +1,38 @@
 {% extends "/home/humbu/sigpoc/templates/layout.html" %}
 
 {% block content %}
-  <h1>Update Inscription</h1>
-  <form method="post">
+<h2>Update Inscription</h2>
+
+<form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Update Inscription</button>
-  </form>
-  <a href="{% url 'student_detail_in_per_classe' pk=form.instance.eleve.pk class_id=form.instance.classe.id %}">Cancel</a>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="id_eleve">Student</label>
+                {{ form.eleve }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="id_classe">Class</label>
+                {{ form.classe }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="id_annee_scolaire">School Year</label>
+                {{ form.annee_scolaire }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="id_date_inscription">Date of Inscription</label>
+                {{ form.date_inscription }}
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="mt-2 btn btn-primary">Update Inscription</button>
+</form>
 {% endblock %}

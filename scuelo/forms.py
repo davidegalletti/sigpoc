@@ -112,3 +112,15 @@ InscriptionFormSet = inlineformset_factory(
         'annee_scolaire': forms.Select(),
     }
 )
+
+
+class InscriptionForm(forms.ModelForm):
+    class Meta:
+        model = Inscription
+        fields = ['eleve', 'classe', 'annee_scolaire', 'date_inscription']
+        widgets = {
+            'eleve': forms.Select(attrs={'class': 'form-control'}),
+            'classe': forms.Select(attrs={'class': 'form-control'}),
+            'annee_scolaire': forms.Select(attrs={'class': 'form-control'}),
+            'date_inscription': forms.DateInput(attrs={'class': 'form-control'}),
+        }

@@ -2,7 +2,6 @@
 from django.shortcuts import render, redirect , get_object_or_404
 from django_filters.views import FilterView
 from django.contrib import messages
-
 from django.views.generic import FormView
 from django.forms import modelformset_factory
 from django.urls import reverse_lazy ,  reverse
@@ -12,7 +11,7 @@ from django.views.generic import CreateView
 from django.views.generic import ( DetailView , ListView  ,TemplateView,  
                                 ListView, CreateView, UpdateView, DeleteView  , 
 )
-from django.db.models import Q  , Max , F , Sum
+from django.db.models import Q  , Max , F , Sum , Count
 from .forms import  ( InscriptionForm , InscriptionFormSet 
     , EleveCreateForm ,  EleveUpdateForm , PaiementForm 
 )
@@ -308,6 +307,8 @@ def delete_payment(request, payment_id):
     
 
 def manage_inscriptions(request):
+      # Get the query parameter for the school year
+    year_filter = request.GET.get('annee_scolaire')
     if request.method == 'POST':
         form = InscriptionForm(request.POST)
         if form.is_valid():
@@ -315,6 +316,44 @@ def manage_inscriptions(request):
             return redirect('manage_inscriptions')  # Redirect to manage inscriptions after creating
     else:
         form = InscriptionForm()
+        
+    class_name_filter = request.GET.get('class')
+    classes = Classe.objects.all()
 
-    inscriptions = Inscription.objects.all()
-    return render(request, 'scuelo/inscriptions/manage.html', {'form': form, 'inscriptions': inscriptions})
+    if class_name_filter:
+        inscriptions = Inscription.objects.filter(classe__nom=class_name_filter)
+    else:
+        inscriptions = Inscription.objects.all()
+
+    total_inscriptions = inscriptions.count()
+
+    # Calculate inscriptions per class
+    inscriptions_per_class = inscriptions.values('classe__nom').annotate(total=Count('id')).order_by('classe__nom')
+
+    # Calculate inscriptions per school year
+    inscriptions_per_year = inscriptions.values('annee_scolaire__nom').annotate(total=Count('id')).order_by('annee_scolaire__nom')
+    return render(request, 'scuelo/inscriptions/manage.html', {
+        'form': form,
+        'classes': classes,
+        'class_name_filter': class_name_filter,
+        'inscriptions': inscriptions,
+        'total_inscriptions': total_inscriptions,
+        'inscriptions_per_class': inscriptions_per_class,
+        'inscriptions_per_year': inscriptions_per_year,
+    })
+    
+    
+def update_inscription(request, pk):
+    inscription = get_object_or_404(Inscription, pk=pk)
+    if request.method == 'POST':
+        form = InscriptionForm(request.POST, instance=inscription)
+        if form.is_valid():
+            form.save()
+            return redirect('manage_inscriptions')
+    else:
+        form = InscriptionForm(instance=inscription)
+
+    return render(request, 'scuelo/inscriptions/update.html', {
+        'form': form,
+        'inscription': inscription
+    })
