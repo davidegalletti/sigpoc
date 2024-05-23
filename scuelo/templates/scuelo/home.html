@@ -60,7 +60,9 @@
 
 {% block content %}
 <a href="{% url 'student_create' %}" class="btn btn-primary">Create Student</a>
-<a href="{% url 'create_paiement' %}" class="btn btn-primary">Create Payment</a>
+
+<a class="nav-link " href="{% url 'manage_payments' %}">Manage Payments</a>
+
 <div class="container mt-5">
   <div class="row justify-content-center">
       {% for classe in classes %}

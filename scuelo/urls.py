@@ -3,7 +3,7 @@
 from django.urls import path
 from .views  import ( StudentListView  , 
                      StudentPerClasseView , home   ,#  StudentDetailInPerClasseView ,
-                
+                manage_payments, update_paiement, delete_payment ,
                       StudentCreateView  , StudentUpdateView  ,  StudentDetailView
                      )
 
@@ -16,10 +16,10 @@ urlpatterns = [
     #path('class/<int:class_id>/', StudentPerClasseView.as_view(), name='student_per_classe'),
     path('homepage/class/<int:class_id>/', StudentPerClasseView.as_view(), name='student_per_classe'),
     path('student/<int:pk>/', StudentDetailView.as_view(), name='student_detail'),
-    #path('homepage/student/<int:pk>/class/<int:class_id>/', StudentDetailInPerClasseView.as_view(), name='student_detail_in_per_classe'),
-    #path('student/<int:pk>/class/<int:class_id>/', StudentDetailInPerClasseView.as_view(), name='student_detail_in_per_classe'),
-    #path('create/paiement/', PaiementCreateView.as_view(), name='create_paiement'),
+     path('paiements/', manage_payments, name='manage_payments'),
+    path('paiements/<int:pk>/update/', update_paiement, name='update_paiement'),
+       # path('delete-paiement/<int:payment_id>/', delete_payment, name='delete_payment'),
+         path('delete-paiement/<int:payment_id>/', delete_payment, name='delete_payment'),  # Note the name 'delete_payment'
 
-    #path('inscription/<int:pk>/update/', InscriptionUpdateView.as_view(), name='inscription_update'),
-   
+    
 ]# Add other URL patterns for your CRUD operations and other views

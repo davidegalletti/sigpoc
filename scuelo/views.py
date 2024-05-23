@@ -1,13 +1,16 @@
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect , get_object_or_404
 from django_filters.views import FilterView
+from django.contrib import messages
+
 from django.views.generic import FormView
+from django.forms import modelformset_factory
 from django.urls import reverse_lazy ,  reverse
 from django.views.generic.edit import UpdateView
 from django.db import  transaction
 from django.views.generic import CreateView
 from django.views.generic import ( DetailView , ListView  ,TemplateView,  
-                                ListView, CreateView, UpdateView, DeleteView 
+                                ListView, CreateView, UpdateView, DeleteView  , 
 )
 from django.db.models import Q  , Max , F , Sum
 from .forms import  ( InscriptionForm , InscriptionFormSet 
@@ -120,71 +123,7 @@ class StudentDetailView(DetailView):
         context['payments'] = payments
         return context
 
-'''
-class StudentDetailInPerClasseView(DetailView):
-    model = Eleve
-    template_name = 'scuelo/student/detail.html'
-    context_object_name = 'student'
 
-    def get_queryset(self):
-        class_id = self.kwargs.get('class_id')
-        student_id = self.kwargs.get('pk')
-        return Eleve.objects.filter(inscription__classe__id=class_id, pk=student_id).distinct()
-
-
-    def get_queryset(self):
-        class_id = self.kwargs.get('class_id')
-        return Eleve.objects.filter(inscription__classe__id=class_id).distinct()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        
-        class_id = self.kwargs.get('class_id')
-        clicked_class = Classe.objects.get(pk=class_id)
-
-        student = self.object
-        inscriptions = student.inscription_set.all()
-        payments = Paiement.objects.filter(inscription__in=inscriptions)
-
-        total_students = Eleve.objects.filter(inscription__classe__id=class_id).count()
-        total_girls = Eleve.objects.filter(inscription__classe__id=class_id, sex='F').count()
-        total_boys = Eleve.objects.filter(inscription__classe__id=class_id, sex='M').count()
-        
-        total_fees = payments.aggregate(total_fees=Sum('montant'))['total_fees'] or 0
-        cs_py_sum = Eleve.objects.filter(inscription__classe__id=class_id).aggregate(cs_py_sum=Sum('cs_py'))['cs_py_sum'] or 0
-
-        # Additional information
-        parents = f"{student.parent} ({student.tel_parent})"
-        notes = student.note_eleve
-
-        context.update({
-            'inscriptions': inscriptions,
-            'payments': payments,
-            'total_students': total_students,
-            'total_girls': total_girls,
-            'total_boys': total_boys,
-            'total_fees': total_fees,
-            'cs_py_sum': cs_py_sum,
-            'clicked_class': clicked_class,
-            'parents': parents,
-            'notes': notes,
-        })
-
-        # Initialize the form
-        form = InscriptionForm()
-
-        if self.request.method == 'POST':
-            form = InscriptionForm(self.request.POST)
-            if form.is_valid():
-                new_inscription = form.save(commit=False)
-                new_inscription.eleve = student
-                new_inscription.save()
-                return redirect('student_detail_in_per_classe', pk=student.id, class_id=class_id)
-        
-        # Pass the form to the context
-        context['form'] = form
-        
-        return context'''
 
     
 
@@ -257,6 +196,125 @@ class StudentUpdateView(UpdateView):
             return redirect(reverse('student_detail', kwargs={'pk': self.object.pk}))
         else:
             return self.render_to_response(self.get_context_data(form=form))  
+        
+def calculate_tenue(classe, montant):
+    # Define the rules for counting tenues based on class and montant
+    if classe in ['PS', 'GS', 'MS']:
+        if montant == 4000:
+            return 2
+        elif montant == 2000:
+            return 1
+    else:
+        if montant == 4500:
+            return 2
+        elif montant == 2250:
+            return 1
+    # Return 0 if no matching rule is found
+    return 0
+
+def manage_payments(request):
+    causal_filter = request.GET.get('causal')
+    search_query = request.GET.get('search')
+
+    # Retrieve all payments
+    payments = Paiement.objects.all()
+
+    # Filter payments with causal 'tenue'
+    tenue_payments = Paiement.objects.filter(causal='TEN')
+
+    if search_query:
+        # Filter payments based on the student's name (nom or prenom)
+        payments = payments.filter(inscription__eleve__nom__icontains=search_query) | \
+                   payments.filter(inscription__eleve__prenom__icontains=search_query)
+
+    if causal_filter:
+        payments = payments.filter(causal=causal_filter)
+
+    # Pagination code (if needed)
+
+    if request.method == 'POST':
+        form = PaiementForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Paiement ajouté avec succès.')
+            return redirect('manage_payments')
+    else:
+        form = PaiementForm()
+
+    # Calculate total montant per causal category
+    total_montant_per_causal = payments.values('causal').annotate(total_montant=Sum('montant'))
+
+    # Calculate total fees for each causal category
+    total_tenues = 0
+    payment_details = []
+    for payment in tenue_payments:
+        classe = payment.inscription.classe.type_ecole
+        montant = payment.montant
+        total_tenues += calculate_tenue(classe, montant)
+        # Fetch nom_classe
+        nom_classe = payment.inscription.classe.nom
+        payment_details.append({'payment': payment, 'nom_classe': nom_classe})
+
+    # Count total number of payments
+    total_payments_count = payments.count()
+    total_montant_all_payments = payments.aggregate(total_montant_all_payments=Sum('montant'))['total_montant_all_payments']
+        
+
+    return render(request, 'scuelo/paiment/manage.html', {
+        'form': form,
+        'payments': payments,
+        'causal_filter': causal_filter,
+        'search_query': search_query,
+        'total_tenues': total_tenues,
+        'payment_details': payment_details,
+        'total_montant_per_causal': total_montant_per_causal,
+        'total_payments_count': total_payments_count,  # Pass the count to the template
+        'total_montant_all_payments': total_montant_all_payments
+    })
+
+def update_paiement(request, pk):
+    paiement = get_object_or_404(Paiement, pk=pk)
+    eleve = paiement.inscription.eleve
+    classe = paiement.inscription.classe
+
+    if request.method == 'POST':
+        form = PaiementForm(request.POST, instance=paiement)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Paiement mis à jour avec succès.')
+            return redirect('manage_payments')
+    else:
+        form = PaiementForm(instance=paiement, initial={'creation_date': paiement.date_paye})  # Pass the original creation date to the form
+
+    return render(request, 'scuelo/paiment/update.html', {
+        'form': form,
+        'paiement': paiement,
+        'eleve': eleve,
+        'classe': classe
+    })
 
 
+def delete_payment(request, payment_id):
+    if request.method == 'POST':
+        payment = get_object_or_404(Paiement, pk=payment_id)
+        payment.delete()
+        messages.success(request, 'Payment deleted successfully.')
+        return redirect('manage_payments')
+    else:
+        # Handle GET request, if necessary
+        # For example, you may want to render a confirmation page for GET requests
+        # Or redirect to another page
+        return redirect('manage_payments')  # Redirect to manage_payments view for now
     
+
+def manage_inscriptions(request):
+    if request.method == 'POST':
+        form = InscriptionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('manage_inscriptions')  # Redirect to manage inscriptions after creating
+    else:
+        form = InscriptionForm()
+
+    inscriptions = Inscription.objects.all()
+    return render(request, 'scuelo/inscriptions/manage.html', {'form': form, 'inscriptions': inscriptions})

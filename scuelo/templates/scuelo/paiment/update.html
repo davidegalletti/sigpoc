@@ -1,0 +1,20 @@
+{% extends "/home/humbu/sigpoc/templates/layout.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Update Payment</h2>
+    
+    <div class="student-info">
+        <h4>Student Information</h4>
+        <p><strong>Nom:</strong> {{ eleve.nom }}</p>
+        <p><strong>Prenom:</strong> {{ eleve.prenom }}</p>
+        <p><strong>Classe:</strong> {{ classe.nom }} {{ classe.get_type_ecole_display }}</p>
+    </div>
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Update</button>
+    </form>
+</div>
+{% endblock content %}

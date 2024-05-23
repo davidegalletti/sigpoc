@@ -12,11 +12,30 @@ class InscriptionForm(forms.ModelForm):
         model = Inscription
         fields = ['classe', 'annee_scolaire']
         
-
 class PaiementForm(forms.ModelForm):
+    creation_date = forms.DateField(widget=forms.HiddenInput()) 
     class Meta:
         model = Paiement
         fields = ['causal', 'montant', 'date_paye', 'note', 'inscription']
+        widgets = {
+            'causal': forms.Select(attrs={'class': 'form-control'}),
+            'montant': forms.NumberInput(attrs={'class': 'form-control'}),
+            'creation_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'note': forms.Textarea(attrs={'rows': 4, 'cols': 40 , 'class': 'form-control'}),
+            'inscription': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+class PaiementUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Paiement
+        fields = ['causal', 'montant', 'date_paye', 'note', 'inscription']
+        widgets = {
+            'causal': forms.Select(attrs={'class': 'form-control'}),
+            'montant': forms.NumberInput(attrs={'class': 'form-control'}),
+            'date_paye': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'note': forms.Textarea(attrs={'rows': 4, 'cols': 40 , 'class': 'form-control'}),
+            #'inscription': forms.Select(attrs={'class': 'form-control'}),
+        }
 
 
 class EleveCreateForm(forms.ModelForm):

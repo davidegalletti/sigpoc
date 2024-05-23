@@ -1,6 +1,5 @@
 {% extends "/home/humbu/sigpoc/templates/layout.html" %}
 
-
 {% block content %}
 <style>
     /* Style for the form */
@@ -35,76 +34,124 @@
     .payment-form button[type="submit"]:hover {
         background-color: #0056b3; /* Darker shade of primary color on hover */
     }
+
+    .nav-link.active {
+        font-weight: bold;
+    }
 </style>
-<div>
-   
-    <div class="container">
-        <h2>Manage Payments</h2>
+
+<div class="container">
+
+
+    <h2>Manage Payments</h2>
+    
+    <!-- Payment Form -->
+    <div class="payment-form mb-4">
         
-        <!-- Payment Form -->
-        <div>
-            <h3>Create Payment</h3>
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-primary">Create</button>
-            </form>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+    </div>
+
+    <hr>
+    <!-- Display total montant of all payments -->
+<p>Total montant of all payments: {{ total_montant_all_payments }}</p>
+    <!-- Display total number of payments -->
+<p>Total number of payments: {{ total_payments_count }}</p>
+
+    <h3>Total Montant per Causal Category</h3>
+    <ul>
+        {% for item in total_montant_per_causal %}
+        <li>{{ item.causal }}: {{ item.total_montant }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Total Number of Tenues</h3>
+    <p>{{ total_tenues }}</p>
+    <hr>
+    <form class="form-inline mb-4" method="GET" action="{% url 'manage_payments' %}">
+        <div class="form-group mr-2">
+            <input type="text" class="form-control" name="search" placeholder="Search by student name...">
         </div>
-        
-        <!-- Inscription Formset -->
-        <div>
-            <h3>Add Inscriptions</h3>
-            <form method="post">
-                {% csrf_token %}
-                {{ formset.management_form }}
-                {% for form in formset.forms %}
-                    {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+    <!-- Navigation for Filters -->
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link {% if not causal_filter %}active{% endif %}" href="{% url 'manage_payments' %}">All</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if causal_filter == 'INS' %}active{% endif %}" href="{% url 'manage_payments' %}?causal=INS">Inscription</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if causal_filter == 'SCO' %}active{% endif %}" href="{% url 'manage_payments' %}?causal=SCO">Scolarite</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if causal_filter == 'TEN' %}active{% endif %}" href="{% url 'manage_payments' %}?causal=TEN">Tenue</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if causal_filter == 'CAN' %}active{% endif %}" href="{% url 'manage_payments' %}?causal=CAN">Cantine</a>
+        </li>
+    </ul>
+  
+    <div class="payment-list">
+        {% if payments %}
+        <h3>All Payments{% if search_query %} - Search results for "{{ search_query }}"{% endif %}</h3>
+        <table class="table table-striped table-bordered payments-table">
+            <thead class="thead-light">
+                <tr>
+                    <th scope="col">Student</th>
+                    <th scope="col">Causal</th>
+                    <th scope="col">Montant</th>
+                    <th scope="col">Date Paye</th>
+                    <th scope="col">Note</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payments %}
+                <tr>
+                    <td>{{ payment.inscription.eleve.nom }} {{ payment.inscription.eleve.prenom }}</td>
+                    <td>{{ payment.get_causal_display }}</td>
+                    <td>{{ payment.montant }}</td>
+                    <td>{{ payment.date_paye }}</td>
+                    <td>{{ payment.note|default_if_none:"" }}</td>
+                    <td class="d-flex">
+                        <a href="{% url 'update_paiement' payment.pk %}" class="btn btn-warning btn-sm mr-2">Update</a>
+                        <button class="btn btn-danger btn-sm delete-btn" data-pk="{{ payment.pk }}">Delete</button>
+
+                    </td>
+                </tr>
                 {% endfor %}
-                <button type="submit" class="btn btn-primary">Save Inscriptions</button>
-            </form>
-        </div>
+            </tbody>
+        </table>
+        {% else %}
+        <p>No student found for "{{ search_query }}"</p>
+        {% endif %}
     </div>
 </div>
-
-<h2>Manage Payments</h2>
-
-<!-- Payment List -->
-<h3>All Payments</h3>
-<table class="table payments-table">
-    <thead class="thead-light">
-        <tr>
-            <th scope="col">Causal</th>
-            <th scope="col">Montant</th>
-            <th scope="col">Date Paye</th>
-            <th scope="col">Note</th>
-            <th scope="col">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for payment in payments %}
-        <tr>
-            <td>{{ payment.causal }}</td>
-            <td>{{ payment.montant }}</td>
-            <td>{{ payment.date_paye }}</td>
-            <td>{{ payment.note }}</td>
-            <td>
-                <!-- Update Form -->
-                <form action="{% url 'paiement_update' payment.pk %}" method="post" style="display: inline;">
-                    {% csrf_token %}
-                    <button type="submit">Update</button>
-                </form>
-                <!-- Delete Form -->
-                <form action="{% url 'paiement_delete' payment.pk %}" method="post" style="display: inline;">
-                    {% csrf_token %}
-                    <input type="hidden" name="next" value="{{ request.path }}">
-                    <button type="submit">Delete</button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-<!-- Create Form -->
-
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get all delete buttons
+        var deleteButtons = document.querySelectorAll('.delete-btn');
+        
+        // Add click event listener to each delete button
+        deleteButtons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                // Get the payment ID from the data-pk attribute
+                var paymentId = button.getAttribute('data-pk');
+                
+                // Display confirmation dialog
+                var confirmDelete = confirm('Are you sure you want to delete this payment?');
+                
+                // If user confirms deletion, redirect to delete URL
+                if (confirmDelete) {
+                    window.location.href = '/homepage/delete-paiement/' + paymentId + '/';
+                }
+            });
+        });
+    });
+</script>
 {% endblock content %}
