@@ -2,7 +2,6 @@
 
 {% block content %}
 
-
 <h2>Manage Annee Scolaire</h2>
 
 <form method="post container">
@@ -43,6 +42,9 @@
             <th>Date Initiale</th>
             <th>Date Finale</th>
             <th>Actuel</th>
+            <th>Total Students</th>
+            <th>Total Girls</th>
+            <th>Total Boys</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -54,6 +56,9 @@
             <td>{{ annee_scolaire.date_initiale }}</td>
             <td>{{ annee_scolaire.date_finale }}</td>
             <td>{{ annee_scolaire.actuel }}</td>
+            <td>{{ annee_scolaire.total_students }}</td>
+            <td>{{ annee_scolaire.total_girls }}</td>
+            <td>{{ annee_scolaire.total_boys }}</td>
             <td>
                 <a href="{% url 'update_annee_scolaire' annee_scolaire.pk %}" class="btn btn-primary btn-sm">Update</a>
             </td>
@@ -62,8 +67,4 @@
     </tbody>
 </table>
 
-
-
 {% endblock %}
-
-

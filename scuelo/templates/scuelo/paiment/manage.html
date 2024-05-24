@@ -126,51 +126,7 @@
 
 <header>
     {% block header %}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container">
-            <!-- Brand/logo -->
-            <a class="navbar-brand" href="#">
-                <img src="path/to/your/logo.png" alt="Logo" width="30" height="30" class="d-inline-block align-top">
-                My Website
-            </a>
-    
-            <!-- Toggle button for mobile navigation -->
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-    
-            <!-- Navbar links -->
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contact</a>
-                    </li>
-                </ul>
-                
-                <!-- Stats Section -->
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <span class="navbar-text mr-4"><strong>Total Montant of All Payments:</strong> {{ total_montant_all_payments }}</span>
-                    </li>
-                    <li class="nav-item">
-                        <span class="navbar-text mr-4"><strong>Total Number of Payments:</strong> {{ total_payments_count }}</span>
-                    </li>
-                    <li class="nav-item">
-                        <span class="navbar-text mr-4"><strong>Total Number of Tenues:</strong> {{ total_tenues }}</span>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'manage_inscriptions' %}" class="btn btn-primary">Manage Inscriptions</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+
     
     {% endblock header %}
 </header>

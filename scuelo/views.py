@@ -361,7 +361,11 @@ def update_inscription(request, pk):
     
 def manage_annee_scolaire(request):
     # Fetch all existing Annee Scolaire objects
-    annee_scolaires = AnneeScolaire.objects.all()
+    annee_scolaires = AnneeScolaire.objects.annotate(
+        total_students=Count('inscription__eleve', distinct=True),
+        total_girls=Count('inscription__eleve', filter=Q(inscription__eleve__sex='F'), distinct=True),
+        total_boys=Count('inscription__eleve', filter=Q(inscription__eleve__sex='M'), distinct=True)
+    )
 
     # If the request is POST, process the form submission
     if request.method == 'POST':
@@ -376,7 +380,6 @@ def manage_annee_scolaire(request):
         'annee_scolaires': annee_scolaires,
         'form': form,
     })
-    
     
 def update_annee_scolaire(request, pk):
     annee_scolaire = get_object_or_404(AnneeScolaire, pk=pk)
@@ -394,13 +397,22 @@ def update_annee_scolaire(request, pk):
 def important_info(request):
     # Filter payments with causal 'tenue'
     tenue_payments = Paiement.objects.filter(causal='TEN')
+     # Count total number of girls and boys in the school
+    total_girls = Eleve.objects.filter(sex='F').count()
+    total_boys = Eleve.objects.filter(sex='M').count()
+    total_inscriptions = Inscription.objects.count()
+    total_students = Eleve.objects.count()
+    # Count total number of inscriptions per class
+    inscriptions_per_class = Inscription.objects.values('classe__nom').annotate(total_inscriptions=Count('id'))
 
+    # Filter payments with causal 'tenue'
+    tenue_payments = Paiement.objects.filter(causal='TEN')
     # Calculate total fees for 'tenue'
-    total_tenues = 0
+    total_tenues_per_class = {}
     for payment in tenue_payments:
-        classe = payment.inscription.classe.type_ecole
+        classe = payment.inscription.classe
         montant = payment.montant
-        total_tenues += calculate_tenue(classe, montant)
+        total_tenues_per_class[classe.nom] = total_tenues_per_class.get(classe.nom, 0) + calculate_tenue(classe.type_ecole, montant)
 
     # Calculate total montant per causal category
     total_montant_per_causal = Paiement.objects.values('causal').annotate(total_montant=Sum('montant'))
@@ -411,9 +423,16 @@ def important_info(request):
     # Calculate total montant of all payments
     total_montant_all_payments = Paiement.objects.aggregate(total_montant_all_payments=Sum('montant'))['total_montant_all_payments']
 
+    total_inscriptions = Inscription.objects.count()
     return render(request, 'scuelo/dashboard.html', {
-        'total_tenues': total_tenues,
+        #'total_tenues': total_tenues,
+         'total_girls': total_girls,
+          'total_students': total_students,
+        'total_boys': total_boys,
         'total_montant_per_causal': total_montant_per_causal,
         'total_payments_count': total_payments_count,
-        'total_montant_all_payments': total_montant_all_payments
+        'total_montant_all_payments': total_montant_all_payments,
+          'total_inscriptions': total_inscriptions,
+           'inscriptions_per_class': inscriptions_per_class,
+        'total_tenues_per_class': total_tenues_per_class,
     })

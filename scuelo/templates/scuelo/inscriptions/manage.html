@@ -1,5 +1,57 @@
 {% extends "/home/humbu/sigpoc/templates/layout.html" %}
 
+{% block header %}
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Your Logo</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <!-- Other Navbar Links -->
+            </ul>
+            <!-- Display statistics -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="card-title">Total Inscriptions</h3>
+                            <p class="card-text">{{ total_inscriptions }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Inscriptions per Class</h4>
+                            <ul class="list-group list-group-flush">
+                                {% for entry in inscriptions_per_class %}
+                                <li class="list-group-item">{{ entry.classe__nom }}: {{ entry.total }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Inscriptions per School Year</h4>
+                            <ul class="list-group list-group-flush">
+                                {% for entry in inscriptions_per_year %}
+                                <li class="list-group-item">{{ entry.annee_scolaire__nom }}: {{ entry.total }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+{% endblock header %}
 
 {% block content %}
 
@@ -80,7 +132,7 @@
         background-color: #0056b3; /* Darker shade of primary color on hover */
     }
 </style>
-<div class=''>
+<div class='content-fluid'>
 <h1>Manage Inscriptions</h1>
 
 
@@ -117,44 +169,10 @@
                 </div>
             </div>
         </div>
-        <button type="submit" class="mt-2 btn btn-primary">Create Inscription</button>
+        <button type="submit" class="mt-2 btn btn-primary mb-5">Create Inscription</button>
     </form>
-<!-- Display statistics in a styled manner -->
-<div class="row mb-4">
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <h3 class="card-title">Total Inscriptions</h3>
-                <p class="card-text">{{ total_inscriptions }}</p>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Inscriptions per Class</h4>
-                <ul class="list-group list-group-flush">
-                    {% for entry in inscriptions_per_class %}
-                    <li class="list-group-item">{{ entry.classe__nom }}: {{ entry.total }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Inscriptions per School Year</h4>
-                <ul class="list-group list-group-flush">
-                    {% for entry in inscriptions_per_year %}
-                    <li class="list-group-item">{{ entry.annee_scolaire__nom }}: {{ entry.total }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
+
+</div class='mb-5'>
 <!-- Navigation for Inscriptions -->
 <ul class="nav nav-tabs mb-4">
     <li class="nav-item">
@@ -172,7 +190,7 @@
     <button type="button" class="btn btn-secondary toggle-btn" data-year="{{ year }}">{{ year }}</button>
     {% endfor %}
 </div>
-    <table class="table table-striped table-bordered payments-table">
+    <table class="table table-striped table-bordered payments-table  w-100 content">
         <thead class="thead-light">
             <tr>
                 <th scope="col">Student</th>
