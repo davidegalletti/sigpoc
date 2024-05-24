@@ -124,3 +124,15 @@ class InscriptionForm(forms.ModelForm):
             'annee_scolaire': forms.Select(attrs={'class': 'form-control'}),
             'date_inscription': forms.DateInput(attrs={'class': 'form-control'}),
         }
+        
+class AnneeScolaireForm(forms.ModelForm):
+    class Meta:
+        model = AnneeScolaire
+        fields = ['nom', 'nom_bref', 'date_initiale', 'date_finale', 'actuel']
+        widgets = {
+            'nom': forms.TextInput(attrs={'class': 'form-control'}),
+            'nom_bref': forms.TextInput(attrs={'class': 'form-control'}),
+            'date_initiale': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'date_finale': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'actuel': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }

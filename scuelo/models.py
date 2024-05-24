@@ -42,7 +42,6 @@ class Classe(models.Model):
     def __str__(self):
         return '%s %s' % (self.nom, self.get_type_ecole_display())
 
-
 class Eleve(models.Model):
     nom = models.CharField(max_length=34, null=False)
     prenom = models.CharField(max_length=34, null=False)
@@ -69,12 +68,7 @@ class Eleve(models.Model):
     @property
     def an_insc(self):
         return self.annee_inscr.year
-    
-    '''
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        messages.success(request, f'vous avez enregister l\'eleve {self.nom} {self.prenom} de la classe  de  {self.nom_classe}') 
-    '''
+
     
     def get_queryset(self, request):
         # Group students by nom_classe
@@ -89,8 +83,6 @@ class Eleve(models.Model):
     
     class Meta:
         verbose_name = 'Eleve'
-        # order_by = 'nom_classe'
-        
         verbose_name_plural = 'Eleves'
 
 
@@ -115,7 +107,6 @@ class Inscription(models.Model):
     classe = models.ForeignKey(Classe, on_delete=models.CASCADE, blank=True, null=True)
     annee_scolaire = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE)
     date_inscription = models.DateTimeField(default=timezone.now  )  # Add this field
-    
     
     def __str__(self):
         return '%s - %s - %s' % (self.annee_scolaire.nom_bref, self.classe, self.eleve)

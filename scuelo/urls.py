@@ -2,8 +2,9 @@
 
 from django.urls import path
 from .views  import ( StudentListView  , 
-                     StudentPerClasseView , home   ,#  StudentDetailInPerClasseView ,
-                manage_payments, update_paiement, delete_payment , manage_inscriptions ,  update_inscription ,
+                     StudentPerClasseView , home   ,
+                manage_payments, update_paiement, delete_payment ,
+                manage_inscriptions ,  update_inscription , manage_annee_scolaire , update_annee_scolaire ,
                       StudentCreateView  , StudentUpdateView  ,  StudentDetailView
                      )
 
@@ -22,6 +23,6 @@ urlpatterns = [
          path('delete-paiement/<int:payment_id>/', delete_payment, name='delete_payment'), 
            path('inscriptions/', manage_inscriptions, name='manage_inscriptions'),# Note the name 'delete_payment'
   path('update-inscription/<int:pk>/', update_inscription, name='update_inscription'),
-    
-    path('create-school-year/', create_school_year, name='create_school_year'),
+    path('update-annee-scolaire/<int:pk>/', update_annee_scolaire, name='update_annee_scolaire'),
+ path('manage-annee-scolaire/', manage_annee_scolaire, name='manage_annee_scolaire'),
 ]# Add other URL patterns for your CRUD operations and other views

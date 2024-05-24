@@ -6,14 +6,14 @@ from django.views.generic import FormView
 from django.forms import modelformset_factory
 from django.urls import reverse_lazy ,  reverse
 from django.views.generic.edit import UpdateView
-from django.db import  transaction
+from django.db import  transaction , models
 from django.views.generic import CreateView
 from django.views.generic import ( DetailView , ListView  ,TemplateView,  
                                 ListView, CreateView, UpdateView, DeleteView  , 
 )
 from django.db.models import Q  , Max , F , Sum , Count
 from .forms import  ( InscriptionForm , InscriptionFormSet 
-    , EleveCreateForm ,  EleveUpdateForm , PaiementForm 
+    , EleveCreateForm ,  EleveUpdateForm , PaiementForm  , AnneeScolaireForm
 )
 from  .filters import EleveFilter
 from .models import Eleve, Classe, Inscription, Paiement , AnneeScolaire
@@ -357,3 +357,34 @@ def update_inscription(request, pk):
         'form': form,
         'inscription': inscription
     })
+    
+    
+def manage_annee_scolaire(request):
+    # Fetch all existing Annee Scolaire objects
+    annee_scolaires = AnneeScolaire.objects.all()
+
+    # If the request is POST, process the form submission
+    if request.method == 'POST':
+        form = AnneeScolaireForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('manage_annee_scolaire')  # Redirect to the same page after form submission
+    else:
+        form = AnneeScolaireForm()  # Create a new form instance
+
+    return render(request, 'scuelo/anne_scolaire/manage.html', {
+        'annee_scolaires': annee_scolaires,
+        'form': form,
+    })
+    
+    
+def update_annee_scolaire(request, pk):
+    annee_scolaire = get_object_or_404(AnneeScolaire, pk=pk)
+    if request.method == 'POST':
+        form = AnneeScolaireForm(request.POST, instance=annee_scolaire)
+        if form.is_valid():
+            form.save()
+            return redirect('manage_annee_scolaire')  # Redirect to the manage view after update
+    else:
+        form = AnneeScolaireForm(instance=annee_scolaire)
+    return render(request, 'scuelo/anne_scolaire/update.html', {'form': form , 'annee_scolaire': annee_scolaire })

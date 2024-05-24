@@ -1,0 +1,69 @@
+{% extends "/home/humbu/sigpoc/templates/layout.html" %}
+
+{% block content %}
+
+
+<h2>Manage Annee Scolaire</h2>
+
+<form method="post container">
+    {% csrf_token %}
+    <div class="row ">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="id_nom">Nom</label>
+                {{ form.nom }}
+            </div>
+            <div class="form-group">
+                <label for="id_nom_bref">Nom Bref</label>
+                {{ form.nom_bref }}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <label for="id_date_initiale">Date Initiale</label>
+                {{ form.date_initiale }}
+            </div>
+            <div class="form-group">
+                <label for="id_date_finale">Date Finale</label>
+                {{ form.date_finale }}
+            </div>
+        </div>
+    </div>
+    <div class="form-group form-check">
+        {{ form.actuel }}
+        <label class="form-check-label" for="id_actuel">Actuel</label>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Nom Bref</th>
+            <th>Date Initiale</th>
+            <th>Date Finale</th>
+            <th>Actuel</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for annee_scolaire in annee_scolaires %}
+        <tr>
+            <td>{{ annee_scolaire.nom }}</td>
+            <td>{{ annee_scolaire.nom_bref }}</td>
+            <td>{{ annee_scolaire.date_initiale }}</td>
+            <td>{{ annee_scolaire.date_finale }}</td>
+            <td>{{ annee_scolaire.actuel }}</td>
+            <td>
+                <a href="{% url 'update_annee_scolaire' annee_scolaire.pk %}" class="btn btn-primary btn-sm">Update</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+{% endblock %}
+
+
