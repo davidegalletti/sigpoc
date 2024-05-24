@@ -44,17 +44,88 @@
   
 </head>
 
-<body >
-  <header>
-{% block header %}
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+.navbar {
+    margin-bottom: 20px;
+    width: 100%;
+}
+.container-fluid {
+    display: flex;
+    flex: 1;
+}
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    background-color: #f8f9fa;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+.sidebar a {
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    color: #000;
+    text-decoration: none;
+    border-radius: 4px;
+}
+.sidebar a:hover {
+    background-color: #e9ecef;
+}
+.content {
+    margin-left: 250px;
+    padding: 20px;
+    flex: 1;
+}
+header, footer {
+    margin-left: 250px;
+    padding: 20px;
+}
+</style>
+</head>
+<body>
 
 
-{% endblock header %}
 
-  </header>
+<div class="container-fluid">
+  <div class="row">
+      <!-- Sidebar -->
+      <div class="sidebar">
+          <div class="sidebar-content">
+              <!-- Sidebar links -->
+              <a href="{% url 'home' %}">acceuil</a>
+              <a href="{% url 'important_info' %}">dashbooard</a>
+              <a href="{% url 'manage_payments' %}">Paiements</a>
+              <a href="{% url 'manage_inscriptions' %}">Inscriptions</a>
+              <a href="{% url 'manage_annee_scolaire' %}">Ann sco</a>
+          </div>
+      </div>
+      
+      <!-- Main Content -->
+      <div class="content">
+          <!-- Add your main content here -->
+          {% block content %}
+          {% endblock content %}
+      </div>
+  </div>
+</div>
 
- {% block content %}{% endblock content %}
+<!-- Footer -->
+<footer class="footer">
+  <div class="container-fluid">
+      <!-- Footer content -->
+  </div>
+</footer>
+
+<!-- Add your JavaScript links here -->
 </body>
-
-
 </html>

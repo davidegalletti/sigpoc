@@ -388,3 +388,32 @@ def update_annee_scolaire(request, pk):
     else:
         form = AnneeScolaireForm(instance=annee_scolaire)
     return render(request, 'scuelo/anne_scolaire/update.html', {'form': form , 'annee_scolaire': annee_scolaire })
+
+
+
+def important_info(request):
+    # Filter payments with causal 'tenue'
+    tenue_payments = Paiement.objects.filter(causal='TEN')
+
+    # Calculate total fees for 'tenue'
+    total_tenues = 0
+    for payment in tenue_payments:
+        classe = payment.inscription.classe.type_ecole
+        montant = payment.montant
+        total_tenues += calculate_tenue(classe, montant)
+
+    # Calculate total montant per causal category
+    total_montant_per_causal = Paiement.objects.values('causal').annotate(total_montant=Sum('montant'))
+
+    # Count total number of payments
+    total_payments_count = Paiement.objects.count()
+
+    # Calculate total montant of all payments
+    total_montant_all_payments = Paiement.objects.aggregate(total_montant_all_payments=Sum('montant'))['total_montant_all_payments']
+
+    return render(request, 'scuelo/dashboard.html', {
+        'total_tenues': total_tenues,
+        'total_montant_per_causal': total_montant_per_causal,
+        'total_payments_count': total_payments_count,
+        'total_montant_all_payments': total_montant_all_payments
+    })

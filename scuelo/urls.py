@@ -5,7 +5,7 @@ from .views  import ( StudentListView  ,
                      StudentPerClasseView , home   ,
                 manage_payments, update_paiement, delete_payment ,
                 manage_inscriptions ,  update_inscription , manage_annee_scolaire , update_annee_scolaire ,
-                      StudentCreateView  , StudentUpdateView  ,  StudentDetailView
+                      StudentCreateView  , StudentUpdateView  ,  StudentDetailView , important_info
                      )
 
 
@@ -25,4 +25,5 @@ urlpatterns = [
   path('update-inscription/<int:pk>/', update_inscription, name='update_inscription'),
     path('update-annee-scolaire/<int:pk>/', update_annee_scolaire, name='update_annee_scolaire'),
  path('manage-annee-scolaire/', manage_annee_scolaire, name='manage_annee_scolaire'),
+ path('important-info/', important_info, name='important_info'),
 ]# Add other URL patterns for your CRUD operations and other views

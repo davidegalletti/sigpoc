@@ -37,95 +37,187 @@
     .nav-link.active {
         font-weight: bold;
     }
+    .payment-list {
+        margin-top: 20px;
+    }
+    
+    .payment-list h3 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+    }
+    
+    .payments-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .payments-table th,
+    .payments-table td {
+        padding: 12px;
+        border: 1px solid #dee2e6;
+    }
+    
+    .payments-table th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+        text-align: left;
+    }
+    
+    .payments-table tbody tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+    
+    .payments-table tbody tr:hover {
+        background-color: #e9ecef;
+    }
+    
+    .actions-column {
+        white-space: nowrap;
+    }
+    
+    .actions-column .btn {
+        margin-right: 5px;
+    }
+      /* Custom styles for the search form */
+      .search-form {
+        margin-bottom: 20px;
+    }
+
+    .search-form input[type="text"] {
+        width: 300px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+    }
+
+    .search-form button[type="submit"] {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .search-form button[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    /* Custom styles for the navigation filters */
+    .filters-nav {
+        margin-bottom: 20px;
+    }
+
+    .filters-nav .nav-item {
+        margin-right: 10px;
+    }
+
+    .filters-nav .nav-link {
+        padding: 10px 20px;
+        border-radius: 4px;
+    }
+
+    .filters-nav .nav-link.active {
+        background-color: #007bff;
+        color: #fff;
+    }
 </style>
 
-<div >
- <a href="{% url 'manage_inscriptions' %}" class="btn btn-primary">Manage Inscriptions</a>
-
- <div class="row">
-    <!-- Payment Form Column -->
-    <div class="col-md-6">
-        <!-- Payment Form -->
-        <div class="payment-form mb-4">
-            <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-primary">Create</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Statistics Section Column -->
-    <div class="col-md-6">
-        <!-- Statistics Section -->
-        <hr>
-        <!-- Total Montant of All Payments -->
-        <div class="card text-center mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Total Montant of All Payments</h5>
-                <p class="card-text display-4">{{ total_montant_all_payments }}</p>
-            </div>
-        </div>
-
-        <!-- Total Number of Payments -->
-        <div class="card text-center mb-4">
-            <div class="card-body">
-                <h5 class="card-title">Total Number of Payments</h5>
-                <p class="card-text display-4">{{ total_payments_count }}</p>
-            </div>
-        </div>
-
-        <!-- Total Montant per Causal Category -->
-        <div class="card">
-            <div class="card-body">
-                <h3 class="card-title">Total Montant per Causal Category</h3>
-                <ul class="list-group">
-                    {% for item in total_montant_per_causal %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {{ item.causal }}
-                        <span class="badge badge-primary badge-pill">{{ item.total_montant }}</span>
+<header>
+    {% block header %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+        <div class="container">
+            <!-- Brand/logo -->
+            <a class="navbar-brand" href="#">
+                <img src="path/to/your/logo.png" alt="Logo" width="30" height="30" class="d-inline-block align-top">
+                My Website
+            </a>
+    
+            <!-- Toggle button for mobile navigation -->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+    
+            <!-- Navbar links -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
                     </li>
-                    {% endfor %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+                
+                <!-- Stats Section -->
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <span class="navbar-text mr-4"><strong>Total Montant of All Payments:</strong> {{ total_montant_all_payments }}</span>
+                    </li>
+                    <li class="nav-item">
+                        <span class="navbar-text mr-4"><strong>Total Number of Payments:</strong> {{ total_payments_count }}</span>
+                    </li>
+                    <li class="nav-item">
+                        <span class="navbar-text mr-4"><strong>Total Number of Tenues:</strong> {{ total_tenues }}</span>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'manage_inscriptions' %}" class="btn btn-primary">Manage Inscriptions</a>
+                    </li>
                 </ul>
             </div>
         </div>
+    </nav>
+    
+    {% endblock header %}
+</header>
+<div class="">
+    <!-- Manage Inscriptions Button -->
+    <a href="{% url 'manage_inscriptions' %}" class="btn btn-primary mb-4">Manage Inscriptions</a>
 
-        <!-- Total Number of Tenues -->
-        <div class="card text-center mt-4">
-            <div class="card-body">
-                <h3 class="card-title">Total Number of Tenues</h3>
-                <p class="card-text display-4">{{ total_tenues }}</p>
+    <div class="row">
+        <!-- Payment Form Column -->
+        <div class="col-md-6">
+            <div class="payment-form mb-4">
+                <!-- Payment Form -->
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </form>
             </div>
         </div>
-        <hr>
-    </div>
-</div>
 
-    <form class="form-inline mb-4" method="GET" action="{% url 'manage_payments' %}">
-        <div class="form-group mr-2">
-            <input type="text" class="form-control" name="search" placeholder="Search by student name...">
-        </div>
-        <button type="submit" class="btn btn-primary">Search</button>
-    </form>
-    <!-- Navigation for Filters -->
-    <ul class="nav nav-tabs mb-4">
-        <li class="nav-item">
-            <a class="nav-link {% if not causal_filter %}active{% endif %}" href="{% url 'manage_payments' %}">All</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {% if causal_filter == 'INS' %}active{% endif %}" href="{% url 'manage_payments' %}?causal=INS">Inscription</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {% if causal_filter == 'SCO' %}active{% endif %}" href="{% url 'manage_payments' %}?causal=SCO">Scolarite</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {% if causal_filter == 'TEN' %}active{% endif %}" href="{% url 'manage_payments' %}?causal=TEN">Tenue</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {% if causal_filter == 'CAN' %}active{% endif %}" href="{% url 'manage_payments' %}?causal=CAN">Cantine</a>
-        </li>
-    </ul>
-  
+        
+  <!-- Search Form -->
+<form class="search-form form-inline mb-4" method="GET" action="{% url 'manage_payments' %}">
+    <div class="form-group mr-2">
+        <input type="text" class="form-control" name="search" placeholder="Search by student name...">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<!-- Navigation for Filters -->
+<ul class="filters-nav nav nav-tabs mb-4">
+    <li class="nav-item">
+        <a class="nav-link {% if not causal_filter %}active{% endif %}" href="{% url 'manage_payments' %}">All</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if causal_filter == 'INS' %}active{% endif %}" href="{% url 'manage_payments' %}?causal=INS">Inscription</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if causal_filter == 'SCO' %}active{% endif %}" href="{% url 'manage_payments' %}?causal=SCO">Scolarite</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if causal_filter == 'TEN' %}active{% endif %}" href="{% url 'manage_payments' %}?causal=TEN">Tenue</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% if causal_filter == 'CAN' %}active{% endif %}" href="{% url 'manage_payments' %}?causal=CAN">Cantine</a>
+    </li>
+</ul>
     <div class="payment-list">
         {% if payments %}
         <h3>All Payments{% if search_query %} - Search results for "{{ search_query }}"{% endif %}</h3>
