@@ -1,20 +1,29 @@
 {% extends "/home/humbu/sigpoc/templates/layout.html" %}
 
+<header>
+    {% block header %}
+
+    <nav class="navbar navbar-expand-lg shadow-sm pb-5 bg-white">
+  
+    </nav>
+    {% endblock header %}
+</header>
 {% block content %}
 <div class="container">
-    <h2>Update Payment</h2>
+    <h2 class='text-black-50 text-center mb-5'>mise a jours Paiement</h2>
     
-    <div class="student-info">
-        <h4>Student Information</h4>
+    <div class="student-info flex-column">
+        <h4>information eleve</h4>
         <p><strong>Nom:</strong> {{ eleve.nom }}</p>
         <p><strong>Prenom:</strong> {{ eleve.prenom }}</p>
+        <p><strong> date paiement</strong> {{paiement.date_paye}}</p>
         <p><strong>Classe:</strong> {{ classe.nom }} {{ classe.get_type_ecole_display }}</p>
     </div>
     
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">Update</button>
+        <button type="submit" class="btn btn-primary">mise a  jours</button>
     </form>
 </div>
 {% endblock content %}

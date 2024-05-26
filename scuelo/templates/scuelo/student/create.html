@@ -1,27 +1,15 @@
 {% extends "/home/humbu/sigpoc/templates/layout.html" %}
 {% load crispy_forms_tags %}
 {% block header %}
-<nav class="navbar navbar-expand-lg shadow-sm pb-5 bg-black">
-  <div class="container-fluid mt-5">
-    <a class="navbar-brand" href="#">Your School Name</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
-        </li>
-      </ul>
-    </div>
-  </div>
+<nav class="navbar navbar-expand-lg shadow-sm pb-5 bg-white">
+  
 </nav>
   
 {% endblock header %}
 
 {% block content %}
 <div class="container mt-5">
-    <h2>Create Student</h2>
+    <h2>Ajouter  un eleve</h2>
     <form id="student-form" method="post">
         {% csrf_token %}
         <!-- Student Information -->
@@ -63,8 +51,9 @@
                             <label class="form-label">Année Scolaire</label>
                             {{ form.annee_scolaire|as_crispy_field }}
                         </div>
+                     
                         <div class="col-md-2 d-flex align-items-end">
-                            <button type="button" class="btn btn-danger remove-inscription">Remove</button>
+                            <button type="button" class="btn btn-danger remove-inscription">supprimer</button>
                         </div>
                     </div>
                     {% endfor %}
@@ -74,7 +63,7 @@
 
         <!-- Submit Button -->
         <div class="d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="submit" class="btn btn-primary">confirmer</button>
         </div>
     </form>
 </div>

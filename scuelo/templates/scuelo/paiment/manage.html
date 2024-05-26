@@ -1,14 +1,33 @@
 {% extends "/home/humbu/sigpoc/templates/layout.html" %}
+{% block header %}
+<nav class="navbar navbar-expand-lg shadow-sm pb-5 bg-white">
+  
+</nav>
+  
+{% endblock header %}
+
 {% block content %}
 <style>
-    /* Style for the form */
+    /* Custom styles for the modal */
+    .modal-dialog {
+        max-width: 80%; /* Adjust this value as needed */
+    }
+    .modal-content {
+        padding: 20px;
+    }
+    .modal-top-right {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        z-index: 1050;
+    }
+    /* Your existing styles */
     .payment-form {
         margin-bottom: 20px;
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
     }
-
     .payment-form input[type="text"],
     .payment-form input[type="number"],
     .payment-form select {
@@ -19,7 +38,6 @@
         border-radius: 4px;
         box-sizing: border-box;
     }
-
     .payment-form button[type="submit"] {
         width: 100%;
         background-color: #007bff; /* Bootstrap primary color */
@@ -29,68 +47,58 @@
         border-radius: 4px;
         cursor: pointer;
     }
-
     .payment-form button[type="submit"]:hover {
         background-color: #0056b3; /* Darker shade of primary color on hover */
     }
-
     .nav-link.active {
         font-weight: bold;
     }
     .payment-list {
         margin-top: 20px;
     }
-    
     .payment-list h3 {
         font-size: 1.5rem;
         margin-bottom: 20px;
     }
-    
     .payments-table {
         width: 100%;
         border-collapse: collapse;
     }
-    
     .payments-table th,
     .payments-table td {
         padding: 12px;
         border: 1px solid #dee2e6;
     }
-    
     .payments-table th {
         background-color: #f8f9fa;
         font-weight: bold;
         text-align: left;
     }
-    
     .payments-table tbody tr:nth-child(even) {
         background-color: #f8f9fa;
     }
-    
     .payments-table tbody tr:hover {
         background-color: #e9ecef;
     }
-    
     .actions-column {
         white-space: nowrap;
     }
-    
     .actions-column .btn {
         margin-right: 5px;
     }
-      /* Custom styles for the search form */
-      .search-form {
+    .search-form {
+        display: flex;
+        align-items: center;
         margin-bottom: 20px;
     }
-
     .search-form input[type="text"] {
         width: 300px;
         padding: 10px;
         border: 1px solid #ccc;
         border-radius: 4px;
         box-sizing: border-box;
+        margin-right: 10px;
     }
-
     .search-form button[type="submit"] {
         padding: 10px 20px;
         background-color: #007bff;
@@ -99,67 +107,45 @@
         border-radius: 4px;
         cursor: pointer;
     }
-
     .search-form button[type="submit"]:hover {
         background-color: #0056b3;
     }
-
-    /* Custom styles for the navigation filters */
     .filters-nav {
         margin-bottom: 20px;
     }
-
     .filters-nav .nav-item {
         margin-right: 10px;
     }
-
     .filters-nav .nav-link {
         padding: 10px 20px;
         border-radius: 4px;
     }
-
     .filters-nav .nav-link.active {
         background-color: #007bff;
         color: #fff;
     }
 </style>
 
-<header>
-    {% block header %}
-
-    
-    {% endblock header %}
-</header>
-<div class="">
-    <!-- Manage Inscriptions Button -->
-    <a href="{% url 'manage_inscriptions' %}" class="btn btn-primary mb-4">Manage Inscriptions</a>
-
-    <div class="row">
-        <!-- Payment Form Column -->
+<div class="container-fluid">
+    <div class="row mb-4">
         <div class="col-md-6">
-            <div class="payment-form mb-4">
-                <!-- Payment Form -->
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="btn btn-primary">Create</button>
-                </form>
-            </div>
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#paymentModal">
+                <i class="fas fa-plus"></i> Ajouter Paiement
+            </button>
         </div>
-
-        
-  <!-- Search Form -->
-<form class="search-form form-inline mb-4" method="GET" action="{% url 'manage_payments' %}">
-    <div class="form-group mr-2">
-        <input type="text" class="form-control" name="search" placeholder="Search by student name...">
+        <div class="col-md-6 d-flex justify-content-end">
+            <!-- Search Form -->
+            <form class="search-form form-inline" method="GET" action="{% url 'manage_payments' %}">
+                <input type="text" class="form-control" name="search" placeholder="Search by student name...">
+                <button type="submit" class="btn btn-primary">rechercher</button>
+            </form>
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">Search</button>
-</form>
-
+</div>
 <!-- Navigation for Filters -->
 <ul class="filters-nav nav nav-tabs mb-4">
     <li class="nav-item">
-        <a class="nav-link {% if not causal_filter %}active{% endif %}" href="{% url 'manage_payments' %}">All</a>
+        <a class="nav-link {% if not causal_filter %}active{% endif %}" href="{% url 'manage_payments' %}">Tout</a>
     </li>
     <li class="nav-item">
         <a class="nav-link {% if causal_filter == 'INS' %}active{% endif %}" href="{% url 'manage_payments' %}?causal=INS">Inscription</a>
@@ -174,13 +160,15 @@
         <a class="nav-link {% if causal_filter == 'CAN' %}active{% endif %}" href="{% url 'manage_payments' %}?causal=CAN">Cantine</a>
     </li>
 </ul>
+
+
     <div class="payment-list">
         {% if payments %}
-        <h3>All Payments{% if search_query %} - Search results for "{{ search_query }}"{% endif %}</h3>
+        <h3>Liste des paiements{% if search_query %} -  resultats de recherche pour  "{{ search_query }}"{% endif %}</h3>
         <table class="table table-striped table-bordered payments-table">
             <thead class="thead-light">
                 <tr>
-                    <th scope="col">Student</th>
+                    <th scope="col">Eleve</th>
                     <th scope="col">Causal</th>
                     <th scope="col">Montant</th>
                     <th scope="col">Date Paye</th>
@@ -196,10 +184,9 @@
                     <td>{{ payment.montant }}</td>
                     <td>{{ payment.date_paye }}</td>
                     <td>{{ payment.note|default_if_none:"" }}</td>
-                    <td class="d-flex">
-                        <a href="{% url 'update_paiement' payment.pk %}" class="btn btn-warning btn-sm mr-2">Update</a>
-                        <button class="btn btn-danger btn-sm delete-btn" data-pk="{{ payment.pk }}">Delete</button>
-
+                    
+                  <td class="d-flex">
+                        <a href="{% url 'update_paiement' payment.pk %}" class="btn btn-warning btn-sm mr-2">mise a jours</a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -210,26 +197,52 @@
         {% endif %}
     </div>
 </div>
+
+        <!-- The Modal -->
+        <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="paymentModalLabel">Create Payment</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" id="paymentForm">
+                            {% csrf_token %}
+                            {{ form.as_p }}
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--modals  end -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Get all delete buttons
-        var deleteButtons = document.querySelectorAll('.delete-btn');
-        
-        // Add click event listener to each delete button
-        deleteButtons.forEach(function(button) {
-            button.addEventListener('click', function() {
-                // Get the payment ID from the data-pk attribute
-                var paymentId = button.getAttribute('data-pk');
-                
-                // Display confirmation dialog
-                var confirmDelete = confirm('Are you sure you want to delete this payment?');
-                
-                // If user confirms deletion, redirect to delete URL
-                if (confirmDelete) {
-                    window.location.href = '/homepage/delete-paiement/' + paymentId + '/';
+        // Handle the form submission via AJAX
+        var paymentForm = document.getElementById('paymentForm');
+        paymentForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            var formData = new FormData(paymentForm);
+            
+            fetch("{% url 'manage_payments' %}", {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    // Handle form errors
                 }
             });
         });
+
+        // (Your existing JavaScript code for delete buttons)
     });
 </script>
 {% endblock content %}

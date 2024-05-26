@@ -3,77 +3,70 @@
 {% extends "/home/humbu/sigpoc/templates/layout.html" %}
 
 {% block header %}
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark pb-5">
-    <!-- Logo -->
-    <div class="d-flex align-items-center mt-5">
-        <a class="navbar-brand" href="#">
-            <img src="path/to/your/logo.png" alt="Logo" width="30" height="30" class="d-inline-block align-top">
-        </a>
-        <h1 class="ms-2 mb-0">Students in Class: {{ clicked_class.nom }}</h1>
-    </div>
-    <!-- Stats -->
-    <div class="navbar-nav ms-auto">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-                <a class="nav-link" href="#">Total Students: {{ total_students }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Girls: {{ total_girls }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Boys: {{ total_boys }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Total Fees: {{ total_fees }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Py-{{ total_py }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">  Cs-{{ total_cs }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">  Bravo-{{ total_bravo }}</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">  Cs-{{ total_extra }}</a>
-            </li>
-        </ul>
-    </div>
+<nav class="navbar navbar-expand-lg shadow-sm pb-5 bg-white">
+   <!-- Logo -->
+   <div class="d-flex align-items-center ">
+       
+    <h1 class="ms-2 mb-0">{{ clicked_class.nom }}-{{clicked_class.type_ecole}}{{clicked_class.nom_ecole}} </h1>
+</div>
+<!-- Stats -->
+<div class="navbar-nav ms-auto w-100 pr-5 mr-5">
+    <ul class="navbar-nav me-auto mb-2 mb-lg-0 p">
+        <li class="nav-item">
+            <a class="nav-link text-black" href="#">Total eleve: {{ total_students }}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-black" href="#">filles: {{ total_girls }}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-black" href="#">Garcons: {{ total_boys }}</a>
+        </li>
+    
+        <li class="nav-item">
+            <a class="nav-link text-black" href="#">Total frais: {{ total_fees }}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-black" href="#">Py-{{ total_py }}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-black" href="#">  Cs-{{ total_cs }}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-black" href="#">  Bravo-{{ total_bravo }}</a>
+        </li>
+        <li class="nav-item text-black">
+            <a class="nav-link text-black" href="#">  Cs-{{ total_extra }}</a>
+        </li>
+    </ul>
+</div>
 </nav>
+  
 {% endblock header %}
+
 
 {% block content %}
 <!-- Navbar -->
-
-
-
-<h1 class="ms-2 mb-0">Students in Class: {{ clicked_class.nom }}</h1>
 <form class="d-flex mb-3 mt-4">
   <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q">
-  <button class="btn btn-outline-success" type="submit">Search</button>
+  <button class="btn btn-outline-success" type="submit">recherche </button>
 </form>
 
-        <div class="row table-container">
+        <div class="row " >
 
             <div class="col">
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover table-bordered">
-                        <thead class="table-dark">
+                    <table class="table table-striped table-bordered payments-table  w-95  ">
+                        <thead class="">
                             <tr>
                                 <th>ID</th>
                                 <th>Nom</th>
                                 <th>Prénom</th>
                                 <th>Condition</th>
-                                <th>Sex</th>
+                                <th>Sexe</th>
                                 <th>Date de Naissance</th>
-                                <th>Total Payments</th>
-                                <th>Uniform Payments</th>
-                                <th>CS PY</th>
+                                <th>Total paiement</th>
+                                <th>tenue</th>
+                                <th>CS_PY</th>
                                 <th>Hand</th>
                                 <th>Actions</th>
                             </tr>
@@ -87,7 +80,7 @@
                                     <td>{{ student.get_condition_eleve_display }}</td>
                                     <td>{{ student.get_sex_display }}</td>
                                     <td>{{ student.date_naissance }}</td>
-                                    <td>{{ student.tot_pag }}</td>
+                                    <td>{{ student.total_fees }}</td>
                                     <td>{{ student.tenues }}</td>
                                     <td>{{ student.get_cs_py_display }}</td>
                                     <td>{% if student.handicap %}
@@ -98,7 +91,7 @@
                               </td>
                                     <td>
 
-                                        <a href="{% url 'student_detail' pk=student.pk %}" class="btn btn-primary">View Details</a>
+                                        <a href="{% url 'student_detail' pk=student.pk %}" class="btn btn-warning btn-sm">Details</a>
 
 
                                     </td>

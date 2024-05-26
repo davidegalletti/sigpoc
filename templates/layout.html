@@ -19,6 +19,7 @@
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
 
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.2.0/css/bootstrap.min.css" rel="stylesheet">
   
 
    
@@ -83,7 +84,7 @@
 }
 .content {
     margin-left: 250px;
-    margin-right: 2;
+
     padding: 20px;
     flex: 1;
 }
@@ -94,11 +95,14 @@ header, footer {
 </style>
 </head>
 <body>
+    <header>  {% block header %}
+        
+        {% endblock header %}
+    </header>
 
 
-
-<div class="container-fluid">
-  <div class="row">
+<div class="">
+  <div class="">
       <!-- Sidebar -->
       <div class="sidebar">
           <div class="sidebar-content">
@@ -106,6 +110,9 @@ header, footer {
               <a href="{% url 'home' %}">acceuil</a>
               <a href="{% url 'important_info' %}">dashbooard</a>
               <a href="{% url 'manage_payments' %}">Paiements</a>
+              <a href="{% url 'student_create' %}">create student</a>
+
+
               <a href="{% url 'manage_inscriptions' %}">Inscriptions</a>
               <a href="{% url 'manage_annee_scolaire' %}">Ann sco</a>
           </div>
@@ -113,6 +120,7 @@ header, footer {
       
       <!-- Main Content -->
       <div class="content">
+
           <!-- Add your main content here -->
           {% block content %}
           {% endblock content %}
@@ -129,4 +137,10 @@ header, footer {
 
 <!-- Add your JavaScript links here -->
 </body>
+<!-- Bootstrap CSS -->
+
+<!-- Bootstrap JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.2.0/js/bootstrap.min.js"></script>
+
 </html>

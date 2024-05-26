@@ -51,21 +51,19 @@ class StudentCreateView(CreateView):
         else:
             return self.render_to_response(self.get_context_data(form=form))
 
-
-    
 class StudentPerClasseView(ListView):
     model = Eleve
     template_name = 'scuelo/student/perclasse.html'
     context_object_name = 'students'
-    #paginate_by = 12  # Number of students per page
 
     def get_queryset(self):
         class_id = self.kwargs.get('class_id')
+        current_year = AnneeScolaire.objects.filter(actuel=True).first()
 
-        # Get the latest inscription for each student in the specified class
-        latest_inscriptions = Inscription.objects.filter(classe_id=class_id).values('eleve_id').annotate(last_inscription=Max('date_inscription'))
+        # Get the latest inscription for each student in the specified class and current school year
+        latest_inscriptions = Inscription.objects.filter(classe_id=class_id, annee_scolaire=current_year).values('eleve_id').annotate(last_inscription=Max('date_inscription'))
 
-        # Get the IDs of the students with the latest inscription in the specified class
+        # Get the IDs of the students with the latest inscription in the specified class and current school year
         student_ids = [inscription['eleve_id'] for inscription in latest_inscriptions]
 
         # Exclude students who have an earlier inscription for the same class
@@ -74,7 +72,7 @@ class StudentPerClasseView(ListView):
         query = self.request.GET.get('q')
         if query:
             queryset = queryset.filter(
-                Q(nom__icontains=query) | Q(prenom__icontains=query)
+                Q(nom__icontains=query) | Q(prenom__icontains(query))
             )
         return queryset
     
@@ -83,27 +81,23 @@ class StudentPerClasseView(ListView):
 
         class_id = self.kwargs.get('class_id')
         clicked_class = Classe.objects.get(pk=class_id)
-
+        current_year = AnneeScolaire.objects.filter(actuel=True).first()
         students = self.get_queryset()
         total_students = students.count()
         total_girls = students.filter(sex='F').count()
         total_boys = students.filter(sex='M').count()
         
-        total_fees = Paiement.objects.filter(inscription__classe__id=class_id).aggregate(total_fees=Sum('montant'))['total_fees'] or 0
-        cs_py_sum = students.aggregate(cs_py_sum=Sum('cs_py'))['cs_py_sum'] or 0
+        total_fees = Paiement.objects.filter(inscription__classe__id=class_id, inscription__annee_scolaire=current_year).aggregate(total_fees=Sum('montant'))['total_fees'] or 0
 
         context.update({
             'total_students': total_students,
             'total_girls': total_girls,
             'total_fees': total_fees,
-            'total_boys' : total_boys,
-            'cs_py_sum': cs_py_sum,
+            'total_boys': total_boys,
             'clicked_class': clicked_class,
         })
 
         return context
-    
-
 class StudentDetailView(DetailView):
     model = Eleve
     template_name = 'scuelo/student/detail.html'
@@ -123,8 +117,6 @@ class StudentDetailView(DetailView):
         return context
 
 
-
-    
 
 class StudentListView(FilterView):
     model = Eleve
@@ -164,8 +156,6 @@ class StudentListView(FilterView):
         
         return context
 
-
-    
 
 class StudentUpdateView(UpdateView):
     model = Eleve
@@ -254,7 +244,7 @@ def manage_payments(request):
         nom_classe = payment.inscription.classe.nom
         payment_details.append({'payment': payment, 'nom_classe': nom_classe})
 
-    # Count total number of payments
+  
     total_payments_count = payments.count()
     total_montant_all_payments = payments.aggregate(total_montant_all_payments=Sum('montant'))['total_montant_all_payments']
         
@@ -275,6 +265,7 @@ def update_paiement(request, pk):
     paiement = get_object_or_404(Paiement, pk=pk)
     eleve = paiement.inscription.eleve
     classe = paiement.inscription.classe
+    
 
     if request.method == 'POST':
         form = PaiementForm(request.POST, instance=paiement)
@@ -283,7 +274,7 @@ def update_paiement(request, pk):
             messages.success(request, 'Paiement mis à jour avec succès.')
             return redirect('manage_payments')
     else:
-        form = PaiementForm(instance=paiement, initial={'creation_date': paiement.date_paye})  # Pass the original creation date to the form
+        form = PaiementForm(instance=paiement, initial={'creation_date': paiement.date_paye})  
 
     return render(request, 'scuelo/paiment/update.html', {
         'form': form,
@@ -300,20 +291,16 @@ def delete_payment(request, payment_id):
         messages.success(request, 'Payment deleted successfully.')
         return redirect('manage_payments')
     else:
-        # Handle GET request, if necessary
-        # For example, you may want to render a confirmation page for GET requests
-        # Or redirect to another page
-        return redirect('manage_payments')  # Redirect to manage_payments view for now
+        return redirect('manage_payments') 
     
 
 def manage_inscriptions(request):
-      # Get the query parameter for the school year
     year_filter = request.GET.get('annee_scolaire')
     if request.method == 'POST':
         form = InscriptionForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('manage_inscriptions')  # Redirect to manage inscriptions after creating
+            return redirect('manage_inscriptions') 
     else:
         form = InscriptionForm()
         
@@ -367,7 +354,7 @@ def manage_annee_scolaire(request):
         total_boys=Count('inscription__eleve', filter=Q(inscription__eleve__sex='M'), distinct=True)
     )
 
-    # If the request is POST, process the form submission
+   
     if request.method == 'POST':
         form = AnneeScolaireForm(request.POST)
         if form.is_valid():
@@ -395,19 +382,13 @@ def update_annee_scolaire(request, pk):
 
 
 def important_info(request):
-    # Filter payments with causal 'tenue'
     tenue_payments = Paiement.objects.filter(causal='TEN')
-     # Count total number of girls and boys in the school
     total_girls = Eleve.objects.filter(sex='F').count()
     total_boys = Eleve.objects.filter(sex='M').count()
     total_inscriptions = Inscription.objects.count()
     total_students = Eleve.objects.count()
-    # Count total number of inscriptions per class
     inscriptions_per_class = Inscription.objects.values('classe__nom').annotate(total_inscriptions=Count('id'))
-
-    # Filter payments with causal 'tenue'
     tenue_payments = Paiement.objects.filter(causal='TEN')
-    # Calculate total fees for 'tenue'
     total_tenues_per_class = {}
     for payment in tenue_payments:
         classe = payment.inscription.classe

@@ -4,7 +4,7 @@
 {% block header %}
 <nav class="navbar navbar-expand-lg pb-5 bg-black">
     
-    <a class="navbar-brand" href="{% url 'home' %}">Home</a>
+    <a class="navbar-brand" href="{% url 'home' %}">acceuil</a>
 </nav>
 {% endblock header %}
 {% block content %}
@@ -19,13 +19,13 @@
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header">
-                    Basic Information
+                  Information  de base
                 </div>
                 <div class="card-body">
                     <p><strong>Nom:</strong> {{ student.nom }}</p>
                     <p><strong>Prénom:</strong> {{ student.prenom }}</p>
                     <p><strong>Condition:</strong> {{ student.get_condition_eleve_display }}</p>
-                    <p><strong>Sex:</strong> {{ student.get_sex_display }}</p>
+                    <p><strong>Sexe:</strong> {{ student.get_sex_display }}</p>
                     <p><strong>Date de Naissance:</strong> {{ student.date_naissance }}</p>
                     <p><strong>CS PY:</strong> {{ student.get_cs_py_display }}</p>
                     <p><strong>Hand:</strong> {{ student.get_hand_display }}</p>
@@ -49,13 +49,13 @@
                         {% for inscription in inscriptions %}
                             <li class="list-group-item">{{ inscription.classe }} - {{ inscription.annee_scolaire }}</li>
                         {% empty %}
-                            <li class="list-group-item">No inscriptions found</li>
+                            <li class="list-group-item">aucune inscription trouvee </li>
                         {% endfor %}
                     </ul>
                 </div>
             </div>
 
-            <a href="{% url 'student_update' pk=student.pk %}" class="btn btn-primary">Update Student</a>
+            <a href="{% url 'student_update' pk=student.pk %}" class="btn btn-primary">mise a jours eleve</a>
         </div>
     </div>
 
@@ -64,14 +64,14 @@
         <div class="col-md-12">
             <div class="card mb-4">
                 <div class="card-header">
-                    Payments
+                    paiement
                 </div>
                 <div class="card-body">
                     <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th>Date</th>
-                                <th>Amount</th>
+                                <th>montant</th>
                                 <th>Causal</th>
                             </tr>
                         </thead>
@@ -84,7 +84,7 @@
                                 </tr>
                             {% empty %}
                                 <tr>
-                                    <td colspan="3">No payments found</td>
+                                    <td colspan="3">aucun paiement trouver </td>
                                 </tr>
                             {% endfor %}
                         </tbody>

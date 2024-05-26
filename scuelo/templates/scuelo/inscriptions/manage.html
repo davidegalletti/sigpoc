@@ -25,7 +25,7 @@
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Inscriptions per Class</h4>
+                            <h4 class="card-title">Inscriptions par  Classe</h4>
                             <ul class="list-group list-group-flush">
                                 {% for entry in inscriptions_per_class %}
                                 <li class="list-group-item">{{ entry.classe__nom }}: {{ entry.total }}</li>
@@ -37,7 +37,7 @@
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Inscriptions per School Year</h4>
+                            <h4 class="card-title">Inscriptions par annee Scolaire</h4>
                             <ul class="list-group list-group-flush">
                                 {% for entry in inscriptions_per_year %}
                                 <li class="list-group-item">{{ entry.annee_scolaire__nom }}: {{ entry.total }}</li>
@@ -132,11 +132,11 @@
         background-color: #0056b3; /* Darker shade of primary color on hover */
     }
 </style>
-<div class='content-fluid'>
+<div class='content'>
 <h1>Manage Inscriptions</h1>
 
 
-<h2>Create Inscription</h2>
+<h2> ajouter Inscription</h2>
     <!-- Inscription Creation Form -->
 
     <form method="post">
@@ -144,13 +144,13 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="id_eleve">Student</label>
+                    <label for="id_eleve">Eleve</label>
                     {{ form.eleve }}
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="id_classe">Class</label>
+                    <label for="id_classe">Classe</label>
                     {{ form.classe }}
                 </div>
             </div>
@@ -158,25 +158,20 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="form-group">
-                    <label for="id_annee_scolaire">School Year</label>
+                    <label for="id_annee_scolaire">Annee scolaire</label>
                     {{ form.annee_scolaire }}
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="id_date_inscription">Date of Inscription</label>
-                    {{ form.date_inscription }}
-                </div>
-            </div>
+         
         </div>
-        <button type="submit" class="mt-2 btn btn-primary mb-5">Create Inscription</button>
+        <button type="submit" class="mt-2 btn btn-primary mb-5">Ajouter Inscription</button>
     </form>
 
 </div class='mb-5'>
 <!-- Navigation for Inscriptions -->
 <ul class="nav nav-tabs mb-4">
     <li class="nav-item">
-        <a class="nav-link {% if not class_filter %}active{% endif %}" href="{% url 'manage_inscriptions' %}">All Classes</a>
+        <a class="nav-link {% if not class_filter %}active{% endif %}" href="{% url 'manage_inscriptions' %}">Toutes les  Classes</a>
     </li>
     {% for classe in classes %}
     <li class="nav-item">
@@ -190,13 +185,13 @@
     <button type="button" class="btn btn-secondary toggle-btn" data-year="{{ year }}">{{ year }}</button>
     {% endfor %}
 </div>
-    <table class="table table-striped table-bordered payments-table  w-100 content">
+    <table class=" table table-striped table-bordered payments-table  w-95  ">
         <thead class="thead-light">
-            <tr>
-                <th scope="col">Student</th>
-                <th scope="col">Class</th>
-                <th scope="col">School Year</th>
-                <th scope="col">Date of Inscription</th>
+            <tr class="p-5">
+                <th scope="col">Eleve</th>
+                <th scope="col">Classe</th>
+                <th scope="col">Annee scolaire</th>
+                <th scope="col">Date d'inscription</th>
                 <th scope="col">Actions</th>
             </tr>
         </thead>
@@ -213,7 +208,7 @@
             </tr>
             {% empty %}
             <tr>
-                <td colspan="4">No inscriptions found.</td>
+                <td colspan="4">aucun inscription trouver  </td>
             </tr>
             {% endfor %}
             

@@ -7,14 +7,13 @@
     
 <nav class="navbar navbar-expand-lg pb-5 bg-black">
     
-    <a class="navbar-brand" href="{% url 'home' %}">Home</a>
 </nav>
 {% endblock header %}
     
 {% block content %}
 
 <div class="container mt-5">
-    <h2>Update Student</h2>
+    <h2>mise a jours</h2>
     <form id="student-form" method="post">
         {% csrf_token %}
         <!-- Student Information -->

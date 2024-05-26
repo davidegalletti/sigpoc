@@ -1,20 +1,20 @@
 {% extends "/home/humbu/sigpoc/templates/layout.html" %}
 
 {% block content %}
-<h2>Update Inscription</h2>
+<h2> Mettre a  jours  l'inscription</h2>
 
 <form method="post">
     {% csrf_token %}
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="id_eleve">Student</label>
+                <label for="id_eleve">Eleve</label>
                 {{ form.eleve }}
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                <label for="id_classe">Class</label>
+                <label for="id_classe">Classe</label>
                 {{ form.classe }}
             </div>
         </div>
@@ -22,17 +22,12 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <label for="id_annee_scolaire">School Year</label>
+                <label for="id_annee_scolaire">Annee scolaire</label>
                 {{ form.annee_scolaire }}
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="id_date_inscription">Date of Inscription</label>
-                {{ form.date_inscription }}
-            </div>
-        </div>
+      
     </div>
-    <button type="submit" class="mt-2 btn btn-primary">Update Inscription</button>
+    <button type="submit" class="mt-2 btn btn-primary">mise a jours Inscription</button>
 </form>
 {% endblock %}
