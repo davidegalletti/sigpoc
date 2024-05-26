@@ -166,8 +166,42 @@
         </div>
         <button type="submit" class="mt-2 btn btn-primary mb-5">Ajouter Inscription</button>
     </form>
-
-</div class='mb-5'>
+<!-- Display statistics in a styled manner -->
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">Total Inscriptions</h3>
+                <p class="card-text">{{ total_inscriptions }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Inscriptions per Class</h4>
+                <ul class="list-group list-group-flush">
+                    {% for entry in inscriptions_per_class %}
+                    <li class="list-group-item">{{ entry.classe__nom }}: {{ entry.total }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Inscriptions per School Year</h4>
+                <ul class="list-group list-group-flush">
+                    {% for entry in inscriptions_per_year %}
+                    <li class="list-group-item">{{ entry.annee_scolaire__nom }}: {{ entry.total }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
 <!-- Navigation for Inscriptions -->
 <ul class="nav nav-tabs mb-4">
     <li class="nav-item">

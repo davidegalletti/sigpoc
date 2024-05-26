@@ -19,10 +19,8 @@ from    . import settings
 from django.urls import include, path
 from scuelo.admin import sics_site
 from django.conf.urls.static import static
-from scuelo.views  import home 
 
 urlpatterns = [
-    path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('sics/', sics_site.urls),
         #path('homepage/', class_list, name='homepage')

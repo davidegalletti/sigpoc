@@ -84,7 +84,6 @@
 }
 .content {
     margin-left: 250px;
-
     padding: 20px;
     flex: 1;
 }
@@ -102,19 +101,30 @@ header, footer {
 
 
 <div class="">
-  <div class="">
+  <div class="mt-5">
       <!-- Sidebar -->
-      <div class="sidebar">
+      <div class="sidebar ">
           <div class="sidebar-content">
-              <!-- Sidebar links -->
-              <a href="{% url 'home' %}">acceuil</a>
-              <a href="{% url 'important_info' %}">dashbooard</a>
-              <a href="{% url 'manage_payments' %}">Paiements</a>
-              <a href="{% url 'student_create' %}">create student</a>
-
-
-              <a href="{% url 'manage_inscriptions' %}">Inscriptions</a>
-              <a href="{% url 'manage_annee_scolaire' %}">Ann sco</a>
+            <!-- Sidebar links -->
+            
+            <a href="{% url 'home' %}" class="{% if request.path == '/home/' %}active{% endif %}">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="{% url 'important_info' %}" class="{% if request.path == '/important_info/' %}active{% endif %}">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <a href="{% url 'manage_payments' %}" class="{% if request.path == '/manage_payments/' %}active{% endif %}">
+                <i class="fas fa-money-check-alt"></i> Payments
+            </a>
+            <a href="{% url 'student_create' %}" class="{% if request.path == '/student_create/' %}active{% endif %}">
+                <i class="fas fa-user-plus"></i> Create Student
+            </a>
+            <a href="{% url 'manage_inscriptions' %}" class="{% if request.path == '/manage_inscriptions/' %}active{% endif %}">
+                <i class="fas fa-users"></i> Inscriptions
+            </a>
+            <a href="{% url 'manage_annee_scolaire' %}" class="{% if request.path == '/manage_annee_scolaire/' %}active{% endif %}">
+                <i class="fas fa-calendar-alt"></i> Année Scolaire
+            </a>
           </div>
       </div>
       

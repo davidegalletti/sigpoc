@@ -55,15 +55,15 @@ class StudentPerClasseView(ListView):
     model = Eleve
     template_name = 'scuelo/student/perclasse.html'
     context_object_name = 'students'
+    #paginate_by = 12  # Number of students per page
 
     def get_queryset(self):
         class_id = self.kwargs.get('class_id')
-        current_year = AnneeScolaire.objects.filter(actuel=True).first()
 
-        # Get the latest inscription for each student in the specified class and current school year
-        latest_inscriptions = Inscription.objects.filter(classe_id=class_id, annee_scolaire=current_year).values('eleve_id').annotate(last_inscription=Max('date_inscription'))
+        # Get the latest inscription for each student in the specified class
+        latest_inscriptions = Inscription.objects.filter(classe_id=class_id).values('eleve_id').annotate(last_inscription=Max('date_inscription'))
 
-        # Get the IDs of the students with the latest inscription in the specified class and current school year
+        # Get the IDs of the students with the latest inscription in the specified class
         student_ids = [inscription['eleve_id'] for inscription in latest_inscriptions]
 
         # Exclude students who have an earlier inscription for the same class
@@ -72,7 +72,7 @@ class StudentPerClasseView(ListView):
         query = self.request.GET.get('q')
         if query:
             queryset = queryset.filter(
-                Q(nom__icontains=query) | Q(prenom__icontains(query))
+                Q(nom__icontains=query) | Q(prenom__icontains=query)
             )
         return queryset
     
@@ -81,23 +81,26 @@ class StudentPerClasseView(ListView):
 
         class_id = self.kwargs.get('class_id')
         clicked_class = Classe.objects.get(pk=class_id)
-        current_year = AnneeScolaire.objects.filter(actuel=True).first()
+
         students = self.get_queryset()
         total_students = students.count()
         total_girls = students.filter(sex='F').count()
         total_boys = students.filter(sex='M').count()
         
-        total_fees = Paiement.objects.filter(inscription__classe__id=class_id, inscription__annee_scolaire=current_year).aggregate(total_fees=Sum('montant'))['total_fees'] or 0
+        total_fees = Paiement.objects.filter(inscription__classe__id=class_id).aggregate(total_fees=Sum('montant'))['total_fees'] or 0
+        #cs_py_sum = students.aggregate(cs_py_sum=Sum('cs_py'))['cs_py_sum'] or 0
 
         context.update({
             'total_students': total_students,
             'total_girls': total_girls,
             'total_fees': total_fees,
-            'total_boys': total_boys,
+            'total_boys' : total_boys,
+            #'cs_py_sum': cs_py_sum,
             'clicked_class': clicked_class,
         })
 
         return context
+    
 class StudentDetailView(DetailView):
     model = Eleve
     template_name = 'scuelo/student/detail.html'
@@ -348,11 +351,7 @@ def update_inscription(request, pk):
     
 def manage_annee_scolaire(request):
     # Fetch all existing Annee Scolaire objects
-    annee_scolaires = AnneeScolaire.objects.annotate(
-        total_students=Count('inscription__eleve', distinct=True),
-        total_girls=Count('inscription__eleve', filter=Q(inscription__eleve__sex='F'), distinct=True),
-        total_boys=Count('inscription__eleve', filter=Q(inscription__eleve__sex='M'), distinct=True)
-    )
+    annee_scolaires = AnneeScolaire.objects.all()
 
    
     if request.method == 'POST':
@@ -367,6 +366,7 @@ def manage_annee_scolaire(request):
         'annee_scolaires': annee_scolaires,
         'form': form,
     })
+    
     
 def update_annee_scolaire(request, pk):
     annee_scolaire = get_object_or_404(AnneeScolaire, pk=pk)
@@ -383,17 +383,13 @@ def update_annee_scolaire(request, pk):
 
 def important_info(request):
     tenue_payments = Paiement.objects.filter(causal='TEN')
-    total_girls = Eleve.objects.filter(sex='F').count()
-    total_boys = Eleve.objects.filter(sex='M').count()
-    total_inscriptions = Inscription.objects.count()
-    total_students = Eleve.objects.count()
-    inscriptions_per_class = Inscription.objects.values('classe__nom').annotate(total_inscriptions=Count('id'))
-    tenue_payments = Paiement.objects.filter(causal='TEN')
-    total_tenues_per_class = {}
+
+    # Calculate total fees for 'tenue'
+    total_tenues = 0
     for payment in tenue_payments:
-        classe = payment.inscription.classe
+        classe = payment.inscription.classe.type_ecole
         montant = payment.montant
-        total_tenues_per_class[classe.nom] = total_tenues_per_class.get(classe.nom, 0) + calculate_tenue(classe.type_ecole, montant)
+        total_tenues += calculate_tenue(classe, montant)
 
     # Calculate total montant per causal category
     total_montant_per_causal = Paiement.objects.values('causal').annotate(total_montant=Sum('montant'))
@@ -404,16 +400,9 @@ def important_info(request):
     # Calculate total montant of all payments
     total_montant_all_payments = Paiement.objects.aggregate(total_montant_all_payments=Sum('montant'))['total_montant_all_payments']
 
-    total_inscriptions = Inscription.objects.count()
     return render(request, 'scuelo/dashboard.html', {
-        #'total_tenues': total_tenues,
-         'total_girls': total_girls,
-          'total_students': total_students,
-        'total_boys': total_boys,
+        'total_tenues': total_tenues,
         'total_montant_per_causal': total_montant_per_causal,
         'total_payments_count': total_payments_count,
-        'total_montant_all_payments': total_montant_all_payments,
-          'total_inscriptions': total_inscriptions,
-           'inscriptions_per_class': inscriptions_per_class,
-        'total_tenues_per_class': total_tenues_per_class,
+        'total_montant_all_payments': total_montant_all_payments
     })

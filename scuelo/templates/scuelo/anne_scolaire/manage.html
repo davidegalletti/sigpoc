@@ -6,6 +6,10 @@
 <h2 class="text-black-50  font-weight-bold">Gerer Annee Scolaire</h2>
  <div class="mb-5">
 <form method="post">
+
+<h2>Manage Annee Scolaire</h2>
+
+<form method="post container">
     {% csrf_token %}
     <div class="row ">
         <div class="col-md-6">
@@ -60,9 +64,6 @@
             <td>{{ annee_scolaire.date_initiale }}</td>
             <td>{{ annee_scolaire.date_finale }}</td>
             <td>{{ annee_scolaire.actuel }}</td>
-            <td>{{ annee_scolaire.total_students }}</td>
-            <td>{{ annee_scolaire.total_girls }}</td>
-            <td>{{ annee_scolaire.total_boys }}</td>
             <td>
                 <a href="{% url 'update_annee_scolaire' annee_scolaire.pk %}" class="btn btn-primary btn-sm">mise a jours </a>
             </td>
@@ -73,3 +74,5 @@
 
 </div>
 {% endblock %}
+
+
