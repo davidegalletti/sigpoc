@@ -26,7 +26,7 @@
             <a class="nav-link text-black" href="#">Total frais: {{ total_fees }}</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-black" href="#">Py-{{ total_py }}</a>
+            <a class="nav-link text-black" href="#">Py-{{ students.total_py }}</a>
         </li>
         <li class="nav-item">
             <a class="nav-link text-black" href="#">  Cs-{{ total_cs }}</a>
@@ -36,6 +36,9 @@
         </li>
         <li class="nav-item text-black">
             <a class="nav-link text-black" href="#">  Cs-{{ total_extra }}</a>
+        </li>
+        <li class="nav-item text-black">
+            <a class="nav-link text-black" href="#">  Aban-{{ total_abandon }}  conf- {{total_good_condition}} prop-{{total_prop}} </a>
         </li>
     </ul>
 </div>
@@ -50,6 +53,7 @@
   <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="q">
   <button class="btn btn-outline-success" type="submit">recherche </button>
 </form>
+
 
         <div class="row " >
 
@@ -80,8 +84,9 @@
                                     <td>{{ student.get_condition_eleve_display }}</td>
                                     <td>{{ student.get_sex_display }}</td>
                                     <td>{{ student.date_naissance }}</td>
+                                    <td>{{ student.total_payment }}</td>
                                     <td>{{ student.total_fees }}</td>
-                                    <td>{{ student.tenues }}</td>
+                             
                                     <td>{{ student.get_cs_py_display }}</td>
                                     <td>{% if student.handicap %}
                                       {{ student.get_hand_display }}

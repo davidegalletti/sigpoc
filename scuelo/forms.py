@@ -1,7 +1,8 @@
 from django import forms
 from .models import  (Eleve  , Paiement , 
                       Inscription ,Classe  ,  AnneeScolaire)
-
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Submit, Row, Column
 from .models  import CONDITION_ELEVE ,  CS_PY , HAND , SEX
 from django.forms import inlineformset_factory
 
@@ -37,6 +38,10 @@ class PaiementUpdateForm(forms.ModelForm):
             #'inscription': forms.Select(attrs={'class': 'form-control'}),
         }
 
+class InscriptionPerStudentForm(forms.ModelForm):
+    class Meta:
+        model = Inscription
+        fields = ['classe', 'annee_scolaire']
 
 class EleveCreateForm(forms.ModelForm):
     class Meta:
@@ -137,3 +142,23 @@ class AnneeScolaireForm(forms.ModelForm):
             'date_finale': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'actuel': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+        
+
+class PaiementPerStudentForm(forms.ModelForm):
+    class Meta:
+        model = Paiement
+        fields = ['causal','date_paye', 'montant', 'note']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Row(
+                Column('date_paye', css_class='form-group col-md-6 mb-0'),
+                Column('montant', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            'note',
+            Submit('submit', 'Save changes')
+        )

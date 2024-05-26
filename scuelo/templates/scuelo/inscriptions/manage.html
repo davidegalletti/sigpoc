@@ -3,52 +3,7 @@
 {% block header %}
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Your Logo</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <!-- Other Navbar Links -->
-            </ul>
-            <!-- Display statistics -->
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h3 class="card-title">Total Inscriptions</h3>
-                            <p class="card-text">{{ total_inscriptions }}</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">Inscriptions par  Classe</h4>
-                            <ul class="list-group list-group-flush">
-                                {% for entry in inscriptions_per_class %}
-                                <li class="list-group-item">{{ entry.classe__nom }}: {{ entry.total }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title">Inscriptions par annee Scolaire</h4>
-                            <ul class="list-group list-group-flush">
-                                {% for entry in inscriptions_per_year %}
-                                <li class="list-group-item">{{ entry.annee_scolaire__nom }}: {{ entry.total }}</li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 </nav>
 
 {% endblock header %}
@@ -56,6 +11,36 @@
 {% block content %}
 
 <style>
+    .pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .pagination .page-link {
+        color: #007bff;
+        border: 1px solid #007bff;
+        margin: 0 5px;
+    }
+
+    .pagination .page-link:hover {
+        background-color: #007bff;
+        color: #fff;
+        border-color: #007bff;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #007bff;
+        color: #fff;
+        border-color: #007bff;
+    }
+
+    .pagination .page-item.disabled .page-link {
+        color: #6c757d;
+        pointer-events: none;
+        cursor: not-allowed;
+    }
     /* Form styles */
     .inscription-form {
         margin-bottom: 20px;
@@ -131,77 +116,72 @@
     .inscription-form button[type="submit"]:hover {
         background-color: #0056b3; /* Darker shade of primary color on hover */
     }
+    .add-inscription-btn {
+        position: relative;
+        top: 20px;
+        left: 20px;
+    }
 </style>
 <div class='content'>
 <h1>Manage Inscriptions</h1>
-
-
-<h2> ajouter Inscription</h2>
-    <!-- Inscription Creation Form -->
-
-    <form method="post">
-        {% csrf_token %}
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="id_eleve">Eleve</label>
-                    {{ form.eleve }}
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="id_classe">Classe</label>
-                    {{ form.classe }}
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="id_annee_scolaire">Annee scolaire</label>
-                    {{ form.annee_scolaire }}
-                </div>
-            </div>
-         
-        </div>
-        <button type="submit" class="mt-2 btn btn-primary mb-5">Ajouter Inscription</button>
-    </form>
-<!-- Display statistics in a styled manner -->
-<div class="row mb-4">
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <h3 class="card-title">Total Inscriptions</h3>
-                <p class="card-text">{{ total_inscriptions }}</p>
-            </div>
-        </div>
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <button type="button" class="btn btn-primary add-inscription-btn" data-bs-toggle="modal" data-bs-target="#inscriptionModal">
+            <i class="fas fa-plus-circle me-2"></i> Ajouter Inscription
+        </button>
     </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Inscriptions per Class</h4>
-                <ul class="list-group list-group-flush">
-                    {% for entry in inscriptions_per_class %}
-                    <li class="list-group-item">{{ entry.classe__nom }}: {{ entry.total }}</li>
-                    {% endfor %}
-                </ul>
+    <div class="col-md-6">
+        <form method="get" class="mb-3">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Search by student name" value="{{ search_query }}">
+                <button type="submit" class="btn btn-primary">Search</button>
             </div>
-        </div>
+        </form>
     </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Inscriptions per School Year</h4>
-                <ul class="list-group list-group-flush">
-                    {% for entry in inscriptions_per_year %}
-                    <li class="list-group-item">{{ entry.annee_scolaire__nom }}: {{ entry.total }}</li>
-                    {% endfor %}
-                </ul>
+</div>
+
+<div class="modal fade w-100t" id="inscriptionModal" tabindex="-1" aria-labelledby="inscriptionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg"> <!-- Adjusted width using modal-lg class -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="inscriptionModalLabel">Ajouter Inscription</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="id_eleve">Eleve</label>
+                                {{ form.eleve }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="id_classe">Classe</label>
+                                {{ form.classe }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="id_annee_scolaire">Annee scolaire</label>
+                                {{ form.annee_scolaire }}
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-2 btn btn-primary mb-5">Ajouter Inscription</button>
+                </form>
             </div>
         </div>
     </div>
 </div>
 </div>
+
+
+
 <!-- Navigation for Inscriptions -->
 <ul class="nav nav-tabs mb-4">
     <li class="nav-item">
@@ -237,7 +217,7 @@
                 <td>{{ inscription.annee_scolaire.nom }}</td>
                 <td>{{ inscription.date_inscription }}</td>
                 <td>
-                    <a href="{% url 'update_inscription' inscription.pk %}" class="btn btn-warning btn-sm">Update</a>
+                    <a href="{% url 'update_inscription' inscription.pk %}" class="btn btn-warning btn-sm">mise a jours </a>
                 </td>
             </tr>
             {% empty %}
@@ -246,29 +226,53 @@
             </tr>
             {% endfor %}
             
-        </tbody>
+      
+            <!-- Pagination buttons -->
+
     </table>
+    <div class="pagination">
+        <span class="step-links">
+            {% if inscriptions.has_previous %}
+                <a class="btn btn-primary"  href="?page=1">&laquo; premier</a>
+                <a  class="btn btn-primary"  href="?page={{ inscriptions.previous_page_number }}">precedant</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ inscriptions.number }}  {{ inscriptions.paginator.num_pages }}.
+            </span>
+    
+            {% if inscriptions.has_next %}
+                <a class="btn btn-primary" href="?page={{ inscriptions.next_page_number }}">suivant</a>
+                <a  class="btn btn-primary"  href="?page={{ inscriptions.paginator.num_pages }}">dernier &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Get all toggle buttons
-        const toggleButtons = document.querySelectorAll('.toggle-btn');
-    
-        // Add click event listener to each toggle button
-        toggleButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const year = this.dataset.year; // Get the selected school year
-                const inscriptions = document.querySelectorAll('.inscription');
-    
-                // Loop through all inscriptions
-                inscriptions.forEach(inscription => {
-                    // Show or hide inscription based on the selected year
-                    if (year === 'all' || inscription.dataset.year === year) {
-                        inscription.style.display = 'block';
-                    } else {
-                        inscription.style.display = 'none';
-                    }
-                });
+    $(document).ready(function() {
+        $('#inscriptionForm').submit(function(event) {
+            // Prevent default form submission
+            event.preventDefault();
+            
+            // Serialize form data
+            var formData = $(this).serialize();
+            
+            // AJAX POST request to submit form data
+            $.ajax({
+                type: 'POST',
+                url: '/inscriptions/', // URL for creating inscriptions
+                data: formData,
+                success: function(response) {
+                    // Handle success response
+                    // For example, close the modal and update the table with new inscription data
+                    $('#inscriptionModal').modal('hide');
+                    // You may need to reload the page or update the inscription table dynamically
+                },
+                error: function(xhr, status, error) {
+                    // Handle error response
+                    console.error(xhr.responseText);
+                    // Display error message to the user if needed
+                }
             });
         });
     });

@@ -104,7 +104,18 @@ class Eleve(models.Model):
     def an_insc(self):
         return self.annee_inscr.year
 
+    @property
+    def current_class(self):
+        # Assuming there's a ForeignKey from Inscription to Classe called 'classe'
+        current_year = AnneeScolaire.objects.get(actuel=True)
+        try:
+            # Get the latest inscription for the current year
+            inscription = Inscription.objects.filter(eleve=self, annee_scolaire=current_year).latest('date_inscription')
+            return inscription.classe
+        except Inscription.DoesNotExist:
+            return None
     
+ 
     def get_queryset(self, request):
         # Group students by nom_classe
         queryset = Eleve.objects.all().prefetch_related('nom_classe')  # Prefetch for efficiency
@@ -146,7 +157,12 @@ class Inscription(models.Model):
     def __str__(self):
         return '%s - %s - %s' % (self.annee_scolaire.nom_bref, self.classe, self.eleve)
 
-
+    def save(self, *args, **kwargs):
+        # Ensure only one inscription for the current year
+        if self.annee_scolaire.actuel:
+            Inscription.objects.filter(eleve=self.eleve, annee_scolaire__actuel=True).exclude(pk=self.pk).delete()
+        super().save(*args, **kwargs)
+        
 class Paiement(models.Model):
     CAUSAL = (
         ("INS", "Inscription"),
@@ -168,6 +184,7 @@ class Paiement(models.Model):
     
     def __str__(self):
         return f"{self.causal} {self.montant}"
+    
 class Classe(models.Model):
     type_ecole = models.CharField(max_length=1, choices=TYPE_ECOLE, db_index=True)
     nom = models.CharField(max_length=10, null=False)
@@ -215,7 +232,7 @@ class Eleve(models.Model):
                 grouped_queryset[classe] = []
             grouped_queryset[classe].append(eleve)
         return grouped_queryset
-    
+  
     class Meta:
         verbose_name = 'Eleve'
         verbose_name_plural = 'Eleves'

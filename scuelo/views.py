@@ -2,18 +2,22 @@
 from django.shortcuts import render, redirect , get_object_or_404
 from django_filters.views import FilterView
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from django.views.generic import FormView
 from django.forms import modelformset_factory
 from django.urls import reverse_lazy ,  reverse
 from django.views.generic.edit import UpdateView
 from django.db import  transaction , models
 from django.views.generic import CreateView
-from django.views.generic import ( DetailView , ListView  ,TemplateView,  
+from django.views.generic import ( DetailView , ListView  , View,  
                                 ListView, CreateView, UpdateView, DeleteView  , 
 )
 from django.db.models import Q  , Max , F , Sum , Count
 from .forms import  ( InscriptionForm , InscriptionFormSet 
-    , EleveCreateForm ,  EleveUpdateForm , PaiementForm  , AnneeScolaireForm
+    , EleveCreateForm ,  EleveUpdateForm , PaiementForm  , AnneeScolaireForm ,  PaiementPerStudentForm
 )
 from  .filters import EleveFilter
 from .models import Eleve, Classe, Inscription, Paiement , AnneeScolaire
@@ -68,7 +72,11 @@ class StudentPerClasseView(ListView):
 
         # Exclude students who have an earlier inscription for the same class
         queryset = Eleve.objects.filter(id__in=student_ids)
+         # Annotate queryset with total payment for each student
+        queryset = queryset.annotate(total_payment=Sum('inscription__paiement__montant'))
 
+
+        
         query = self.request.GET.get('q')
         if query:
             queryset = queryset.filter(
@@ -83,10 +91,18 @@ class StudentPerClasseView(ListView):
         clicked_class = Classe.objects.get(pk=class_id)
 
         students = self.get_queryset()
+        
         total_students = students.count()
         total_girls = students.filter(sex='F').count()
         total_boys = students.filter(sex='M').count()
-        
+        total_cs = students.filter(cs_py='C').count()
+        total_extra = students.filter(cs_py='E').count()
+        total_py = students.filter(cs_py='P').count()
+        total_acc = students.filter(cs_py='A').count()
+        total_bravo = students.filter(cs_py='B').count()
+        total_good_condition = students.filter(condition_eleve='CONF').count()
+        total_abandon = students.filter(condition_eleve='ABAN').count()
+        total_prop = students.filter(condition_eleve='PROP').count()
         total_fees = Paiement.objects.filter(inscription__classe__id=class_id).aggregate(total_fees=Sum('montant'))['total_fees'] or 0
         #cs_py_sum = students.aggregate(cs_py_sum=Sum('cs_py'))['cs_py_sum'] or 0
 
@@ -95,8 +111,16 @@ class StudentPerClasseView(ListView):
             'total_girls': total_girls,
             'total_fees': total_fees,
             'total_boys' : total_boys,
-            #'cs_py_sum': cs_py_sum,
+            'total_cs': total_cs,
+            'total_extra': total_extra,
+            'total_py': total_py,
+            'total_acc': total_acc,
+            'total_bravo': total_bravo,
             'clicked_class': clicked_class,
+            'total_good_condition': total_good_condition,
+            'total_abandon': total_abandon,
+            'total_prop': total_prop,
+            
         })
 
         return context
@@ -105,6 +129,7 @@ class StudentDetailView(DetailView):
     model = Eleve
     template_name = 'scuelo/student/detail.html'
     context_object_name = 'student'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         student = self.object
@@ -112,14 +137,19 @@ class StudentDetailView(DetailView):
         # Fetch inscriptions related to the student
         inscriptions = Inscription.objects.filter(eleve=student)
 
+
         # Fetch payments related to the student (via inscriptions)
         payments = Paiement.objects.filter(inscription__in=inscriptions)
 
+        # Calculate the total payment for the student
+        total_payment = payments.aggregate(total=Sum('montant'))['total'] or 0
+
         context['inscriptions'] = inscriptions
         context['payments'] = payments
+        context['total_payment'] = total_payment
+        
+        context['form'] = PaiementPerStudentForm()  # Add the payment form to the context
         return context
-
-
 
 class StudentListView(FilterView):
     model = Eleve
@@ -264,6 +294,20 @@ def manage_payments(request):
         'total_montant_all_payments': total_montant_all_payments
     })
 
+
+@method_decorator(csrf_exempt, name='dispatch')
+class AddPaiementAjaxView(View):
+    def post(self, request, *args, **kwargs):
+        student_id = kwargs['pk']
+        student = get_object_or_404(Eleve, pk=student_id)
+        form = PaiementPerStudentForm(request.POST)
+        if form.is_valid():
+            paiement = form.save(commit=False)
+            paiement.inscription = Inscription.objects.filter(eleve=student).last()
+            paiement.save()
+            return JsonResponse({'success': True})
+        return JsonResponse({'success': False, 'errors': form.errors})
+    
 def update_paiement(request, pk):
     paiement = get_object_or_404(Paiement, pk=pk)
     eleve = paiement.inscription.eleve
@@ -298,7 +342,7 @@ def delete_payment(request, payment_id):
     
 
 def manage_inscriptions(request):
-    year_filter = request.GET.get('annee_scolaire')
+    # Handle form submission
     if request.method == 'POST':
         form = InscriptionForm(request.POST)
         if form.is_valid():
@@ -307,21 +351,45 @@ def manage_inscriptions(request):
     else:
         form = InscriptionForm()
         
-    class_name_filter = request.GET.get('class')
+    # Fetch all classes
     classes = Classe.objects.all()
 
-    if class_name_filter:
-        inscriptions = Inscription.objects.filter(classe__nom=class_name_filter)
-    else:
-        inscriptions = Inscription.objects.all()
+    # Get class name filter from query parameters
+    class_name_filter = request.GET.get('class')
 
+    # Get search query from query parameters
+    search_query = request.GET.get('search')
+
+    # Get all inscriptions
+    inscriptions = Inscription.objects.all()
+
+    # Filter inscriptions by school year
+    year_filter = request.GET.get('annee_scolaire')
+    if year_filter:
+        inscriptions = inscriptions.filter(annee_scolaire__nom=year_filter)
+
+    # Filter inscriptions by class name
+    if class_name_filter:
+        inscriptions = inscriptions.filter(classe__nom=class_name_filter)
+
+    # Filter inscriptions by search query
+    if search_query:
+        inscriptions = inscriptions.filter(Q(eleve__nom__icontains=search_query) | Q(eleve__prenom__icontains=search_query))
+
+    # Calculate total number of inscriptions
     total_inscriptions = inscriptions.count()
 
     # Calculate inscriptions per class
     inscriptions_per_class = inscriptions.values('classe__nom').annotate(total=Count('id')).order_by('classe__nom')
 
     # Calculate inscriptions per school year
-    inscriptions_per_year = inscriptions.values('annee_scolaire__nom').annotate(total=Count('id')).order_by('annee_scolaire__nom')
+    inscriptions_per_year = Inscription.objects.values('annee_scolaire__nom').annotate(total=Count('id')).order_by('annee_scolaire__nom')
+
+    # Paginate the inscriptions
+    paginator = Paginator(inscriptions, 10)  # Show 10 inscriptions per page
+    page = request.GET.get('page')
+    inscriptions = paginator.get_page(page)
+
     return render(request, 'scuelo/inscriptions/manage.html', {
         'form': form,
         'classes': classes,
@@ -330,9 +398,11 @@ def manage_inscriptions(request):
         'total_inscriptions': total_inscriptions,
         'inscriptions_per_class': inscriptions_per_class,
         'inscriptions_per_year': inscriptions_per_year,
+        'year_filter': year_filter,
+        'search_query': search_query,
     })
-    
-    
+
+
 def update_inscription(request, pk):
     inscription = get_object_or_404(Inscription, pk=pk)
     if request.method == 'POST':
