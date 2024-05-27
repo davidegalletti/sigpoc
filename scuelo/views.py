@@ -272,14 +272,23 @@ def manage_payments(request):
 
     if search_query:
         # Filter payments based on the student's name (nom or prenom)
-        payments = payments.filter(inscription__eleve__nom__icontains=search_query) | \
-                   payments.filter(inscription__eleve__prenom__icontains=search_query)
+        payments = payments.filter(Q(inscription__eleve__nom__icontains=search_query) | 
+                                   Q(inscription__eleve__prenom__icontains=search_query))
 
     if causal_filter:
         payments = payments.filter(causal=causal_filter)
 
-    # Pagination code (if needed)
+    # Pagination code
+    paginator = Paginator(payments, 10)  # Show 10 payments per page
+    page = request.GET.get('page')
+    try:
+        payments = paginator.page(page)
+    except PageNotAnInteger:
+        payments = paginator.page(1)
+    except EmptyPage:
+        payments = paginator.page(paginator.num_pages)
 
+    # Handle form submission
     if request.method == 'POST':
         form = PaiementForm(request.POST)
         if form.is_valid():
@@ -290,7 +299,7 @@ def manage_payments(request):
         form = PaiementForm()
 
     # Calculate total montant per causal category
-    total_montant_per_causal = payments.values('causal').annotate(total_montant=Sum('montant'))
+    total_montant_per_causal = payments.object_list.values('causal').annotate(total_montant=Sum('montant'))
 
     # Calculate total fees for each causal category
     total_tenues = 0
@@ -303,10 +312,8 @@ def manage_payments(request):
         nom_classe = payment.inscription.classe.nom
         payment_details.append({'payment': payment, 'nom_classe': nom_classe})
 
-  
-    total_payments_count = payments.count()
-    total_montant_all_payments = payments.aggregate(total_montant_all_payments=Sum('montant'))['total_montant_all_payments']
-        
+    total_payments_count = payments.paginator.count
+    total_montant_all_payments = payments.object_list.aggregate(total_montant_all_payments=Sum('montant'))['total_montant_all_payments']
 
     return render(request, 'scuelo/paiment/manage.html', {
         'form': form,
@@ -316,10 +323,9 @@ def manage_payments(request):
         'total_tenues': total_tenues,
         'payment_details': payment_details,
         'total_montant_per_causal': total_montant_per_causal,
-        'total_payments_count': total_payments_count,  # Pass the count to the template
-        'total_montant_all_payments': total_montant_all_payments
+        'total_payments_count': total_payments_count,
+        'total_montant_all_payments': total_montant_all_payments,
     })
-
 
 @method_decorator(csrf_exempt, name='dispatch')
 class AddPaiementAjaxView(View):

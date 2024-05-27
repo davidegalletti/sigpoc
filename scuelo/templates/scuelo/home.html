@@ -3,7 +3,8 @@
 <header>
     {% block header %}
     <nav class="navbar navbar-expand-lg shadow-sm pb-5 bg-white">
-  
+        <h4>bienvenu, {{ user.username }}!</h4>
+        <a class='text-black-50 btn btn-danger' href="{% url 'logout' %}">Logout</a>
     </nav>
       
     {% endblock header %}

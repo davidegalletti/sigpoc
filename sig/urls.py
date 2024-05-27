@@ -25,7 +25,7 @@ urlpatterns = [
     #path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('sics/', sics_site.urls),
-        #path('homepage/', class_list, name='homepage')
-       path("homepage/", include('scuelo.urls')),
+    #path('homepage/', class_list, name='homepage')
+    path("homepage/", include('scuelo.urls')),
     
 ] + static(settings.STATIC_URL)

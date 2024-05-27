@@ -192,6 +192,23 @@
                 {% endfor %}
             </tbody>
         </table>
+        <div class="pagination">
+            <span class="step-links">
+                {% if payments.has_previous %}
+                    <a  class='btn btn-primary'href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if causal_filter %}&causal={{ causal_filter }}{% endif %}">&laquo; premier</a>
+                    <a href="?page={{ payments.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if causal_filter %}&causal={{ causal_filter }}{% endif %}">precedent</a>
+                {% endif %}
+    
+                <span class="current">
+                    Page {{ payments.number }} de  {{ payments.paginator.num_pages }}.
+                </span>
+    
+                {% if payments.has_next %}
+                    <a href="?page={{ payments.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if causal_filter %}&causal={{ causal_filter }}{% endif %}">suivant</a>
+                    <a href="?page={{ payments.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if causal_filter %}&causal={{ causal_filter }}{% endif %}">dernier &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
         {% else %}
         <p> aucun eleve du nom ou du prenom de  "{{ search_query }}"</p>
         {% endif %}
