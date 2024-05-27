@@ -3,9 +3,10 @@
 
 
 {% block content %}
+<style>
+</style>
 <!-- Content Row -->
 <div class="row">
-
     <!-- Total Tenues Card -->
     <div class="col-lg-4 mb-4">
         <div class="card shadow h-100 py-2">
@@ -74,6 +75,35 @@
         </div>
     </div>
     {% endfor %}
+
+    <div>
+        <h3>Payment Distribution by Causal</h3>
+        <canvas  class='w-100 h-80'  id="causalChart"></canvas>
+    </div>
+
+    <script>
+        var ctx = document.getElementById('causalChart').getContext('2d');
+        var causalChart = new Chart(ctx, {
+            type: 'bar', // or 'line', 'pie', etc.
+            data: {
+                labels: {{ causal_labels|safe }},
+                datasets: [{
+                    label: 'Total Amount',
+                    data: {{ causal_data|safe }},
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
 
 </div>
 <!-- /.row -->

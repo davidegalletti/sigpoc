@@ -487,7 +487,6 @@ def update_annee_scolaire(request, pk):
     return render(request, 'scuelo/anne_scolaire/update.html', {'form': form , 'annee_scolaire': annee_scolaire })
 
 
-
 def important_info(request):
     tenue_payments = Paiement.objects.filter(causal='TEN')
 
@@ -507,9 +506,15 @@ def important_info(request):
     # Calculate total montant of all payments
     total_montant_all_payments = Paiement.objects.aggregate(total_montant_all_payments=Sum('montant'))['total_montant_all_payments']
 
+    # Prepare data for Chart.js
+    causal_labels = [entry['causal'] for entry in total_montant_per_causal]
+    causal_data = [entry['total_montant'] for entry in total_montant_per_causal]
+
     return render(request, 'scuelo/dashboard.html', {
         'total_tenues': total_tenues,
         'total_montant_per_causal': total_montant_per_causal,
         'total_payments_count': total_payments_count,
-        'total_montant_all_payments': total_montant_all_payments
+        'total_montant_all_payments': total_montant_all_payments,
+        'causal_labels': causal_labels,
+        'causal_data': causal_data
     })
