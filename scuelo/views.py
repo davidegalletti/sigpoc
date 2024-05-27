@@ -25,7 +25,7 @@ from .forms import  ( InscriptionForm , InscriptionFormSet
     , EleveCreateForm ,  EleveUpdateForm , PaiementForm  , AnneeScolaireForm ,  PaiementPerStudentForm
 )
 from  .filters import EleveFilter
-from .models import Eleve, Classe, Inscription, Paiement , AnneeScolaire
+from .models import Eleve, Classe, Inscription, Paiement , AnneeScolaire 
 from django.forms import inlineformset_factory
 
 

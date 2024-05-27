@@ -284,3 +284,6 @@ class Paiement(models.Model):
     
     def __str__(self):
         return f"{self.causal} {self.montant}"
+    
+    
+
