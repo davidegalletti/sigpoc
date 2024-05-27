@@ -6,7 +6,7 @@ from .views  import ( StudentListView  ,
                 manage_payments, update_paiement, delete_payment ,
                 manage_inscriptions ,  update_inscription , manage_annee_scolaire , update_annee_scolaire ,
                       StudentCreateView  , StudentUpdateView  ,  StudentDetailView , important_info ,
-                      AddPaiementAjaxView
+                      AddPaiementAjaxView ,  login_view , logout_view
                      )
 
 
@@ -26,4 +26,6 @@ urlpatterns = [
     path('manage-annee-scolaire/', manage_annee_scolaire, name='manage_annee_scolaire'),
     path('important-info/', important_info, name='important_info'),
     path('student/<int:pk>/add_paiement/', AddPaiementAjaxView.as_view(), name='add_paiement'),
+    path('login/', login_view, name='login'),
+    path('logout/', logout_view ,name='logout')
 ]
