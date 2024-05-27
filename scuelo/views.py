@@ -423,7 +423,12 @@ def manage_annee_scolaire(request):
     # Fetch all existing Annee Scolaire objects
     annee_scolaires = AnneeScolaire.objects.all()
 
-   
+    annee_scolaires = AnneeScolaire.objects.annotate(
+        total_students=Count('inscription__eleve', distinct=True),
+        total_girls=Count('inscription__eleve', filter=Q(inscription__eleve__sex='F'), distinct=True),
+        total_boys=Count('inscription__eleve', filter=Q(inscription__eleve__sex='M'), distinct=True)
+    )
+
     if request.method == 'POST':
         form = AnneeScolaireForm(request.POST)
         if form.is_valid():

@@ -1,9 +1,9 @@
-{% extends "/home/humbu/sigpoc/templates/layout.html" %}
+{% extends "../../layout.html" %}
 
 {% block content %}
-<div class='container w-100'>
+<div class='w-100'>
 
-<h2 class="text-black-50  font-weight-bold">Gerer Annee Scolaire</h2>
+
  <div class="mb-5">
 <form method="post">
 
@@ -41,7 +41,7 @@
 </form>
 </div>
 
- <h3> liste des annee scolaire </h3>
+ <h3> liste des annees scolaire </h3>
 <table class="table table-striped table-bordered payments-table  w-95  ">
     <thead>
         <tr>
@@ -64,6 +64,11 @@
             <td>{{ annee_scolaire.date_initiale }}</td>
             <td>{{ annee_scolaire.date_finale }}</td>
             <td>{{ annee_scolaire.actuel }}</td>
+            <td>{{ annee_scolaire.total_students }}</td>
+            <td>{{ annee_scolaire.total_girls }}</td>
+
+            <td>{{ annee_scolaire.total_boys }}</td>
+
             <td>
                 <a href="{% url 'update_annee_scolaire' annee_scolaire.pk %}" class="btn btn-primary btn-sm">mise a jours </a>
             </td>

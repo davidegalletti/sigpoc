@@ -1,0 +1,1 @@
+SELECT * FROM  scuelo_inscriptions ;

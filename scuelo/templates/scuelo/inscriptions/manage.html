@@ -1,163 +1,172 @@
-{% extends "/home/humbu/sigpoc/templates/layout.html" %}
+{% extends "../../layout.html" %}
 
 {% block header %}
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    
-</nav>
-
+   <a href=""><i></i></a>
+ <i class=""></i>
 {% endblock header %}
-
+ 
 {% block content %}
 
 <style>
-    .pagination {
-        margin-top: 20px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+    /* Custom styles for the modal */
 
-    .pagination .page-link {
-        color: #007bff;
-        border: 1px solid #007bff;
-        margin: 0 5px;
-    }
+   .modal-content {
+       padding: 20px;
+   }
+   .modal-top-right {
+       position: fixed;
+       top: 10px;
+       right: 10px;
+       z-index: 1050;
+   }
+   .pagination {
+       margin-top: 20px;
+       display: flex;
+       justify-content: center;
+       align-items: center;
+   }
 
-    .pagination .page-link:hover {
-        background-color: #007bff;
-        color: #fff;
-        border-color: #007bff;
-    }
+   .pagination .page-link {
+       color: #007bff;
+       border: 1px solid #007bff;
+       margin: 0 5px;
+   }
 
-    .pagination .page-item.active .page-link {
-        background-color: #007bff;
-        color: #fff;
-        border-color: #007bff;
-    }
+   .pagination .page-link:hover {
+       background-color: #007bff;
+       color: #fff;
+       border-color: #007bff;
+   }
 
-    .pagination .page-item.disabled .page-link {
-        color: #6c757d;
-        pointer-events: none;
-        cursor: not-allowed;
-    }
-    /* Form styles */
-    .inscription-form {
-        margin-bottom: 20px;
-        background-color: #f9f9f9;
-        padding: 20px;
-        border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+   .pagination .page-item.active .page-link {
+       background-color: #007bff;
+       color: #fff;
+       border-color: #007bff;
+   }
 
-    .inscription-form label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-    }
-      /* Style for the form */
-      .payment-form {
-        margin-bottom: 20px;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-    }
+   .pagination .page-item.disabled .page-link {
+       color: #6c757d;
+       pointer-events: none;
+       cursor: not-allowed;
+   }
+   /* Form styles */
+   .inscription-form {
+       margin-bottom: 20px;
+       background-color: #f9f9f9;
+       padding: 20px;
+       border-radius: 5px;
+       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+   }
 
-    .payment-form input[type="text"],
-    .payment-form input[type="number"],
-    .payment-form select {
-        width: calc(50% - 10px);
-        padding: 10px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
+   .inscription-form label {
+       display: block;
+       margin-bottom: 5px;
+       font-weight: bold;
+   }
+     /* Style for the form */
+     .payment-form {
+       margin-bottom: 20px;
+       display: flex;
+       flex-wrap: wrap;
+       justify-content: space-between;
+   }
 
-    .payment-form button[type="submit"] {
-        width: 100%;
-        background-color: #007bff; /* Bootstrap primary color */
-        color: #fff;
-        padding: 10px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
+   .payment-form input[type="text"],
+   .payment-form input[type="number"],
+   .payment-form select {
+       width: calc(50% - 10px);
+       padding: 10px;
+       margin-bottom: 10px;
+       border: 1px solid #ccc;
+       border-radius: 4px;
+       box-sizing: border-box;
+   }
 
-    .payment-form button[type="submit"]:hover {
-        background-color: #0056b3; /* Darker shade of primary color on hover */
-    }
+   .payment-form button[type="submit"] {
+       width: 100%;
+       background-color: #007bff; /* Bootstrap primary color */
+       color: #fff;
+       padding: 10px;
+       border: none;
+       border-radius: 4px;
+       cursor: pointer;
+   }
 
-    .nav-link.active {
-        font-weight: bold;
-    }
+   .payment-form button[type="submit"]:hover {
+       background-color: #0056b3; /* Darker shade of primary color on hover */
+   }
 
-    .inscription-form input[type="text"],
-    .inscription-form select,
-    .inscription-form input[type="date"] {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
+   .nav-link.active {
+       font-weight: bold;
+   }
 
-    .inscription-form button[type="submit"] {
-        width: 100%;
-        background-color: #007bff; /* Bootstrap primary color */
-        color: #fff;
-        padding: 10px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
+   .inscription-form input[type="text"],
+   .inscription-form select,
+   .inscription-form input[type="date"] {
+       width: 100%;
+       padding: 10px;
+       margin-bottom: 10px;
+       border: 1px solid #ccc;
+       border-radius: 4px;
+       box-sizing: border-box;
+   }
 
-    .inscription-form button[type="submit"]:hover {
-        background-color: #0056b3; /* Darker shade of primary color on hover */
-    }
-    .add-inscription-btn {
-        position: relative;
-        top: 20px;
-        left: 20px;
-    }
+   .inscription-form button[type="submit"] {
+       width: 100%;
+       background-color: #007bff; /* Bootstrap primary color */
+       color: #fff;
+       padding: 10px;
+       border: none;
+       border-radius: 4px;
+       cursor: pointer;
+   }
+
+   .inscription-form button[type="submit"]:hover {
+       background-color: #0056b3; /* Darker shade of primary color on hover */
+   }
+
 </style>
-<div class='content'>
-<h1>Manage Inscriptions</h1>
-<div class="row">
-    <div class="col-md-6 mb-3">
+<div class='content  row'>
+
+<div class=" container-fluid">
+     <div class="row mb-6 d-flex align-items-md-start">
+
+    <div class="col-md-6">
         <button type="button" class="btn btn-primary add-inscription-btn" data-bs-toggle="modal" data-bs-target="#inscriptionModal">
             <i class="fas fa-plus-circle me-2"></i> Ajouter Inscription
         </button>
     </div>
-    <div class="col-md-6">
-        <form method="get" class="mb-3">
-            <div class="input-group">
-                <input type="text" name="search" class="form-control" placeholder="Search by student name" value="{{ search_query }}">
-                <button type="submit" class="btn btn-primary">Search</button>
+    <div class="col-md-6  d-flex align-items-center">
+        <form method="get" class="search-form form-inline">
+            <div class="input-group ">
+                <input type="text" name="search" class="form-control  pr-5 pl-5" placeholder="Search by student name" value="{{ search_query }}">
+                <button type="submit" class="btd-flex align-items-centern btn-primary">rechercher </button>
             </div>
         </form>
     </div>
 </div>
+</div>
 
-<div class="modal fade w-100t" id="inscriptionModal" tabindex="-1" aria-labelledby="inscriptionModalLabel" aria-hidden="true">
+<div class="modal fade w-100 " id="inscriptionModal" tabindex="-1" aria-labelledby="inscriptionModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg"> <!-- Adjusted width using modal-lg class -->
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="inscriptionModalLabel">Ajouter Inscription</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body  w-100 h-100 pr-5">
                 <form method="post">
                     {% csrf_token %}
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6 w-100">
                             <div class="form-group">
                                 <label for="id_eleve">Eleve</label>
                                 {{ form.eleve }}
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6  w-100">
                             <div class="form-group">
                                 <label for="id_classe">Classe</label>
                                 {{ form.classe }}
@@ -165,7 +174,7 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-6  w-100">
                             <div class="form-group">
                                 <label for="id_annee_scolaire">Annee scolaire</label>
                                 {{ form.annee_scolaire }}

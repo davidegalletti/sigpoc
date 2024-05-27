@@ -1,4 +1,4 @@
-{% extends "/home/humbu/sigpoc/templates/layout.html" %}
+{% extends "../../layout.html" %}
 {% block header %}
 <nav class="navbar navbar-expand-lg shadow-sm pb-5 bg-white">
   
@@ -126,17 +126,17 @@
     }
 </style>
 
-<div class="container-fluid">
-    <div class="row mb-4">
+<div class="container-fluid ">
+    <div class="row mb-6 d-flex align-items-md-start">
         <div class="col-md-6">
             <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#paymentModal">
                 <i class="fas fa-plus"></i> Ajouter Paiement
             </button>
         </div>
-        <div class="col-md-6 d-flex justify-content-end">
+        <div class="col-md-6  d-flex align-items-center">
             <!-- Search Form -->
             <form class="search-form form-inline" method="GET" action="{% url 'manage_payments' %}">
-                <input type="text" class="form-control" name="search" placeholder="Search by student name...">
+                <input type="text" class="form-control ml-5" name="search" placeholder="recherche par nom prenom...">
                 <button type="submit" class="btn btn-primary">rechercher</button>
             </form>
         </div>
@@ -193,7 +193,7 @@
             </tbody>
         </table>
         {% else %}
-        <p>No student found for "{{ search_query }}"</p>
+        <p> aucun eleve du nom ou du prenom de  "{{ search_query }}"</p>
         {% endif %}
     </div>
 </div>
@@ -203,14 +203,14 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="paymentModalLabel">Create Payment</h5>
+                        <h5 class="modal-title" id="paymentModalLabel">Ajouter paiement</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form method="post" id="paymentForm">
                             {% csrf_token %}
                             {{ form.as_p }}
-                            <button type="submit" class="btn btn-primary">Create</button>
+                            <button type="submit" class="btn btn-primary">ajouter</button>
                         </form>
                     </div>
                 </div>

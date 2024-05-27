@@ -1,4 +1,4 @@
-{% extends "/home/humbu/sigpoc/templates/layout.html" %}
+{% extends "../../layout.html" %}
 
 <header>
     {% block header %}
@@ -9,21 +9,29 @@
     {% endblock header %}
 </header>
 {% block content %}
-<div class="container">
+<div class="container  vh-40">
     <h2 class='text-black-50 text-center mb-5'>mise a jours Paiement</h2>
     
-    <div class="student-info flex-column">
+    <div class="student-info flex-column col-2 ">
         <h4>information eleve</h4>
-        <p><strong>Nom:</strong> {{ eleve.nom }}</p>
-        <p><strong>Prenom:</strong> {{ eleve.prenom }}</p>
+        <div class='col'>
+            <p ><strong>Nom:</strong> {{ eleve.nom }}</p>
+            <p><strong>Prenom:</strong> {{ eleve.prenom }}</p>
+        </div>
+       <div class='col'>
         <p><strong> date paiement</strong> {{paiement.date_paye}}</p>
         <p><strong>Classe:</strong> {{ classe.nom }} {{ classe.get_type_ecole_display }}</p>
+    </div>
     </div>
     
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="btn btn-primary">mise a  jours</button>
+        <div class="mt-2">
+            <button type="submit" class="btn  mt-2 btn-primary">mise a  jours</button>
+            <a href="{% url 'manage_payments' %}" class="mt-2 btn btn-danger">retour </a>
+        </div>
+       
     </form>
 </div>
 {% endblock content %}

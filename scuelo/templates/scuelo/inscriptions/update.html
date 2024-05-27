@@ -1,4 +1,15 @@
-{% extends "/home/humbu/sigpoc/templates/layout.html" %}
+{% extends "../../layout.html" %}
+
+
+
+{% block header %}
+
+    <!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+     the
+</nav>
+{% endblock header %}
+    
 
 {% block content %}
 <h2> Mettre a  jours  l'inscription</h2>
@@ -28,6 +39,9 @@
         </div>
       
     </div>
+    <div class="mt-5">
     <button type="submit" class="mt-2 btn btn-primary">mise a jours Inscription</button>
+    <a href="{% url 'manage_inscriptions' %}" class="mt-2 btn btn-danger">retour </a>
+</div>
 </form>
 {% endblock %}

@@ -1,4 +1,4 @@
-{% extends "/home/humbu/sigpoc/templates/layout.html" %}
+{% extends "../../layout.html" %}
 
 {% block content %}
     
@@ -15,5 +15,6 @@
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary">mise a  jours</button>
+    <a class="btn" href="{% url 'manage_annee_scolaire' %}" >back</a>
 </form>
 {% endblock content %}

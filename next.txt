@@ -1,17 +1,14 @@
 next i can 
 
 
-1- look  for   how to deal  with  new  inscriptions  and classe switching 
-
-2-add icons to the sidebar elements  
 
 3-add a  btn for the student personal inscription in the student detail page 
 
 4 - remove the  student  inscription formset from the student  update page 
 5- list  the  personal  student  inscription in his detail  page  
-6-add the  add paiement btn  in the student detail page 
 
-7-uniformize the tables  
+
+
 
 8-the possibily of making search in the inscriptions part 
 9-reformate to pop up  the  inscriptions creation process 
@@ -23,3 +20,18 @@ concerning the tenue  the way it  will  be manage is that if  the  fees  are pai
  let suppose the case that the student uniform is   taken care  by the NGO
  this is  a  non  case 
  question can the  uniform be in charge of the NGO
+
+ ###################
+ next 
+
+ finish the deployment  process   on the    virtual machine 
+
+ fix  the onboarding screen for symbiose  
+ 
+ optionally go to nassara  
+
+ meet arist 
+
+ is to complete the incompleted  tasks  
+
+ then   
