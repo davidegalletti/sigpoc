@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+        margin: 0;
+    }
+    
+    .login-container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        width: 300px;
+        text-align: center;
+    }
+    
+    .login-container img {
+        width: 100px;
+        margin-bottom: 20px;
+    }
+    
+    .login-container form {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .login-container form input[type="text"],
+    .login-container form input[type="password"] {
+        padding: 10px;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    
+    .login-container form button {
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #28a745;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    
+    .login-container form button:hover {
+        background-color: #218838;
+    }
+    
+    .error-message {
+        color: red;
+        margin-top: 10px;
+    }
+</style>
+<body>
+
+    <div class="login-container">
+         <h3>bienvenue a  SICS  Nasara</h3>
+        <h2>Login</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Login</button>
+        </form>
+        {% if form.errors %}
+            <div class="error-message">
+                <p class='text-danger'>verifier bien vos  informations .... </p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

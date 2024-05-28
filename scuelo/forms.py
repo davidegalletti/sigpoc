@@ -1,7 +1,8 @@
 from django import forms
 from .models import  (Eleve  , Paiement , 
                       Inscription ,Classe  ,  AnneeScolaire)
-
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Submit, Row, Column
 from .models  import CONDITION_ELEVE ,  CS_PY , HAND , SEX
 from django.forms import inlineformset_factory
 
@@ -12,12 +13,35 @@ class InscriptionForm(forms.ModelForm):
         model = Inscription
         fields = ['classe', 'annee_scolaire']
         
-
 class PaiementForm(forms.ModelForm):
+    creation_date = forms.DateField(widget=forms.HiddenInput()) 
     class Meta:
         model = Paiement
         fields = ['causal', 'montant', 'date_paye', 'note', 'inscription']
+        widgets = {
+            'causal': forms.Select(attrs={'class': 'form-control'}),
+            'montant': forms.NumberInput(attrs={'class': 'form-control'}),
+            'creation_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'note': forms.Textarea(attrs={'rows': 4, 'cols': 40 , 'class': 'form-control'}),
+            'inscription': forms.Select(attrs={'class': 'form-control'}),
+        }
 
+class PaiementUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Paiement
+        fields = ['causal', 'montant', 'date_paye', 'note', 'inscription']
+        widgets = {
+            'causal': forms.Select(attrs={'class': 'form-control'}),
+            'montant': forms.NumberInput(attrs={'class': 'form-control'}),
+            'date_paye': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'note': forms.Textarea(attrs={'rows': 4, 'cols': 40 , 'class': 'form-control'}),
+            #'inscription': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+class InscriptionPerStudentForm(forms.ModelForm):
+    class Meta:
+        model = Inscription
+        fields = ['classe', 'annee_scolaire']
 
 class EleveCreateForm(forms.ModelForm):
     class Meta:
@@ -91,5 +115,50 @@ InscriptionFormSet = inlineformset_factory(
     widgets={
         'classe': forms.Select(),
         'annee_scolaire': forms.Select(),
+   
     }
 )
+
+
+class InscriptionForm(forms.ModelForm):
+    class Meta:
+        model = Inscription
+        fields = ['eleve', 'classe', 'annee_scolaire']
+        widgets = {
+            'eleve': forms.Select(attrs={'class': 'form-control'}),
+            'classe': forms.Select(attrs={'class': 'form-control'}),
+            'annee_scolaire': forms.Select(attrs={'class': 'form-control'}),
+            
+        }
+        
+class AnneeScolaireForm(forms.ModelForm):
+    class Meta:
+        model = AnneeScolaire
+        fields = ['nom', 'nom_bref', 'date_initiale', 'date_finale', 'actuel']
+        widgets = {
+            'nom': forms.TextInput(attrs={'class': 'form-control'}),
+            'nom_bref': forms.TextInput(attrs={'class': 'form-control'}),
+            'date_initiale': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'date_finale': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'actuel': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+        }
+        
+
+class PaiementPerStudentForm(forms.ModelForm):
+    class Meta:
+        model = Paiement
+        fields = ['causal','date_paye', 'montant', 'note']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Row(
+                Column('date_paye', css_class='form-group col-md-6 mb-0'),
+                Column('montant', css_class='form-group col-md-6 mb-0'),
+                css_class='form-row'
+            ),
+            'note',
+            Submit('submit', 'Save changes')
+        )

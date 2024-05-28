@@ -1,0 +1,290 @@
+{% extends "../../layout.html" %}
+
+{% block header %}
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+   <a href=""><i></i></a>
+ <i class=""></i>
+{% endblock header %}
+ 
+{% block content %}
+
+<style>
+    /* Custom styles for the modal */
+
+   .modal-content {
+       padding: 20px;
+   }
+   .modal-top-right {
+       position: fixed;
+       top: 10px;
+       right: 10px;
+       z-index: 1050;
+   }
+   .pagination {
+       margin-top: 20px;
+       display: flex;
+       justify-content: center;
+       align-items: center;
+   }
+
+   .pagination .page-link {
+       color: #007bff;
+       border: 1px solid #007bff;
+       margin: 0 5px;
+   }
+
+   .pagination .page-link:hover {
+       background-color: #007bff;
+       color: #fff;
+       border-color: #007bff;
+   }
+
+   .pagination .page-item.active .page-link {
+       background-color: #007bff;
+       color: #fff;
+       border-color: #007bff;
+   }
+
+   .pagination .page-item.disabled .page-link {
+       color: #6c757d;
+       pointer-events: none;
+       cursor: not-allowed;
+   }
+   /* Form styles */
+   .inscription-form {
+       margin-bottom: 20px;
+       background-color: #f9f9f9;
+       padding: 20px;
+       border-radius: 5px;
+       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+   }
+
+   .inscription-form label {
+       display: block;
+       margin-bottom: 5px;
+       font-weight: bold;
+   }
+     /* Style for the form */
+     .payment-form {
+       margin-bottom: 20px;
+       display: flex;
+       flex-wrap: wrap;
+       justify-content: space-between;
+   }
+
+   .payment-form input[type="text"],
+   .payment-form input[type="number"],
+   .payment-form select {
+       width: calc(50% - 10px);
+       padding: 10px;
+       margin-bottom: 10px;
+       border: 1px solid #ccc;
+       border-radius: 4px;
+       box-sizing: border-box;
+   }
+
+   .payment-form button[type="submit"] {
+       width: 100%;
+       background-color: #007bff; /* Bootstrap primary color */
+       color: #fff;
+       padding: 10px;
+       border: none;
+       border-radius: 4px;
+       cursor: pointer;
+   }
+
+   .payment-form button[type="submit"]:hover {
+       background-color: #0056b3; /* Darker shade of primary color on hover */
+   }
+
+   .nav-link.active {
+       font-weight: bold;
+   }
+
+   .inscription-form input[type="text"],
+   .inscription-form select,
+   .inscription-form input[type="date"] {
+       width: 100%;
+       padding: 10px;
+       margin-bottom: 10px;
+       border: 1px solid #ccc;
+       border-radius: 4px;
+       box-sizing: border-box;
+   }
+
+   .inscription-form button[type="submit"] {
+       width: 100%;
+       background-color: #007bff; /* Bootstrap primary color */
+       color: #fff;
+       padding: 10px;
+       border: none;
+       border-radius: 4px;
+       cursor: pointer;
+   }
+
+   .inscription-form button[type="submit"]:hover {
+       background-color: #0056b3; /* Darker shade of primary color on hover */
+   }
+
+</style>
+<div class='content  row'>
+
+<div class=" container-fluid">
+     <div class="row mb-6 d-flex align-items-md-start">
+
+    <div class="col-md-6">
+        <button type="button" class="btn btn-primary add-inscription-btn" data-bs-toggle="modal" data-bs-target="#inscriptionModal">
+            <i class="fas fa-plus-circle me-2"></i> Ajouter Inscription
+        </button>
+    </div>
+    <div class="col-md-6  d-flex align-items-center">
+        <form method="get" class="search-form form-inline">
+            <div class="input-group ">
+                <input type="text" name="search" class="form-control  pr-5 pl-5" placeholder="Search by student name" value="{{ search_query }}">
+                <button type="submit" class="btd-flex align-items-centern btn-primary">rechercher </button>
+            </div>
+        </form>
+    </div>
+</div>
+</div>
+
+<div class="modal fade w-100 " id="inscriptionModal" tabindex="-1" aria-labelledby="inscriptionModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg"> <!-- Adjusted width using modal-lg class -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="inscriptionModalLabel">Ajouter Inscription</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body  w-100 h-100 pr-5">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 w-100">
+                            <div class="form-group">
+                                <label for="id_eleve">Eleve</label>
+                                {{ form.eleve }}
+                            </div>
+                        </div>
+                        <div class="col-md-6  w-100">
+                            <div class="form-group">
+                                <label for="id_classe">Classe</label>
+                                {{ form.classe }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6  w-100">
+                            <div class="form-group">
+                                <label for="id_annee_scolaire">Annee scolaire</label>
+                                {{ form.annee_scolaire }}
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="mt-2 btn btn-primary mb-5">Ajouter Inscription</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+
+<!-- Navigation for Inscriptions -->
+<ul class="nav nav-tabs mb-4">
+    <li class="nav-item">
+        <a class="nav-link {% if not class_filter %}active{% endif %}" href="{% url 'manage_inscriptions' %}">Toutes les  Classes</a>
+    </li>
+    {% for classe in classes %}
+    <li class="nav-item">
+        <a class="nav-link {% if class_filter == classe.nom %}active{% endif %}" href="{% url 'manage_inscriptions' %}?class={{ classe.nom }}">{{ classe.nom }}</a>
+    </li>
+    {% endfor %}
+</ul>
+<!-- Filter toggle buttons -->
+<div class="btn-group" role="group" aria-label="School Year Filter">
+    {% for year in school_years %}
+    <button type="button" class="btn btn-secondary toggle-btn" data-year="{{ year }}">{{ year }}</button>
+    {% endfor %}
+</div>
+    <table class=" table table-striped table-bordered payments-table  w-95  ">
+        <thead class="thead-light">
+            <tr class="p-5">
+                <th scope="col">Eleve</th>
+                <th scope="col">Classe</th>
+                <th scope="col">Annee scolaire</th>
+                <th scope="col">Date d'inscription</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for inscription in inscriptions %}
+            <tr>
+                <td>{{ inscription.eleve.nom }} {{ inscription.eleve.prenom }}</td>
+                <td>{{ inscription.classe.nom }}</td>
+                <td>{{ inscription.annee_scolaire.nom }}</td>
+                <td>{{ inscription.date_inscription }}</td>
+                <td>
+                    <a href="{% url 'update_inscription' inscription.pk %}" class="btn btn-warning btn-sm">mise a jours </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">aucun inscription trouver  </td>
+            </tr>
+            {% endfor %}
+            
+      
+            <!-- Pagination buttons -->
+
+    </table>
+    <div class="pagination">
+        <span class="step-links">
+            {% if inscriptions.has_previous %}
+                <a class="btn btn-primary"  href="?page=1">&laquo; premier</a>
+                <a  class="btn btn-primary"  href="?page={{ inscriptions.previous_page_number }}">precedant</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ inscriptions.number }}  {{ inscriptions.paginator.num_pages }}.
+            </span>
+    
+            {% if inscriptions.has_next %}
+                <a class="btn btn-primary" href="?page={{ inscriptions.next_page_number }}">suivant</a>
+                <a  class="btn btn-primary"  href="?page={{ inscriptions.paginator.num_pages }}">dernier &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        $('#inscriptionForm').submit(function(event) {
+            // Prevent default form submission
+            event.preventDefault();
+            
+            // Serialize form data
+            var formData = $(this).serialize();
+            
+            // AJAX POST request to submit form data
+            $.ajax({
+                type: 'POST',
+                url: '/inscriptions/', // URL for creating inscriptions
+                data: formData,
+                success: function(response) {
+                    // Handle success response
+                    // For example, close the modal and update the table with new inscription data
+                    $('#inscriptionModal').modal('hide');
+                    // You may need to reload the page or update the inscription table dynamically
+                },
+                error: function(xhr, status, error) {
+                    // Handle error response
+                    console.error(xhr.responseText);
+                    // Display error message to the user if needed
+                }
+            });
+        });
+    });
+    </script>
+    
+{% endblock %}

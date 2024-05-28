@@ -26,13 +26,12 @@ SECRET_KEY = 'django-insecure-_^=mjdr+xr71y*0j$o!uaq79!+rz$5i2vvisl=3c($kb(lml5^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['113.30.150.236', '127.0.0.1']
 
 
 # Application definition
 
 INSTALLED_APPS = [
- 
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,13 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'scuelo',
     'crispy_forms',
-       'bootstrap5',
- 'crispy_bootstrap5',
-
-    
+    'bootstrap5',
+    'crispy_bootstrap5',
 ]
-
-
 
 
 
@@ -66,7 +61,7 @@ ROOT_URLCONF = 'sig.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
+        'DIRS': ['templates'] #[BASE_DIR / 'templates']
         ,
         'APP_DIRS': True,
         'OPTIONS': {

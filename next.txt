@@ -1,0 +1,37 @@
+next i can 
+
+
+
+3-add a  btn for the student personal inscription in the student detail page 
+
+4 - remove the  student  inscription formset from the student  update page 
+5- list  the  personal  student  inscription in his detail  page  
+
+
+
+
+8-the possibily of making search in the inscriptions part 
+9-reformate to pop up  the  inscriptions creation process 
+10-reformate the  eleve selection process in the  inscriptions process   ( make  it  more  browsable10
+- reformate the nav of each pages
+)
+concerning the tenue  the way it  will  be manage is that if  the  fees  are paid  then based  on the amount paid   then 
+ i  will  draw the   number of tenue , but this could not be in all cases  
+ let suppose the case that the student uniform is   taken care  by the NGO
+ this is  a  non  case 
+ question can the  uniform be in charge of the NGO
+
+ ###################
+ next 
+
+ finish the deployment  process   on the    virtual machine 
+
+ fix  the onboarding screen for symbiose  
+ 
+ optionally go to nassara  
+
+ meet arist 
+
+ is to complete the incompleted  tasks  
+
+ then   

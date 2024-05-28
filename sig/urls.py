@@ -19,11 +19,13 @@ from    . import settings
 from django.urls import include, path
 from scuelo.admin import sics_site
 from django.conf.urls.static import static
-
+from  scuelo.views  import  login_view
 urlpatterns = [
+    path('', login_view, name='login'),
+    #path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('sics/', sics_site.urls),
-        #path('homepage/', class_list, name='homepage')
-       path("homepage/", include('scuelo.urls')),
+    #path('homepage/', class_list, name='homepage')
+    path("homepage/", include('scuelo.urls')),
     
 ] + static(settings.STATIC_URL)

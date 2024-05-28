@@ -1,17 +1,12 @@
-{% extends "/home/humbu/sigpoc/templates/layout.html" %}
-
+{% extends "../../layout.html" %}
+{% load crispy_forms_tags %}
 
 {% block header %}
-<nav class="navbar navbar-expand-lg pb-5 bg-black">
-    
-    <a class="navbar-brand" href="{% url 'home' %}">Home</a>
+<nav class="navbar navbar-expand-lg pb-5  bg-light">
+
 </nav>
 {% endblock header %}
 {% block content %}
-
-<!-- Navbar -->
-
-
 <!-- Container with Reduced Margins -->
 <div class="container mt-4" style="max-width: 95%; margin: 0 auto;">
     <div class="row">
@@ -19,13 +14,13 @@
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header">
-                    Basic Information
+                  Information  de base
                 </div>
                 <div class="card-body">
                     <p><strong>Nom:</strong> {{ student.nom }}</p>
                     <p><strong>Prénom:</strong> {{ student.prenom }}</p>
                     <p><strong>Condition:</strong> {{ student.get_condition_eleve_display }}</p>
-                    <p><strong>Sex:</strong> {{ student.get_sex_display }}</p>
+                    <p><strong>Sexe:</strong> {{ student.get_sex_display }}</p>
                     <p><strong>Date de Naissance:</strong> {{ student.date_naissance }}</p>
                     <p><strong>CS PY:</strong> {{ student.get_cs_py_display }}</p>
                     <p><strong>Hand:</strong> {{ student.get_hand_display }}</p>
@@ -49,51 +44,104 @@
                         {% for inscription in inscriptions %}
                             <li class="list-group-item">{{ inscription.classe }} - {{ inscription.annee_scolaire }}</li>
                         {% empty %}
-                            <li class="list-group-item">No inscriptions found</li>
+                            <li class="list-group-item">aucune inscription trouvee </li>
                         {% endfor %}
                     </ul>
                 </div>
             </div>
 
-            <a href="{% url 'student_update' pk=student.pk %}" class="btn btn-primary">Update Student</a>
+            <a href="{% url 'student_update' pk=student.pk %}" class="btn btn-primary">mise a jours eleve</a>
         </div>
-    </div>
 
-    <div class="row">
-        <!-- Payments -->
+    
+    </div>
+    <div class="row mt-1">
         <div class="col-md-12">
-            <div class="card mb-4">
-                <div class="card-header">
-                    Payments
-                </div>
-                <div class="card-body">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Amount</th>
-                                <th>Causal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for payment in payments %}
-                                <tr>
-                                    <td>{{ payment.date_paye }}</td>
-                                    <td>{{ payment.montant }}</td>
-                                    <td>{{ payment.causal }}</td>
-                                </tr>
-                            {% empty %}
-                                <tr>
-                                    <td colspan="3">No payments found</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <h3>Paiements</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>causal</th>
+
+                        <th>montant</th>
+                        <th>Note</th>
+                        <th>actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payments %}
+                        <tr>
+                            <td>{{ payment.date_paye }}</td>
+                            <td>{{ payment.causal }}</td>
+                            <td>{{ payment.montant }}</td>
+                            <td>{{ payment.note }}</td>
+                            <td>
+                                <a href="{% url 'update_paiement' pk=payment.id %}" class="btn btn-primary btn-sm">mettre a jours</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2"><strong>Total paiement:</strong></td>
+                        <td><strong>{{ total_payment }}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <!-- Button to trigger modal -->
+            <button type="button" class="btn btn-success mt-3" data-bs-toggle="modal" data-bs-target="#addPaiementModal">
+                ajouter paiment
+            </button>
         </div>
     </div>
-
 </div>
+<!-- Modal -->
+<div class="modal fade" id="addPaiementModal" tabindex="-1" aria-labelledby="addPaiementModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg"> <!-- Use modal-lg for a wider modal -->
+        <div class="modal-content">
+            <form id="addPaiementForm" method="post" action="{% url 'add_paiement' student.id %}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPaiementModalLabel">ajouter  un paiement  pour {{ student.nom }} {{ student.prenom }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">fermer</button>
+                    <button type="submit" class="btn btn-primary">sauvegarder</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('addPaiementForm');
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const formData = new FormData(form);
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            }).then(response => response.json()).then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    // Handle errors and display them
+                    console.error(data.errors);
+                }
+            }).catch(error => console.error('Error:', error));
+        });
+    });
 
-{% endblock %}
+    document.getElementById('add-inscription-btn').addEventListener('click', function() {
+        var modal = new bootstrap.Modal(document.getElementById('inscriptionModal'));
+        modal.show();
+      });
+</script>
+{% endblock content %}

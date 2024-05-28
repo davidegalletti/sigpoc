@@ -2,10 +2,12 @@
 
 from django.urls import path
 from .views  import ( StudentListView  , 
-                     StudentPerClasseView , home   ,#  StudentDetailInPerClasseView ,
-                
-                      StudentCreateView  , StudentUpdateView  ,  StudentDetailView
-                     )
+                     StudentPerClasseView , home   ,
+                manage_payments, update_paiement, delete_payment ,
+                manage_inscriptions ,  update_inscription , manage_annee_scolaire , update_annee_scolaire ,
+                      StudentCreateView  , StudentUpdateView  ,  StudentDetailView , important_info ,
+                      AddPaiementAjaxView ,  login_view , logout_view  
+                     )  
 
 
 urlpatterns = [
@@ -13,13 +15,17 @@ urlpatterns = [
     path('students/', StudentListView.as_view(), name='student_list'),
     path('students/create/', StudentCreateView.as_view(), name='student_create'),
     path('student/<int:pk>/update/', StudentUpdateView.as_view(), name='student_update'),
-    #path('class/<int:class_id>/', StudentPerClasseView.as_view(), name='student_per_classe'),
     path('homepage/class/<int:class_id>/', StudentPerClasseView.as_view(), name='student_per_classe'),
     path('student/<int:pk>/', StudentDetailView.as_view(), name='student_detail'),
-    #path('homepage/student/<int:pk>/class/<int:class_id>/', StudentDetailInPerClasseView.as_view(), name='student_detail_in_per_classe'),
-    #path('student/<int:pk>/class/<int:class_id>/', StudentDetailInPerClasseView.as_view(), name='student_detail_in_per_classe'),
-    #path('create/paiement/', PaiementCreateView.as_view(), name='create_paiement'),
-
-    #path('inscription/<int:pk>/update/', InscriptionUpdateView.as_view(), name='inscription_update'),
-   
-]# Add other URL patterns for your CRUD operations and other views
+    path('paiements/', manage_payments, name='manage_payments'),
+    path('paiements/<int:pk>/update/', update_paiement, name='update_paiement'),
+    path('delete-paiement/<int:payment_id>/', delete_payment, name='delete_payment'), 
+    path('inscriptions/', manage_inscriptions, name='manage_inscriptions'),
+    path('update-inscription/<int:pk>/', update_inscription, name='update_inscription'),
+    path('update-annee-scolaire/<int:pk>/', update_annee_scolaire, name='update_annee_scolaire'),
+    path('manage-annee-scolaire/', manage_annee_scolaire, name='manage_annee_scolaire'),
+    path('important-info/', important_info, name='important_info'),
+    path('student/<int:pk>/add_paiement/', AddPaiementAjaxView.as_view(), name='add_paiement'),
+    path('login/', login_view, name='login'),
+    path('logout/', logout_view ,name='logout'),
+]

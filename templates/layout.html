@@ -1,6 +1,7 @@
 {%  load static  %}
 {% load bootstrap5 %}
 {% load crispy_forms_tags %}
+
 <!DOCTYPE html>
 
 {% load bootstrap5 %}
@@ -18,7 +19,9 @@
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
-
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.2.0/css/bootstrap.min.css" rel="stylesheet">
   
 
    
@@ -44,17 +47,112 @@
   
 </head>
 
-<body >
-  <header>
-{% block header %}
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+}
+.navbar {
+    margin-bottom: 20px;
+    width: 100%;
+}
+.container-fluid {
+    display: flex;
+    flex: 1;
+}
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 250px;
+    background-color: #f8f9fa;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+.sidebar a {
+    display: block;
+    padding: 10px 15px;
+    margin-bottom: 10px;
+    color: #000;
+    text-decoration: none;
+    border-radius: 4px;
+}
+.sidebar a:hover {
+    background-color: #e9ecef;
+}
+.content {
+    margin-left: 250px;
+    padding: 20px;
+    flex: 1;
+}
+header, footer {
+    margin-left: 250px;
+    padding: 20px;
+}
+</style>
+</head>
+<body>
+    <header>  {% block header %}
+        
+        {% endblock header %}
+    </header>
 
 
-{% endblock header %}
+<div class="">
+  <div class="mt-5">
+      <!-- Sidebar -->
+      <div class="sidebar ">
+          <div class="sidebar-content">
+            <!-- Sidebar links -->
+            
+            <a href="{% url 'home' %}" class="{% if request.path == '/home/' %}active{% endif %}">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="{% url 'important_info' %}" class="{% if request.path == '/important_info/' %}active{% endif %}">
+                <i class="fas fa-chart-line"></i> Dashboard
+            </a>
+            <a href="{% url 'manage_payments' %}" class="{% if request.path == '/manage_payments/' %}active{% endif %}">
+                <i class="fas fa-money-check-alt"></i> Payments
+            </a>
+            <a href="{% url 'student_create' %}" class="{% if request.path == '/student_create/' %}active{% endif %}">
+                <i class="fas fa-user-plus"></i> ajouter  eleve
+            </a>
+            <a href="{% url 'manage_inscriptions' %}" class="{% if request.path == '/manage_inscriptions/' %}active{% endif %}">
+                <i class="fas fa-users"></i> Inscriptions
+            </a>
+            <a href="{% url 'manage_annee_scolaire' %}" class="{% if request.path == '/manage_annee_scolaire/' %}active{% endif %}">
+                <i class="fas fa-calendar-alt"></i> Année Scolaire
+            </a>
+          </div>
+      </div>
+      
+      <!-- Main Content -->
+      <div class="content">
 
-  </header>
+          <!-- Add your main content here -->
+          {% block content %}
+          {% endblock content %}
+      </div>
+  </div>
+</div>
 
- {% block content %}{% endblock content %}
+<!-- Footer -->
+<footer class="footer">
+  <div class="container-fluid">
+      <!-- Footer content -->
+  </div>
+</footer>
+
+<!-- Add your JavaScript links here -->
 </body>
+<!-- Bootstrap CSS -->
 
+<!-- Bootstrap JS and Popper.js -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.2.0/js/bootstrap.min.js"></script>
 
 </html>

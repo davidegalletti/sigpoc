@@ -90,6 +90,7 @@ class InscriptionAdmin(admin.ModelAdmin):
     autocomplete_fields = ['eleve']
 
 
+
 sics_site.register(Paiement, PaiementAdmin)
 sics_site.register(Eleve, EleveAdmin)
 sics_site.register(Classe)
