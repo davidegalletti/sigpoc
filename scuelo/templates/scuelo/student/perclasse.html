@@ -1,50 +1,96 @@
 {% extends "../../layout.html" %}
 
-{% block header %}
-<nav class="navbar navbar-expand-lg shadow-sm pb-5 bg-white">
-   <!-- Logo -->
-   <div class="d-flex align-items-center ">
-       
-    <h1 class="ms-2 mb-0">{{ clicked_class.nom }}-{{clicked_class.type_ecole}}{{clicked_class.nom_ecole}} </h1>
-</div>
-<!-- Stats -->
-<div class="navbar-nav ms-auto w-100 pr-5 mr-5">
-    <ul class="navbar-nav me-auto mb-2 mb-lg-0 p">
-        <li class="nav-item">
-            <a class="nav-link text-black" href="#">Total eleve: {{ total_students }}</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-black" href="#">filles: {{ total_girls }}</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-black" href="#">Garcons: {{ total_boys }}</a>
-        </li>
-    
-        <li class="nav-item">
-            <a class="nav-link text-black" href="#">Total frais: {{ total_fees }}</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-black" href="#">Py-{{ students.total_py }}</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-black" href="#">  Cs-{{ total_cs }}</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-black" href="#">  Bravo-{{ total_bravo }}</a>
-        </li>
-        <li class="nav-item text-black">
-            <a class="nav-link text-black" href="#">  Cs-{{ total_extra }}</a>
-        </li>
-        <li class="nav-item text-black">
-            <a class="nav-link text-black" href="#">  Aban-{{ total_abandon }}  conf- {{total_good_condition}} prop-{{total_prop}} </a>
-        </li>
-    </ul>
-</div>
-</nav>
+<style>
+  /* Custom styles for the student per page */
+
+/* Adjust the search form */
+.form-control {
+    width: auto;
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+
+
+/* Custom CSS for the search bar */
+.search-form {
+    max-width: 600px; /* Limit the width of the search form */
+    margin: 0 auto; /* Center the search form */
+}
+
+.search-input {
+    flex-grow: 1; /* Allow the input to grow */
+    border-top-right-radius: 0; /* Adjust border radius to match button */
+    border-bottom-right-radius: 0;
+}
+
+.search-button {
+    border-top-left-radius: 0; /* Adjust border radius to match input */
+    border-bottom-left-radius: 0;
+}
+
   
-{% endblock header %}
+</style>
+
+{% block nav %}
+<header class="content">
+    <nav class="navbar navbar-expand-lg navbar-dark pb-4 h-100 pt-5 pb-5 custom-navbar">
+        <div class="container-fluid">
+            <!-- Logo and Important Information -->
+            <div class="d-flex align-items-center">
+                <a class="navbar-brand text-white" href="{% url 'home' %}">SICS Nassara</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="javascript:history.back()">
+                                <i class="fas fa-undo"></i> <!-- Font Awesome icon for Undo -->
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="javascript:redoAction()">
+                                <i class="fas fa-redo"></i> <!-- Font Awesome icon for Redo -->
+                            </a>
+                        </li>
+                    </ul>
+                    <span class="navbar-text important-info">
+                        <ul class="navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="#">Total élève: <span style="font-size: 14px;">{{ total_students }}</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="#">Filles: <span style="font-size: 14px;">{{ total_girls }}</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="#">Garçons: <span style="font-size: 14px;">{{ total_boys }}</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="#">Total frais: <span style="font-size: 14px;">{{ total_fees }}</span></a>
+                            </li>
+                            <!-- Add other list items with reduced font size -->
+                        </ul>
+                    </span>
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <span class="navbar-text username" style="font-size: 14px;">
+                                Bienvenue, {{ user.username }}!
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link logout-btn" href="{% url 'logout' %}" style="font-size: 14px;">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
 
 
+{% endblock nav %}
+    
 {% block content %}
 <!-- Navbar -->
 <form class="d-flex mb-3 mt-4">
@@ -94,7 +140,7 @@
                               </td>
                                     <td>
 
-                                        <a href="{% url 'student_detail' pk=student.pk %}" class="btn btn-warning btn-sm">Details</a>
+                                        <a href="{% url 'student_detail' pk=student.pk %}" class="btn btn-warning btn-sm"><i class="fas fa-sync-alt fa-2x"></i></a>
 
 
                                     </td>

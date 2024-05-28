@@ -1,11 +1,13 @@
 {% extends "../../layout.html" %}
 {% load crispy_forms_tags %}
 
-{% block header %}
-<nav class="navbar navbar-expand-lg pb-5  bg-light">
 
-</nav>
-{% endblock header %}
+{% block nav %}
+
+    
+   
+{% endblock nav %}
+
 {% block content %}
 <!-- Container with Reduced Margins -->
 <div class="container mt-4" style="max-width: 95%; margin: 0 auto;">
@@ -50,7 +52,7 @@
                 </div>
             </div>
 
-            <a href="{% url 'student_update' pk=student.pk %}" class="btn btn-primary">mise a jours eleve</a>
+            <a href="{% url 'student_update' pk=student.pk %}" class="btn btn-primary"><i class="fas fa-sync-alt fa-2x"></i></a>
         </div>
 
     
@@ -77,7 +79,7 @@
                             <td>{{ payment.montant }}</td>
                             <td>{{ payment.note }}</td>
                             <td>
-                                <a href="{% url 'update_paiement' pk=payment.id %}" class="btn btn-primary btn-sm">mettre a jours</a>
+                                <a href="{% url 'update_paiement' pk=payment.id %}" class="btn btn-primary btn-sm"><i class="fas fa-sync-alt fa-2x"></i></a>
                             </td>
                         </tr>
                     {% endfor %}

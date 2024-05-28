@@ -1,5 +1,9 @@
 {% extends "../../layout.html" %}
 
+
+
+
+
 {% block content %}
 <div class='w-100'>
 
@@ -70,7 +74,7 @@
             <td>{{ annee_scolaire.total_boys }}</td>
 
             <td>
-                <a href="{% url 'update_annee_scolaire' annee_scolaire.pk %}" class="btn btn-primary btn-sm">mise a jours </a>
+                <a href="{% url 'update_annee_scolaire' annee_scolaire.pk %}" class="btn btn-danger btn-sm"><i class="fas fa-sync-alt fa-2x"></i></a>
             </td>
         </tr>
         {% endfor %}

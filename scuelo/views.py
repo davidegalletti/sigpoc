@@ -370,7 +370,6 @@ def delete_payment(request, payment_id):
     else:
         return redirect('manage_payments') 
     
-
 def manage_inscriptions(request):
     # Handle form submission
     if request.method == 'POST':
@@ -448,7 +447,7 @@ def update_inscription(request, pk):
         'inscription': inscription
     })
     
-    
+
 def manage_annee_scolaire(request):
     # Fetch all existing Annee Scolaire objects
     annee_scolaires = AnneeScolaire.objects.all()

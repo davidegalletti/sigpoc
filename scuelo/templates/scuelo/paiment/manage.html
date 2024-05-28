@@ -186,7 +186,7 @@
                     <td>{{ payment.note|default_if_none:"" }}</td>
                     
                   <td class="d-flex">
-                        <a href="{% url 'update_paiement' payment.pk %}" class="btn btn-warning btn-sm mr-2">mise a jours</a>
+                        <a href="{% url 'update_paiement' payment.pk %}" class="btn btn-warning"><i class="fas fa-sync-alt fa-2x"></i></a>
                     </td>
                 </tr>
                 {% endfor %}
@@ -200,12 +200,12 @@
                 {% endif %}
     
                 <span class="current">
-                    Page {{ payments.number }} de  {{ payments.paginator.num_pages }}.
+                    Page {{ payments.number }}/{{ payments.paginator.num_pages }}.
                 </span>
     
                 {% if payments.has_next %}
-                    <a href="?page={{ payments.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if causal_filter %}&causal={{ causal_filter }}{% endif %}">suivant</a>
-                    <a href="?page={{ payments.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if causal_filter %}&causal={{ causal_filter }}{% endif %}">dernier &raquo;</a>
+                    <a href="?page={{ payments.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if causal_filter %}&causal={{ causal_filter }}{% endif %}" class='btn btn-primary'>suivant</a>
+                    <a href="?page={{ payments.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if causal_filter %}&causal={{ causal_filter }}{% endif %}" class='btn btn-primary'>dernier &raquo;</a>
                 {% endif %}
             </span>
         </div>

@@ -1,12 +1,7 @@
 {% extends "../../layout.html" %}
 
-{% block header %}
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-   <a href=""><i></i></a>
- <i class=""></i>
-{% endblock header %}
- 
+
+
 {% block content %}
 
 <style>
@@ -126,9 +121,9 @@
    .inscription-form button[type="submit"]:hover {
        background-color: #0056b3; /* Darker shade of primary color on hover */
    }
-
+  
 </style>
-<div class='content  row'>
+<div class='content'>
 
 <div class=" container-fluid">
      <div class="row mb-6 d-flex align-items-md-start">
@@ -226,7 +221,8 @@
                 <td>{{ inscription.annee_scolaire.nom }}</td>
                 <td>{{ inscription.date_inscription }}</td>
                 <td>
-                    <a href="{% url 'update_inscription' inscription.pk %}" class="btn btn-warning btn-sm">mise a jours </a>
+                    <a href="{% url 'update_inscription' inscription.pk %}" class="btn btn-warning btn-sm"><i class="fas fa-sync-alt fa-2x"></i>
+                    </a>
                 </td>
             </tr>
             {% empty %}

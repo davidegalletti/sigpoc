@@ -5,8 +5,8 @@
 <!DOCTYPE html>
 
 {% load bootstrap5 %}
-  {% bootstrap_css %}
-  {% bootstrap_javascript %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
 
 <html lang="en">
 <head>
@@ -14,144 +14,289 @@
     <!-- Bootstrap CSS -->
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/5.2.0/css/bootstrap.min.css" rel="stylesheet">
-  
-
-   
- <!-- Bootst
     
-    rap core JavaScript-->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
-    integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
-
-  <link
+    <link
     href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
     rel="stylesheet">
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.2.0/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Custom styles for this template-->
-
-
-    <title>
-        {% block title %}
-            
-        {% endblock title %}
-    </title>
-  
-</head>
-
-<style>
-  body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    margin: 0;
-}
-.navbar {
-    margin-bottom: 20px;
-    width: 100%;
-}
-.container-fluid {
-    display: flex;
-    flex: 1;
-}
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 250px;
-    background-color: #f8f9fa;
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    overflow-y: auto;
-}
-.sidebar a {
-    display: block;
-    padding: 10px 15px;
-    margin-bottom: 10px;
-    color: #000;
-    text-decoration: none;
-    border-radius: 4px;
-}
-.sidebar a:hover {
-    background-color: #e9ecef;
-}
-.content {
-    margin-left: 250px;
-    padding: 20px;
-    flex: 1;
-}
-header, footer {
-    margin-left: 250px;
-    padding: 20px;
-}
-</style>
-</head>
-<body>
-    <header>  {% block header %}
+    
+    
+    
+    <!-- Bootst
         
-        {% endblock header %}
-    </header>
+        rap core JavaScript-->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
-
-<div class="">
-  <div class="mt-5">
-      <!-- Sidebar -->
-      <div class="sidebar ">
-          <div class="sidebar-content">
-            <!-- Sidebar links -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+        
+        <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+        
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.2.0/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Custom styles for this template-->
+        
+        
+        <title>
+            {% block title %}
             
-            <a href="{% url 'home' %}" class="{% if request.path == '/home/' %}active{% endif %}">
-                <i class="fas fa-home"></i> Home
-            </a>
-            <a href="{% url 'important_info' %}" class="{% if request.path == '/important_info/' %}active{% endif %}">
-                <i class="fas fa-chart-line"></i> Dashboard
-            </a>
-            <a href="{% url 'manage_payments' %}" class="{% if request.path == '/manage_payments/' %}active{% endif %}">
-                <i class="fas fa-money-check-alt"></i> Payments
-            </a>
-            <a href="{% url 'student_create' %}" class="{% if request.path == '/student_create/' %}active{% endif %}">
-                <i class="fas fa-user-plus"></i> ajouter  eleve
-            </a>
-            <a href="{% url 'manage_inscriptions' %}" class="{% if request.path == '/manage_inscriptions/' %}active{% endif %}">
-                <i class="fas fa-users"></i> Inscriptions
-            </a>
-            <a href="{% url 'manage_annee_scolaire' %}" class="{% if request.path == '/manage_annee_scolaire/' %}active{% endif %}">
-                <i class="fas fa-calendar-alt"></i> Année Scolaire
-            </a>
-          </div>
-      </div>
-      
-      <!-- Main Content -->
-      <div class="content">
+            {% endblock title %}
+        </title>
+        
+    </head>
+    <body>
+        
+    <style>
+        .custom-navbar {
+            margin: 0; /* Remove any margin */
+            padding: 0; /* Remove any padding */
+            border-radius: 10px; /* Rounded corners */
+            background-color: #343a40;
+            width: 100%;
+        }
+        .custom-navbar .navbar-nav {
+            flex-direction: row;
+        }
+        .custom-navbar .nav-item {
+            margin-right: 10px;
+            margin-left: 200px;
+            padding-left:  ;
+        }
+        .custom-navbar .navbar-brand, 
+        .custom-navbar .navbar-text, 
+        .custom-navbar .nav-link {
+            color: white !important;
+        }
+        .custom-navbar .important-info {
+            text-align: center;
+            flex: 1;
+            font-size: 1.2em;
+        }
+        .custom-navbar .navbar-nav.ml-auto .nav-item {
+            display: flex;
+            align-items: center;
+            
+        }
+        .custom-navbar .username {
+            margin-right: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+        .custom-navbar .logout-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        .custom-navbar .logout-btn:hover {
+            background-color: #c82333;
+            color: white;
+        }
+        .custom-navbar .fas {
+            font-size: 1.5em;
+        }
+       
+        
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #343a40;
+            padding-top: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar a {
+            display: block;
+            padding: 10px 15px;
+            color: white;
+            text-decoration: none;
+            margin: 10px 0;
+            transition: background-color 0.3s;
+        }
+        .sidebar a:hover, .sidebar a.clicked {
+            background-color: #495057;
+        }
+        .sidebar a.active {
+            background-color: #007bff;
+            color: white;
+        }
+        .sidebar i {
+            margin-right: 10px;
+        }
+        .content {
+            margin-left: 250px; /* Adjust as needed */
+            padding: 20px;
+            transition: margin-left 0.3s ease; /* Add transition effect */
+        }
+        
+        .sidebar.collapsed + .content {
+            margin-left: 50px; /* Adjust to collapsed width */
+        }
 
-          <!-- Add your main content here -->
-          {% block content %}
-          {% endblock content %}
-      </div>
-  </div>
-</div>
+        .sidebar {
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #343a40;
+            padding-top: 20px;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            transition: width 0.3s ease;
+        }
+        
+        .sidebar.collapsed {
+            width: 60px; /* Collapsed width */
+        }
+        
+        .toggle-btn {
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            margin-bottom: 20px; /* Add some spacing below the button */
+        }
+        
+        .toggle-btn:hover {
+            color: #007bff; /* Change color on hover */
+        }
+        /* Add this CSS to hide the text when the sidebar is collapsed */
+/* Add this CSS to hide the text of sidebar links when collapsed */
+.sidebar.collapsed a span {
+    display: none;
+}
 
-<!-- Footer -->
-<footer class="footer">
-  <div class="container-fluid">
-      <!-- Footer content -->
-  </div>
-</footer>
+/* Add this CSS to display only icons of sidebar links when collapsed */
+.sidebar.collapsed a i {
+    margin-right: 2rem;
+    width: 100%;
+    
+}
+.custom-navbar {
+    width: calc(100% - 250px); /* Adjust based on the initial width of the sidebar */
+    transition: width 0.3s ease; /* Add transition effect */
+}
 
-<!-- Add your JavaScript links here -->
+.sidebar.collapsed + .custom-navbar {
+    width: calc(100% - 50px); /* Adjust to collapsed width */
+    transition: width 0.3s ease; /* Add transition effect */
+    margin-left: 50px; /* Adjust to collapsed width */
+}
+        </style>
+        
+    
+    
+    
+    {% block nav %}
+    <header class="content">
+        <nav class="navbar navbar-expand-lg navbar-dark  pb-4 h-100 pt-5 pb-5 custom-navbar">
+            <a class="navbar-brand text-white" href="{% url 'home' %}">SICS Nassara</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript:history.back()">
+                            <i class="fas fa-undo"></i> <!-- Font Awesome icon for Undo -->
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="javascript:redoAction()">
+                            <i class="fas fa-redo"></i> <!-- Font Awesome icon for Redo -->
+                        </a>
+                    </li>
+                </ul>
+                <span class="navbar-text important-info">
+                    {% block important_info %}
+                    <!-- You can add important information here -->
+                    {% endblock %}
+                </span>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <span class="navbar-text username">
+                            Bienvenu, {{ user.username }}!
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link logout-btn" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    
+    
+    {% endblock nav %}
+   
+  
+    <div class="sidebar ml-5">
+        <button class="toggle-btn fa-3x " onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+         
+        </button>
+        <a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">
+            <i class="fas fa-home fa-2x mr-5"></i> <span>Home</span>
+        
+        </a>
+        <a href="{% url 'important_info' %}" class="{% if request.path == '/important_info/' %}active{% endif %}">
+            <i class="fas fa-chart-line fa-2x"></i> <span>Dashboard</span> 
+        </a>
+        <a href="{% url 'manage_payments' %}" class="{% if request.path == '/manage_payments/' %}active{% endif %}">
+            <i class="fas fa-money-check-alt fa-2x"></i><span>Paiements</span> 
+        </a>
+        <a href="{% url 'student_create' %}" class="{% if request.path == '/student_create/' %}active{% endif %}">
+            <i class="fas fa-user-plus fa-2x"></i> <span>ajouter eleve</span>
+           
+        </a>
+        <a href="{% url 'manage_inscriptions' %}" class="{% if request.path == '/manage_inscriptions/' %}active{% endif %}">
+            <i class="fas fa-users fa-2x"></i> <span>Inscriptions</span> 
+        </a>
+        <a href="{% url 'manage_annee_scolaire' %}" class="{% if request.path == '/manage_annee_scolaire/' %}active{% endif %}">
+            <i class="fas fa-calendar-alt fa-2x"></i> <span>Annee scolaire</span> 
+        </a>
+    </div>
+            <!-- Main Content -->
+            <div class="content">
+                <!-- Add your main content here -->
+                {% block content %}
+                {% endblock content %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container-fluid">
+            
+
+            
+        </div>
+    </footer>
+    
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.2.0/js/bootstrap.min.js"></script>
+   
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.2.0/js/bootstrap.min.js"></script>
+    <script>
+
+        function toggleSidebar() {
+            var sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('collapsed');
+            var toggleBtn = document.querySelector('.toggle-btn');
+            toggleBtn.classList.toggle('collapsed');
+        }
+        
+        
+    </script>
 </body>
-<!-- Bootstrap CSS -->
-
-<!-- Bootstrap JS and Popper.js -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.2.0/js/bootstrap.min.js"></script>
-
 </html>
