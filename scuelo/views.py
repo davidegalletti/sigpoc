@@ -1,8 +1,6 @@
-
-from django.shortcuts import render, redirect , get_object_or_404
 from django_filters.views import FilterView
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect , get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 
@@ -11,22 +9,22 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from django.views.generic import FormView
-from django.forms import modelformset_factory
-from django.urls import reverse_lazy ,  reverse
+
+from django.urls import   reverse
 from django.views.generic.edit import UpdateView
-from django.db import  transaction , models
+from django.db import  transaction 
 from django.views.generic import CreateView
-from django.views.generic import ( DetailView , ListView  , View,  
-                                ListView, CreateView, UpdateView, DeleteView  , 
+from django.views.generic import ( DetailView , ListView  ,
+                                  View, ListView, CreateView, UpdateView  
 )
-from django.db.models import Q  , Max , F , Sum , Count
+from django.db.models import Q  , Max ,  Sum , Count
 from .forms import  ( InscriptionForm , InscriptionFormSet 
-    , EleveCreateForm ,  EleveUpdateForm , PaiementForm  , AnneeScolaireForm ,  PaiementPerStudentForm
+                    , EleveCreateForm ,  EleveUpdateForm , 
+                    PaiementForm  ,AnneeScolaireForm ,
+                    PaiementPerStudentForm
 )
 from  .filters import EleveFilter
-from .models import Eleve, Classe, Inscription, Paiement , AnneeScolaire 
-from django.forms import inlineformset_factory
+from scuelo.models import Eleve, Classe, Inscription, Paiement , AnneeScolaire 
 
 
 @login_required
