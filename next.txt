@@ -35,3 +35,25 @@ concerning the tenue  the way it  will  be manage is that if  the  fees  are pai
  is to complete the incompleted  tasks  
 
  then   
+
+
+    <li class="nav-item">
+                            <a class="nav-link text-white" href="#">Total élève: <span style="font-size: 14px;">{{ total_students }}</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="#">Filles: <span style="font-size: 14px;">{{ total_girls }}</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="#">Garçons: <span style="font-size: 14px;">{{ total_boys }}</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="#">Total frais: <span style="font-size: 14px;">{{ total_fees }}</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <span class="navbar-text username" style="font-size: 14px;">
+                                Bienvenue, {{ user.username }}!
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link logout-btn" href="{% url 'logout' %}" style="font-size: 14px;">Logout</a>
+                        </li>

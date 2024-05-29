@@ -17,7 +17,7 @@ from django.views.generic import CreateView
 from django.views.generic import ( DetailView , ListView  ,
                                   View, ListView, CreateView, UpdateView  
 )
-from django.db.models import Q  , Max ,  Sum , Count
+from django.db.models import Q  , Max ,  Sum , Count  , Case   , When, IntegerField
 from .forms import  ( InscriptionForm , InscriptionFormSet 
                     , EleveCreateForm ,  EleveUpdateForm , 
                     PaiementForm  ,AnneeScolaireForm ,
@@ -58,7 +58,6 @@ class StudentCreateView(CreateView):
             return redirect('home')  # Use reverse for redirection reverse('student_detail', kwargs={'pk': self.object.pk})
         else:
             return self.render_to_response(self.get_context_data(form=form))
-
 class StudentPerClasseView(ListView):
     model = Eleve
     template_name = 'scuelo/student/perclasse.html'
@@ -80,12 +79,7 @@ class StudentPerClasseView(ListView):
         queryset = queryset.annotate(total_payment=Sum('inscription__paiement__montant'))
 
 
-        
-        query = self.request.GET.get('q')
-        if query:
-            queryset = queryset.filter(
-                Q(nom__icontains=query) | Q(prenom__icontains=query)
-            )
+
         return queryset
     
     def get_context_data(self, **kwargs):
@@ -124,7 +118,7 @@ class StudentPerClasseView(ListView):
             'total_good_condition': total_good_condition,
             'total_abandon': total_abandon,
             'total_prop': total_prop,
-            
+            'students': students,  # Pass students queryset
         })
 
         return context
@@ -415,7 +409,7 @@ def manage_inscriptions(request):
     inscriptions_per_year = Inscription.objects.values('annee_scolaire__nom').annotate(total=Count('id')).order_by('annee_scolaire__nom')
 
     # Paginate the inscriptions
-    paginator = Paginator(inscriptions, 10)  # Show 10 inscriptions per page
+    paginator = Paginator(inscriptions, 30)  # Show 10 inscriptions per page
     page = request.GET.get('page')
     inscriptions = paginator.get_page(page)
 

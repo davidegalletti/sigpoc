@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils  import timezone
+from django.db.models import Q  , Max ,  Sum , Count
 
 CONDITION_ELEVE = (
     ("CONF", "CONF"),
@@ -126,6 +127,15 @@ class Eleve(models.Model):
                 grouped_queryset[classe] = []
             grouped_queryset[classe].append(eleve)
         return grouped_queryset
+    
+    def tenu_count(self):
+        # Count the number of uniform payments for this student based on the defined conditions
+        return self.paiement_set.filter(
+            Q(causal='TEN') &
+            (
+                Q(montant=4000) | Q(montant=4500) | Q(montant=2250) | Q(montant=2000)
+            )
+        ).count()
     
     class Meta:
         verbose_name = 'Eleve'
