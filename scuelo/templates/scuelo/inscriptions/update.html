@@ -12,7 +12,16 @@
     
 
 {% block content %}
-<h2> Mettre a  jours  l'inscription</h2>
+<ol class="breadcrumb">
+    {% for link, name in breadcrumbs %}
+        {% if link %}
+            <li class="breadcrumb-item"><a href="{{ link }}">{{ name }}</a></li>
+        {% else %}
+            <li class="breadcrumb-item active" aria-current="page">{{ name }}</li>
+        {% endif %}
+    {% endfor %}
+</ol>
+
 
 <form method="post">
     {% csrf_token %}

@@ -2,7 +2,15 @@
 
 {% block content %}
     
-<h3>Annee Scolaire Details</h3>
+<ol class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    {% if breadcrumb.url %}
+    <li class="breadcrumb-item"><a href="{% url breadcrumb.url %}">{{ breadcrumb.label }}</a></li>
+    {% else %}
+    <li class="breadcrumb-item active" aria-current="page">{{ breadcrumb.label }}</li>
+    {% endif %}
+    {% endfor %}
+  </ol>
 <p>Nom: {{ annee_scolaire.nom }}</p>
 <p>Date Initiale: {{ annee_scolaire.date_initiale }}</p>
 <p>Date Finale: {{ annee_scolaire.date_finale }}</p>

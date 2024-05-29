@@ -11,6 +11,11 @@
 {% endblock header %}
     
 {% block content %}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'student_detail' student.pk %}">Student Detail</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Update</li>
+</ol>
 
 <div class="container mt-5">
     <h2>mise a jours</h2>

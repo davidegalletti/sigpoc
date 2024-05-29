@@ -43,6 +43,11 @@
 
 </style>
 {% block content %}
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'home' %}">Students</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Add Student</li>
+</ol>
 <div class="container">
     <h2 class="mb-4">Ajouter un eleve</h2>
     <form id="student-form" method="post">

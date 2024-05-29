@@ -5,6 +5,13 @@
 {% block content %}
 <style>
 </style>
+
+<ol class="breadcrumb">
+    {% for url, label in breadcrumbs %}
+    <li class="breadcrumb-item"><a href="{{ url }}">{{ label }}</a></li>
+    {% endfor %}
+    <li class="breadcrumb-item active" aria-current="page">Important Info</li>
+</ol>
 <!-- Content Row -->
 <div class=" container row">
     <!-- Total Tenues Card -->

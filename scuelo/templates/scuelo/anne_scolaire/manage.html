@@ -6,12 +6,15 @@
 
 {% block content %}
 <div class='w-100'>
-
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Manage Annee Scolaire</li>
+    </ol>
 
  <div class="mb-5">
 <form method="post">
 
-<h2>Manage Annee Scolaire</h2>
+
 
 <form method="post container">
     {% csrf_token %}

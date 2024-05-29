@@ -29,8 +29,9 @@ from scuelo.models import Eleve, Classe, Inscription, Paiement , AnneeScolaire
 
 @login_required
 def home(request):
+    breadcrumbs = [('/', 'Home')]
     classes = Classe.objects.all()
-    return render(request, 'scuelo/home.html', {'classes': classes})
+    return render(request, 'scuelo/home.html', {'breadcrumbs': breadcrumbs, 'classes': classes})
 
 class StudentCreateView(CreateView):
     model = Eleve
@@ -44,6 +45,7 @@ class StudentCreateView(CreateView):
         else:
             data['inscription_formset'] = InscriptionFormSet()
         data['classes'] = Classe.objects.all()
+        data['breadcrumbs'] = [('/', 'Home'), ('/students/create/', 'Create Student')]
         data['annees_scolaires'] = AnneeScolaire.objects.all()
         return data
 
@@ -103,7 +105,11 @@ class StudentPerClasseView(ListView):
         total_prop = students.filter(condition_eleve='PROP').count()
         total_fees = Paiement.objects.filter(inscription__classe__id=class_id).aggregate(total_fees=Sum('montant'))['total_fees'] or 0
         #cs_py_sum = students.aggregate(cs_py_sum=Sum('cs_py'))['cs_py_sum'] or 0
-
+          # Build breadcrumbs
+        breadcrumbs = [
+            (reverse('home'), 'Home'),
+            (reverse('student_per_classe', kwargs={'class_id': class_id}), f'Class {clicked_class.nom}'),
+        ]
         context.update({
             'total_students': total_students,
             'total_girls': total_girls,
@@ -119,6 +125,8 @@ class StudentPerClasseView(ListView):
             'total_abandon': total_abandon,
             'total_prop': total_prop,
             'students': students,  # Pass students queryset
+            'breadcrumbs': breadcrumbs
+                
         })
 
         return context
@@ -145,7 +153,7 @@ class StudentDetailView(DetailView):
         context['inscriptions'] = inscriptions
         context['payments'] = payments
         context['total_payment'] = total_payment
-        
+        context['breadcrumbs'] = [('/', 'Home'), ('/students/', 'Students'), (f'/student/{student.pk}/', student.nom)]
         context['form'] = PaiementPerStudentForm()  # Add the payment form to the context
         return context
 
@@ -201,6 +209,7 @@ class StudentUpdateView(UpdateView):
         else:
             data['inscription_formset'] = InscriptionFormSet(instance=self.object)
         data['classes'] = Classe.objects.all()
+        data['breadcrumbs'] = [('/', 'Home'), ('/students/', 'Students'), (f'/student/{self.object.pk}/update/', 'Update Student')]
         data['annees_scolaires'] = AnneeScolaire.objects.all()
         return data
 
@@ -253,6 +262,7 @@ def calculate_tenue(classe, montant):
     return 0
 
 def manage_payments(request):
+    breadcrumbs = [('/', 'Home'), ('/paiements/', 'Payments')]
     causal_filter = request.GET.get('causal')
     search_query = request.GET.get('search')
 
@@ -308,6 +318,7 @@ def manage_payments(request):
     total_montant_all_payments = payments.object_list.aggregate(total_montant_all_payments=Sum('montant'))['total_montant_all_payments']
 
     return render(request, 'scuelo/paiment/manage.html', {
+        'breadcrumbs': breadcrumbs,
         'form': form,
         'payments': payments,
         'causal_filter': causal_filter,
@@ -331,12 +342,15 @@ class AddPaiementAjaxView(View):
             paiement.save()
             return JsonResponse({'success': True})
         return JsonResponse({'success': False, 'errors': form.errors})
-    
 def update_paiement(request, pk):
     paiement = get_object_or_404(Paiement, pk=pk)
     eleve = paiement.inscription.eleve
     classe = paiement.inscription.classe
-    
+    breadcrumbs = [
+        ('/', 'Home'), 
+        ('/manage-payments/', 'Manage Payments'), 
+        ('/update-paiement/{pk}/', 'Update Payment')
+    ]
 
     if request.method == 'POST':
         form = PaiementForm(request.POST, instance=paiement)
@@ -351,9 +365,9 @@ def update_paiement(request, pk):
         'form': form,
         'paiement': paiement,
         'eleve': eleve,
-        'classe': classe
+        'classe': classe,
+        'breadcrumbs': breadcrumbs
     })
-
 
 def delete_payment(request, payment_id):
     if request.method == 'POST':
@@ -412,7 +426,10 @@ def manage_inscriptions(request):
     paginator = Paginator(inscriptions, 30)  # Show 10 inscriptions per page
     page = request.GET.get('page')
     inscriptions = paginator.get_page(page)
-
+    breadcrumbs = [
+        ('/', 'Home'),
+        ('/inscriptions/', 'Manage Inscriptions')
+    ]
     return render(request, 'scuelo/inscriptions/manage.html', {
         'form': form,
         'classes': classes,
@@ -423,6 +440,7 @@ def manage_inscriptions(request):
         'inscriptions_per_year': inscriptions_per_year,
         'year_filter': year_filter,
         'search_query': search_query,
+        'breadcrumbs': breadcrumbs,
     })
 
 
@@ -436,9 +454,17 @@ def update_inscription(request, pk):
     else:
         form = InscriptionForm(instance=inscription)
 
+    # Breadcrumbs data
+    breadcrumbs = [
+        ('/', 'Home'),
+        (reverse('manage_inscriptions'), 'Manage Inscriptions'),  # Link to manage_inscriptions view
+        (f'/update-inscription/{pk}/', f'Update Inscription: {inscription.id}'),  # Current page
+    ]
+
     return render(request, 'scuelo/inscriptions/update.html', {
         'form': form,
-        'inscription': inscription
+        'inscription': inscription,
+        'breadcrumbs': breadcrumbs,
     })
     
 
@@ -475,10 +501,22 @@ def update_annee_scolaire(request, pk):
             return redirect('manage_annee_scolaire')  # Redirect to the manage view after update
     else:
         form = AnneeScolaireForm(instance=annee_scolaire)
-    return render(request, 'scuelo/anne_scolaire/update.html', {'form': form , 'annee_scolaire': annee_scolaire })
+    
+    # Breadcrumbs
+    breadcrumbs = [
+        {'label': 'Home', 'url': 'home'},
+        {'label': 'Manage Annee Scolaire', 'url': 'manage_annee_scolaire'},
+        {'label': 'Update Annee Scolaire', 'url': None},  # Current page, no URL
+    ]
+    return render(request, 'scuelo/anne_scolaire/update.html', 
+                  {'form': form , 'annee_scolaire': annee_scolaire ,
+                      'breadcrumbs': breadcrumbs
+                   }
+    )
 
 
 def important_info(request):
+    breadcrumbs = [('/', 'Home'), ('/important-info/', 'Important Info')]
     tenue_payments = Paiement.objects.filter(causal='TEN')
 
     # Calculate total fees for 'tenue'
@@ -507,5 +545,6 @@ def important_info(request):
         'total_payments_count': total_payments_count,
         'total_montant_all_payments': total_montant_all_payments,
         'causal_labels': causal_labels,
-        'causal_data': causal_data
+        'causal_data': causal_data,
+        'breadcrumbs': breadcrumbs,
     })
