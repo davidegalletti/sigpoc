@@ -126,8 +126,8 @@
     }
 </style>
 <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/">Home</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Payment Management</li>
+
+    <li class="breadcrumb-item active" aria-current="page">/Paiements Management</li>
 </ol>
 
 <div class="container-fluid">
@@ -189,7 +189,7 @@
                 <td>{{ payment.date_paye }}</td>
                 <td>{{ payment.note|default_if_none:"" }}</td>
                 <td class="d-flex">
-                    <a href="{% url 'update_paiement' payment.pk %}" class="btn btn-warning"><i class="fas fa-sync-alt fa-2x"></i></a>
+                    <a href="{% url 'update_paiement' payment.pk %}" class="btn btn-warning">   <i class="fas fa-pencil-alt"></i></a>
                 </td>
             </tr>
             {% endfor %}

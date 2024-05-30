@@ -3,14 +3,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect , get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
-
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-
-from django.urls import   reverse
+from django.urls import   reverse , reverse_lazy
 from django.views.generic.edit import UpdateView
 from django.db import  transaction 
 from django.views.generic import CreateView
@@ -18,7 +16,7 @@ from django.views.generic import ( DetailView , ListView  ,
                                   View, ListView, CreateView, UpdateView  
 )
 from django.db.models import Q  , Max ,  Sum , Count  , Case   , When, IntegerField
-from .forms import  ( InscriptionForm , InscriptionFormSet 
+from .forms import  ( InscriptionForm , EleveUpdateForm 
                     , EleveCreateForm ,  EleveUpdateForm , 
                     PaiementForm  ,AnneeScolaireForm ,
                     PaiementPerStudentForm
@@ -37,29 +35,17 @@ class StudentCreateView(CreateView):
     model = Eleve
     form_class = EleveCreateForm
     template_name = 'scuelo/student/create.html'
+    success_url = reverse_lazy('home')  # Specify the success URL
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        if self.request.POST:
-            data['inscription_formset'] = InscriptionFormSet(self.request.POST)
-        else:
-            data['inscription_formset'] = InscriptionFormSet()
-        data['classes'] = Classe.objects.all()
         data['breadcrumbs'] = [('/', 'Home'), ('/students/create/', 'Create Student')]
-        data['annees_scolaires'] = AnneeScolaire.objects.all()
         return data
 
     def form_valid(self, form):
-        context = self.get_context_data()
-        inscription_formset = context['inscription_formset']
-        if inscription_formset.is_valid():
-            with transaction.atomic():
-                self.object = form.save()
-                inscription_formset.instance = self.object
-                inscription_formset.save()
-            return redirect('home')  # Use reverse for redirection reverse('student_detail', kwargs={'pk': self.object.pk})
-        else:
-            return self.render_to_response(self.get_context_data(form=form))
+        self.object = form.save()
+        return super().form_valid(form)
+        
 class StudentPerClasseView(ListView):
     model = Eleve
     template_name = 'scuelo/student/perclasse.html'
@@ -105,7 +91,7 @@ class StudentPerClasseView(ListView):
         total_prop = students.filter(condition_eleve='PROP').count()
         total_fees = Paiement.objects.filter(inscription__classe__id=class_id).aggregate(total_fees=Sum('montant'))['total_fees'] or 0
         #cs_py_sum = students.aggregate(cs_py_sum=Sum('cs_py'))['cs_py_sum'] or 0
-          # Build breadcrumbs
+        # Build breadcrumbs
         breadcrumbs = [
             (reverse('home'), 'Home'),
             (reverse('student_per_classe', kwargs={'class_id': class_id}), f'Class {clicked_class.nom}'),
@@ -143,19 +129,32 @@ class StudentDetailView(DetailView):
         # Fetch inscriptions related to the student
         inscriptions = Inscription.objects.filter(eleve=student)
 
-
         # Fetch payments related to the student (via inscriptions)
         payments = Paiement.objects.filter(inscription__in=inscriptions)
 
         # Calculate the total payment for the student
         total_payment = payments.aggregate(total=Sum('montant'))['total'] or 0
 
+        # Assuming the latest inscription holds the current class
+        latest_inscription = inscriptions.order_by('-id').first()
+        classe = latest_inscription.classe if latest_inscription else None
+
+        # Set up breadcrumbs
+        breadcrumbs = [
+            (reverse('home'), 'Home'),
+            (reverse('student_list'), 'Liste Generale des eleves'),
+            (reverse('student_per_classe', kwargs={'class_id': classe.id}) if classe else '#', f'Class {classe.nom}' if classe else 'No Class'),
+            (None, student.nom)  # Current page (no URL needed)
+        ]
+
         context['inscriptions'] = inscriptions
         context['payments'] = payments
         context['total_payment'] = total_payment
-        context['breadcrumbs'] = [('/', 'Home'), ('/students/', 'Students'), (f'/student/{student.pk}/', student.nom)]
+        context['breadcrumbs'] = breadcrumbs
         context['form'] = PaiementPerStudentForm()  # Add the payment form to the context
+        context['classe'] = classe
         return context
+
 
 class StudentListView(FilterView):
     model = Eleve
@@ -170,7 +169,9 @@ class StudentListView(FilterView):
             queryset = queryset.filter(
                 Q(nom__icontains=query) | Q(prenom__icontains=query)
             )
-        return queryset
+        return queryset.annotate(
+            total_payment=Sum('inscription__paiement__montant')
+        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -179,11 +180,14 @@ class StudentListView(FilterView):
         total_students = students.count()
         total_girls = students.filter(sex='F').count()
         total_boys = students.filter(sex='M').count()
-        
         context['search_term'] = self.request.GET.get('q', '')
         total_fees = Paiement.objects.aggregate(total_fees=Sum('montant'))['total_fees'] or 0
         cs_py_sum = students.aggregate(cs_py_sum=Sum('cs_py'))['cs_py_sum'] or 0
         
+        # Calculate total payment for each student
+        for student in students:
+            total_payment = student.total_payment
+            setattr(student, 'total_payment', total_payment)
         
         context.update({
             'total_students': total_students,
@@ -191,42 +195,29 @@ class StudentListView(FilterView):
             'total_boys': total_boys,
             'total_fees': total_fees,
             'cs_py_sum': cs_py_sum,
+            'students': students,
         })
-        
+    
         return context
 
 
+       
 class StudentUpdateView(UpdateView):
     model = Eleve
     form_class = EleveUpdateForm
     template_name = 'scuelo/student/update.html'
     context_object_name = 'student'
+    success_url = reverse_lazy('home')  # Specify the success URL
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        if self.request.POST:
-            data['inscription_formset'] = InscriptionFormSet(self.request.POST, instance=self.object)
-        else:
-            data['inscription_formset'] = InscriptionFormSet(instance=self.object)
-        data['classes'] = Classe.objects.all()
         data['breadcrumbs'] = [('/', 'Home'), ('/students/', 'Students'), (f'/student/{self.object.pk}/update/', 'Update Student')]
-        data['annees_scolaires'] = AnneeScolaire.objects.all()
         return data
 
     def form_valid(self, form):
-        context = self.get_context_data()
-        inscription_formset = context['inscription_formset']
-        if inscription_formset.is_valid():
-            with transaction.atomic():
-                self.object = form.save()
-                # Remove the student from the previous class if the class has changed
-                inscription_formset.instance = self.object
-                inscription_formset.save()
-            return redirect(reverse('student_detail', kwargs={'pk': self.object.pk}))
-        else:
-            return self.render_to_response(self.get_context_data(form=form))  
-        
-        
+        self.object = form.save()
+        return super().form_valid(form) 
+    
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -281,7 +272,7 @@ def manage_payments(request):
         payments = payments.filter(causal=causal_filter)
 
     # Pagination code
-    paginator = Paginator(payments, 10)  # Show 10 payments per page
+    paginator = Paginator(payments, 20)  # Show 10 payments per page
     page = request.GET.get('page')
     try:
         payments = paginator.page(page)
@@ -342,14 +333,16 @@ class AddPaiementAjaxView(View):
             paiement.save()
             return JsonResponse({'success': True})
         return JsonResponse({'success': False, 'errors': form.errors})
+    
+    
 def update_paiement(request, pk):
     paiement = get_object_or_404(Paiement, pk=pk)
     eleve = paiement.inscription.eleve
     classe = paiement.inscription.classe
     breadcrumbs = [
-        ('/', 'Home'), 
-        ('/manage-payments/', 'Manage Payments'), 
-        ('/update-paiement/{pk}/', 'Update Payment')
+        #(reverse('home'), 'Home'),
+        (reverse('manage_payments'), 'Paiements Managements'),
+        (None, 'mise a jours paiements')
     ]
 
     if request.method == 'POST':
@@ -427,8 +420,8 @@ def manage_inscriptions(request):
     page = request.GET.get('page')
     inscriptions = paginator.get_page(page)
     breadcrumbs = [
-        ('/', 'Home'),
-        ('/inscriptions/', 'Manage Inscriptions')
+   
+       
     ]
     return render(request, 'scuelo/inscriptions/manage.html', {
         'form': form,

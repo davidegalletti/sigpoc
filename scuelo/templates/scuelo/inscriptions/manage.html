@@ -150,7 +150,7 @@
         {% for link, label in breadcrumbs %}
         <li class="breadcrumb-item"><a href="{{ link }}">{{ label }}</a></li>
         {% endfor %}
-        <li class="breadcrumb-item active" aria-current="page">Manage Inscriptions</li>
+        <li class="breadcrumb-item active" aria-current="page">/Manage Inscriptions</li>
       </ol>
     <div class="container-fluid mb-5">
         <div class="row mb-6 d-flex align-items-md-start">
@@ -244,7 +244,7 @@
                 <td>{{ inscription.date_inscription }}</td>
                 <td>
                     <a href="{% url 'update_inscription' inscription.pk %}" class="btn btn-warning btn-sm">
-                        <i class="fas fa-sync-alt fa-2x"></i>
+                        <i class="fas fa-sync-alt "></i>
                     </a>
                 </td>
             </tr>

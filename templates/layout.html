@@ -50,6 +50,9 @@
     <body>
         
         <style>
+            .breadcrumbs > * {
+                font-size: 1.2em;
+            }
 
          .custom-navbar {
             
@@ -238,6 +241,8 @@
                                 <i class="fas fa-redo"></i> <!-- Font Awesome icon for Redo -->
                             </a>
                         </li>
+
+                        
                     </ul>
                     <span class="navbar-nav  important-info">
                         {% block important_info %}
@@ -247,7 +252,7 @@
                     <ul class="navbar-nav d-flex justify-content-between">
                         <li class="nav-item mr">
                             <span class="navbar-text username text-black-50">
-                                {{ user.username }}!
+                                {{ user.username }}
                             </span>
                         </li>
                         <li class="nav-item ml-4">
@@ -263,7 +268,7 @@
         
         
         <div class="sidebar ml-5">
-            <button class="toggle-btn fa-3x " onclick="toggleSidebar()">
+            <button class="toggle-btn " onclick="toggleSidebar()">
                 <i class="fas fa-bars fa-2x   "></i>
                 
             </button>
@@ -284,6 +289,13 @@
             <a href="{% url 'manage_inscriptions' %}" class="{% if request.path == '/manage_inscriptions/' %}active{% endif %}">
                 <i class="fas fa-users fa-2x"></i> <span>Inscriptions</span> 
             </a>
+         
+
+                
+                <a href="{% url 'student_list' %}" class="{% if request.path == '/students/' %}active{% endif %}">
+                    <i class="fas fa-users fa-2x"></i> <span>Liste des Élèves</span>
+                </a>
+          
             <a href="{% url 'manage_annee_scolaire' %}" class="{% if request.path == '/manage_annee_scolaire/' %}active{% endif %}">
                 <i class="fas fa-calendar-alt fa-2x"></i> <span>Annee scolaire</span> 
             </a>

@@ -9,12 +9,14 @@
 </header>
 
 {% block content %}
-
 <ol class="breadcrumb">
     {% for url, label in breadcrumbs %}
+    {% if url %}
     <li class="breadcrumb-item"><a href="{{ url }}">{{ label }}</a></li>
+    {% else %}
+    <li class="breadcrumb-item active" aria-current="page">{{ label }}</li>
+    {% endif %}
     {% endfor %}
-    <li class="breadcrumb-item active" aria-current="page">Update Payment</li>
 </ol>
 <div class="container vh-75 mt-3">
     
