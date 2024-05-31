@@ -509,6 +509,8 @@ def update_annee_scolaire(request, pk):
 
 
 def important_info(request):
+    
+    
     breadcrumbs = [('/', 'Home'), ('/important-info/', 'Important Info')]
     tenue_payments = Paiement.objects.filter(causal='TEN')
 

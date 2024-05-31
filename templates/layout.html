@@ -14,13 +14,12 @@
     <!-- Bootstrap CSS -->
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
     <link
     href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
     rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.2.0/css/bootstrap.min.css" rel="stylesheet">
+   
     
     
     
@@ -36,7 +35,6 @@
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
         rel="stylesheet">
         
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.2.0/css/bootstrap.min.css" rel="stylesheet">
         <!-- Custom styles for this template-->
         
         
@@ -105,12 +103,7 @@
                 padding-right: 40px; /* Add right padding for the button */
             }
             
-            .search-form {
-                max-width: 600px;
-                margin: 0 auto;
-                position: relative; /* Set position relative for absolute positioning */
-            }
-            
+          
             .search-button {
                 position: absolute;
                 right: 10px; /* Position the button to the right */
@@ -151,15 +144,13 @@
             .content {
                 margin-left: 250px; /* Adjust as needed */
                 padding: 20px;
-                transition: margin-left 0.3s ease; /* Add transition effect */
+                transition:  0.3s ease; /* Add transition effect */
             }
             
             .sidebar.collapsed + .content {
                 margin-left: 50px; /* Adjust to collapsed width */
             }
-            .sidebar.collapsed  +.nava {
-                margin-left: 50px; /* Adjust to collapsed width */
-            }
+           
             
             
             .sidebar {
@@ -212,19 +203,19 @@
                 margin-left: 10px; /* Adjust to collapsed width */
             }
             .sidebar a.clicked {
-                background-color: #007bff; /* Change to desired background color */
-                color: white; /* Change to desired text color */
+                background-color: white; /* Change to desired background color */
+                color:#A44400;/* Change to desired text color */
             }
   
 
         </style>
         
         
-        
+    
         
         {% block nav %}
-        <header class="content nava">
-            <nav class="navbar navbar-expand-lg navbar-dark pb-4 h-100 w-100 pt-5 pb-5 custom-navbar ml-2 pl-5 overflow-auto">
+        <header class="costum-navbar content nava">
+            <nav class="navbar navbar-expand-lg navbar-dark  h-100 w-100 pt-5 pb-5 custom-navbar  mt-xl-n1 ml-2 pl-5 overflow-auto">
                 <a class="navbar-brand text-white ml-3" href="{% url 'home' %}">SIGPOC</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -264,7 +255,7 @@
         {% endblock nav %}
         
         
-        <div class="sidebar ml-5">
+        <div class="sidebar ml-5 rounded-lg">
             <button class="toggle-btn " onclick="toggleSidebar()">
                 <i class="fas fa-bars fa-2x   "></i>
                 
@@ -317,10 +308,9 @@
 
 <!-- Bootstrap JS and Popper.js -->
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.2.0/js/bootstrap.min.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.2.0/js/bootstrap.min.js"></script>
+
+
 <script>
     
     function toggleSidebar() {

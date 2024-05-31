@@ -40,10 +40,26 @@
                     <p><strong>Sexe:</strong> {{ student.get_sex_display }}</p>
                     <p><strong>Date de Naissance:</strong> {{ student.date_naissance }}</p>
                     <p><strong>CS PY:</strong> {{ student.get_cs_py_display }}</p>
+                    {% if student.hand %}
                     <p><strong>Hand:</strong> {{ student.get_hand_display }}</p>
+                {% else %}
+                    <p style="color: black;"><strong>Hand:</strong> </p>
+                {% endif %}
+                {% if student.date_enquete %}
                     <p><strong>Date enquete:</strong> {{ student.date_enquete }}</p>
-                    <p><strong>Parents:</strong> {{ parents }}</p>
-                    <p><strong>Notes:</strong> {{ notes }}</p>
+                {% else %}
+                    <p style="color: black;"><strong>Date enquete:</strong> </p>
+                {% endif %}
+                    {% if student.parents %}
+                        <p><strong>Parents:</strong> {{ student.parents }}</p>
+                    {% else %}
+                        <p style="color: black;"><strong>Parents:</strong></p>
+                    {% endif %}
+                    {% if student.notes %}
+                        <p><strong>Notes:</strong> {{ student.notes }}</p>
+                    {% else %}
+                        <p style="color: black;"><strong>Notes:</strong></p>
+                    {% endif %}
                 </div>
                
             </div>
@@ -99,7 +115,7 @@
                             <td>{{ payment.date_paye }}</td>
                             <td>{{ payment.causal }}</td>
                             <td>{{ payment.montant }}</td>
-                            <td>{{ payment.note }}</td>
+                            <td>{% if payment.note %}{{ payment.note }}{% else %}<span style="color: black;"></span>{% endif %}</td>
                             <td>
                                 <a href="{% url 'update_paiement' pk=payment.id %}" class="btn btn-primary btn-sm"><i class="fas fa-sync-alt fa-2x"></i></a>
                             </td>

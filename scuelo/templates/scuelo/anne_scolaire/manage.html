@@ -12,40 +12,7 @@
     </ol>
 
  <div class="mb-5">
-<form method="post">
 
-
-
-<form method="post container">
-    {% csrf_token %}
-    <div class="row ">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="id_nom">Nom</label>
-                {{ form.nom }}
-            </div>
-            <div class="form-group">
-                <label for="id_nom_bref">Nom Bref</label>
-                {{ form.nom_bref }}
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="id_date_initiale">Date Initiale</label>
-                {{ form.date_initiale }}
-            </div>
-            <div class="form-group">
-                <label for="id_date_finale">Date Finale</label>
-                {{ form.date_finale }}
-            </div>
-        </div>
-    </div>
-    <div class="form-group form-check mt-3 mb-3">
-        {{ form.actuel }}
-        <label class="form-check-label" for="id_actuel">Actuel</label>
-    </div>
-    <button type="submit" class="btn btn-primary">confirmer</button>
-</form>
 </div>
 
  <h3> liste des annees scolaire </h3>
@@ -77,7 +44,7 @@
             <td>{{ annee_scolaire.total_boys }}</td>
 
             <td>
-                <a href="{% url 'update_annee_scolaire' annee_scolaire.pk %}" class="btn btn-danger btn-sm"><i class="fas fa-sync-alt fa-2x"></i></a>
+                <a href="{% url 'update_annee_scolaire' annee_scolaire.pk %}" class="btn btn-danger btn-sm">  <i class="fas fa-chart-line fa-2x"></i> </i></a>
             </td>
         </tr>
         {% endfor %}
