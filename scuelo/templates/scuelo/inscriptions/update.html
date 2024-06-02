@@ -1,28 +1,21 @@
 {% extends "../../layout.html" %}
 
-
-
 {% block header %}
-
-    <!-- Navbar -->
+<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-     the
+    the
 </nav>
 {% endblock header %}
-    
-
 {% block content %}
 <ol class="breadcrumb">
     {% for link, name in breadcrumbs %}
-        {% if link %}
-            <li class="breadcrumb-item"><a href="{{ link }}">{{ name }}</a></li>
-        {% else %}
-            <li class="breadcrumb-item active" aria-current="page">{{ name }}</li>
-        {% endif %}
+    {% if link %}
+    <li class="breadcrumb-item"><a href="{{ link }}">{{ name }}</a></li>
+    {% else %}
+    <li class="breadcrumb-item active" aria-current="page">{{ name }}</li>
+    {% endif %}
     {% endfor %}
 </ol>
-
-
 <form method="post">
     {% csrf_token %}
     <div class="row">
@@ -46,11 +39,11 @@
                 {{ form.annee_scolaire }}
             </div>
         </div>
-      
+        
     </div>
     <div class="mt-5">
-    <button type="submit" class="mt-2 btn btn-primary">mise a jours Inscription</button>
-    <a href="{% url 'manage_inscriptions' %}" class="mt-2 btn btn-danger">retour </a>
-</div>
+        <button type="submit" class="mt-2 btn btn-primary">mise a jours Inscription</button>
+        <a href="{% url 'manage_inscriptions' %}" class="mt-2 btn btn-danger">retour </a>
+    </div>
 </form>
 {% endblock %}

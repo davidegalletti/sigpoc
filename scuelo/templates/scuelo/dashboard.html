@@ -7,7 +7,7 @@
 </style>
 
 <ol class="breadcrumb">
-
+    
     <li class="breadcrumb-item active" aria-current="page">/Dashboard</li>
 </ol>
 <!-- Content Row -->
@@ -28,7 +28,7 @@
             </div>
         </div>
     </div>
-
+    
     <!-- Total Payments Count Card -->
     <div class="col-lg-4 mb-4">
         <div class="card shadow h-100 py-2">
@@ -45,7 +45,7 @@
             </div>
         </div>
     </div>
-
+    
     <!-- Total Montant All Payments Card -->
     <div class="col-lg-4 mb-4">
         <div class="card shadow h-100 py-2">
@@ -62,7 +62,7 @@
             </div>
         </div>
     </div>
-
+    
     {% for classe, total_tenues in total_tenues_per_class.items %}
     <div class="col-lg-4 mb-4">
         <div class="card shadow h-100 py-2">
@@ -80,12 +80,12 @@
         </div>
     </div>
     {% endfor %}
-
+    
     <div>
         <h3>Payment Distribution by Causal</h3>
         <canvas  class='w-100 h-80'  id="causalChart"></canvas>
     </div>
-
+    
     <script>
         var ctx = document.getElementById('causalChart').getContext('2d');
         var causalChart = new Chart(ctx, {
@@ -109,7 +109,7 @@
             }
         });
     </script>
-
+    
 </div>
 <!-- /.row -->
 {% endblock %}

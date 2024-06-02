@@ -1,10 +1,5 @@
 {% extends "../../layout.html" %}
-{% block header %}
-<nav class="navbar navbar-expand-lg shadow-sm pb-5 bg-white">
-  
-</nav>
-  
-{% endblock header %}
+
 
 {% block content %}
 <style>
@@ -126,10 +121,8 @@
     }
 </style>
 <ol class="breadcrumb">
-
     <li class="breadcrumb-item active" aria-current="page">/Paiements Management</li>
 </ol>
-
 <div class="container-fluid">
     <div class="row mb-6 d-flex align-items-md-start">
         <div class="col-md-6">
@@ -146,7 +139,6 @@
         </div>
     </div>
 </div>
-
 <!-- Navigation for Filters -->
 <ul class="filters-nav nav nav-tabs mb-4">
     <li class="nav-item">
@@ -165,7 +157,6 @@
         <a class="nav-link {% if causal_filter == 'CAN' %}active{% endif %}" href="{% url 'manage_payments' %}?causal=CAN">Cantine</a>
     </li>
 </ul>
-
 <div class="payment-list ">
     {% if payments %}
     <h3>Liste des paiements{% if search_query %} -  resultats de recherche pour  "{{ search_query }}"{% endif %}</h3>
@@ -216,7 +207,6 @@
     <p> aucun eleve du nom ou du prenom de  "{{ search_query }}"</p>
     {% endif %}
 </div>
-
 <!-- The Modal -->
 <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
     <div class="modal-dialog">

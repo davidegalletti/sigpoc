@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['113.30.150.236', '127.0.0.1', 'sig.c4k.it']
 # Application definition
 
 INSTALLED_APPS = [
+     'fontawesomefree',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

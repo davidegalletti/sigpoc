@@ -50,11 +50,9 @@ class StudentPerClasseView(ListView):
     model = Eleve
     template_name = 'scuelo/student/perclasse.html'
     context_object_name = 'students'
-    #paginate_by = 12  # Number of students per page
 
     def get_queryset(self):
         class_id = self.kwargs.get('class_id')
-
         # Get the latest inscription for each student in the specified class
         latest_inscriptions = Inscription.objects.filter(classe_id=class_id).values('eleve_id').annotate(last_inscription=Max('date_inscription'))
 
@@ -65,19 +63,13 @@ class StudentPerClasseView(ListView):
         queryset = Eleve.objects.filter(id__in=student_ids)
          # Annotate queryset with total payment for each student
         queryset = queryset.annotate(total_payment=Sum('inscription__paiement__montant'))
-
-
-
         return queryset
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         class_id = self.kwargs.get('class_id')
         clicked_class = Classe.objects.get(pk=class_id)
-
         students = self.get_queryset()
-        
         total_students = students.count()
         total_girls = students.filter(sex='F').count()
         total_boys = students.filter(sex='M').count()
@@ -90,19 +82,13 @@ class StudentPerClasseView(ListView):
         total_abandon = students.filter(condition_eleve='ABAN').count()
         total_prop = students.filter(condition_eleve='PROP').count()
         total_fees = Paiement.objects.filter(inscription__classe__id=class_id).aggregate(total_fees=Sum('montant'))['total_fees'] or 0
-        #cs_py_sum = students.aggregate(cs_py_sum=Sum('cs_py'))['cs_py_sum'] or 0
-        # Build breadcrumbs
         breadcrumbs = [
             (reverse('home'), 'Home'),
             (reverse('student_per_classe', kwargs={'class_id': class_id}), f'Class {clicked_class.nom}'),
         ]
         context.update({
-            'total_students': total_students,
-            'total_girls': total_girls,
-            'total_fees': total_fees,
-            'total_boys' : total_boys,
-            'total_cs': total_cs,
-            'total_extra': total_extra,
+            'total_students': total_students,'total_girls': total_girls,'total_fees': total_fees,
+            'total_boys' : total_boys, 'total_cs': total_cs, 'total_extra': total_extra,
             'total_py': total_py,
             'total_acc': total_acc,
             'total_bravo': total_bravo,
@@ -125,20 +111,15 @@ class StudentDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         student = self.object
-
         # Fetch inscriptions related to the student
         inscriptions = Inscription.objects.filter(eleve=student)
-
         # Fetch payments related to the student (via inscriptions)
         payments = Paiement.objects.filter(inscription__in=inscriptions)
-
         # Calculate the total payment for the student
         total_payment = payments.aggregate(total=Sum('montant'))['total'] or 0
-
         # Assuming the latest inscription holds the current class
         latest_inscription = inscriptions.order_by('-id').first()
         classe = latest_inscription.classe if latest_inscription else None
-
         # Set up breadcrumbs
         breadcrumbs = [
             (reverse('home'), 'Home'),

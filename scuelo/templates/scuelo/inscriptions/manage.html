@@ -155,8 +155,8 @@
         {% endfor %}
         <li class="breadcrumb-item active" aria-current="page">/Manage Inscriptions</li>
     </ol>
-    <div class="container-fluid mb-5">
-        <div class="row mb-6 d-flex align-items-md-start">
+    <div class="container-fluid ">
+        <div class="row mb-1 d-flex align-items-md-start">
             <div class="col-md-6">
                 <button type="button" class="btn btn-primary add-inscription-btn" data-bs-toggle="modal" data-bs-target="#inscriptionModal">
                     <i class="fas fa-plus-circle me-2"></i> Ajouter Inscription
@@ -207,7 +207,7 @@
     
 
     <!-- Navigation for Inscriptions -->
-    <ul class="nav nav-tabs mb-4">
+    <ul class="nav nav-tabs mb-1">
         <li class="nav-item">
             <a class="nav-link {% if not class_filter %}active{% endif %}" href="{% url 'manage_inscriptions' %}">Toutes les Classes</a>
         </li>
@@ -218,12 +218,13 @@
         {% endfor %}
     </ul>
     <!-- Filter toggle buttons -->
-    <div class="btn-group mb-4" role="group" aria-label="School Year Filter">
+    <div class="btn-group " role="group" aria-label="School Year Filter">
         {% for year in school_years %}
         <button type="button" class="btn btn-secondary toggle-btn" data-year="{{ year }}">{{ year }}</button>
         {% endfor %}
+        
     </div>
-
+    
     <table id="inscriptionsTable" class="table table-striped table-bordered payments-table w-95">
         <thead class="thead-light">
             <tr class="p-5">

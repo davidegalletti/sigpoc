@@ -7,13 +7,9 @@
     .modal-lg .modal-dialog {
         max-width: 80%; /* Adjust as needed */
     }
-
     /* Add any additional styling here */
 </style>
-
 {% block content %}
-
-
 <ol class="breadcrumb">
     {% for url, label in breadcrumbs %}
     {% if url %}
@@ -23,7 +19,6 @@
     {% endif %}
     {% endfor %}
 </ol>
-
 <!-- Container with Reduced Margins -->
 <div class="container mt-4" style="max-width: 95%; margin: 0 auto;">
     <div class="row">
@@ -31,7 +26,7 @@
         <div class="col-md-6">
             <div class="card mb-4">
                 <div class="card-header">
-                  Information  de base
+                    Information  de base
                 </div>
                 <div class="card-body">
                     <p><strong>Nom:</strong> {{ student.nom }}</p>
@@ -42,30 +37,27 @@
                     <p><strong>CS PY:</strong> {{ student.get_cs_py_display }}</p>
                     {% if student.hand %}
                     <p><strong>Hand:</strong> {{ student.get_hand_display }}</p>
-                {% else %}
-                    <p style="color: black;"><strong>Hand:</strong> </p>
-                {% endif %}
-                {% if student.date_enquete %}
-                    <p><strong>Date enquete:</strong> {{ student.date_enquete }}</p>
-                {% else %}
-                    <p style="color: black;"><strong>Date enquete:</strong> </p>
-                {% endif %}
-                    {% if student.parents %}
-                        <p><strong>Parents:</strong> {{ student.parents }}</p>
                     {% else %}
-                        <p style="color: black;"><strong>Parents:</strong></p>
+                    <p style="color: black;"><strong>Hand:</strong> </p>
+                    {% endif %}
+                    {% if student.date_enquete %}
+                    <p><strong>Date enquete:</strong> {{ student.date_enquete }}</p>
+                    {% else %}
+                    <p style="color: black;"><strong>Date enquete:</strong> </p>
+                    {% endif %}
+                    {% if student.parents %}
+                    <p><strong>Parents:</strong> {{ student.parents }}</p>
+                    {% else %}
+                    <p style="color: black;"><strong>Parents:</strong></p>
                     {% endif %}
                     {% if student.notes %}
-                        <p><strong>Notes:</strong> {{ student.notes }}</p>
+                    <p><strong>Notes:</strong> {{ student.notes }}</p>
                     {% else %}
-                        <p style="color: black;"><strong>Notes:</strong></p>
+                    <p style="color: black;"><strong>Notes:</strong></p>
                     {% endif %}
                 </div>
-               
-            </div>
-            
+            </div>  
         </div>
-
         <!-- Inscriptions -->
         <div class="col-md-6">
             <div class="card mb-4">
@@ -75,35 +67,31 @@
                 <div class="card-body">
                     <ul class="list-group">
                         {% for inscription in inscriptions %}
-                            <li class="list-group-item">{{ inscription.classe }} - {{ inscription.annee_scolaire }}</li>
+                        <li class="list-group-item">{{ inscription.classe }} - {{ inscription.annee_scolaire }}</li>
                         {% empty %}
-                            <li class="list-group-item">aucune inscription trouvee </li>
+                        <li class="list-group-item">aucune inscription trouvee </li>
                         {% endfor %}
                     </ul>
                 </div>
             </div>
-
             <a href="{% url 'student_update' pk=student.pk %}" class="btn btn-primary">   <i class="fas fa-pencil-alt"></i></a>
         </div>
-
-    
     </div>
     <div class="row mt-1">
         <div class="col-md-12   mb-5">
             <div class="d-flex justify-content-between">
-            <h4>paiments de {{student.nom}}</h4> 
-               <!-- Button to trigger modal -->
-               <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#addPaiementModal">
-                <i class='fa fa-plus'></i>
-             ajouter paiment
-            </button>
-        </div>
+                <h4>paiments de {{student.nom}}</h4> 
+                <!-- Button to trigger modal -->
+                <button type="button" class="btn btn-success " data-bs-toggle="modal" data-bs-target="#addPaiementModal">
+                    <i class='fa fa-plus'></i>
+                    ajouter paiment
+                </button>
+            </div>
             <table class="table table-striped table-bordered payments-table mt-4">
                 <thead  class="thead-light">
                     <tr>
                         <th>Date</th>
                         <th>causal</th>
-
                         <th>montant</th>
                         <th>Note</th>
                         <th>actions</th>
@@ -111,15 +99,15 @@
                 </thead>
                 <tbody>
                     {% for payment in payments %}
-                        <tr>
-                            <td>{{ payment.date_paye }}</td>
-                            <td>{{ payment.causal }}</td>
-                            <td>{{ payment.montant }}</td>
-                            <td>{% if payment.note %}{{ payment.note }}{% else %}<span style="color: black;"></span>{% endif %}</td>
-                            <td>
-                                <a href="{% url 'update_paiement' pk=payment.id %}" class="btn btn-primary btn-sm"><i class="fas fa-sync-alt fa-2x"></i></a>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>{{ payment.date_paye }}</td>
+                        <td>{{ payment.causal }}</td>
+                        <td>{{ payment.montant }}</td>
+                        <td>{% if payment.note %}{{ payment.note }}{% else %}<span style="color: black;"></span>{% endif %}</td>
+                        <td>
+                            <a href="{% url 'update_paiement' pk=payment.id %}" class="btn btn-primary btn-sm"><i class="fas fa-sync-alt fa-2x"></i></a>
+                        </td>
+                    </tr>
                     {% endfor %}
                 </tbody>
                 <tfoot>
@@ -129,11 +117,9 @@
                     </tr>
                 </tfoot>
             </table>
-           
         </div>
     </div>
 </div> 
-
 <div class="modal fade" id="addPaiementModal" tabindex="-1" aria-labelledby="addPaiementModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -192,10 +178,10 @@
             }).catch(error => console.error('Error:', error));
         });
     });
-
+    
     document.getElementById('add-inscription-btn').addEventListener('click', function() {
         var modal = new bootstrap.Modal(document.getElementById('inscriptionModal'));
         modal.show();
-      });
+    });
 </script>
 {% endblock content %}
