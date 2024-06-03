@@ -39,7 +39,7 @@ class StudentCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['breadcrumbs'] = [('/', 'Home'), ('/students/create/', 'Create Student')]
+        data['breadcrumbs'] = [('/', 'Home'), ('/students/create/', 'Ajouter eleve')]
         return data
 
     def form_valid(self, form):
@@ -124,7 +124,7 @@ class StudentDetailView(DetailView):
         breadcrumbs = [
             (reverse('home'), 'Home'),
             (reverse('student_list'), 'Liste Generale des eleves'),
-            (reverse('student_per_classe', kwargs={'class_id': classe.id}) if classe else '#', f'Class {classe.nom}' if classe else 'No Class'),
+            (reverse('student_per_classe', kwargs={'class_id': classe.id}) if classe else '#', f'Classe {classe.nom}' if classe else 'No Class'),
             (None, student.nom)  # Current page (no URL needed)
         ]
 
@@ -192,13 +192,14 @@ class StudentUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         data = super().get_context_data(**kwargs)
-        data['breadcrumbs'] = [('/', 'Home'), ('/students/', 'Students'), (f'/student/{self.object.pk}/update/', 'Update Student')]
+        data['breadcrumbs'] = [('/', 'Home'), ('/students/', 'Eleves'), (f'/student/{self.object.pk}/update/', 'mise a jours eleve')]
         return data
 
     def form_valid(self, form):
         self.object = form.save()
         return super().form_valid(form) 
-    
+
+
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -234,7 +235,7 @@ def calculate_tenue(classe, montant):
     return 0
 
 def manage_payments(request):
-    breadcrumbs = [('/', 'Home'), ('/paiements/', 'Payments')]
+    breadcrumbs = [('/', 'Home'), ('/paiements/', 'Paiements')]
     causal_filter = request.GET.get('causal')
     search_query = request.GET.get('search')
 
@@ -432,7 +433,7 @@ def update_inscription(request, pk):
     breadcrumbs = [
         ('/', 'Home'),
         (reverse('manage_inscriptions'), 'Manage Inscriptions'),  # Link to manage_inscriptions view
-        (f'/update-inscription/{pk}/', f'Update Inscription: {inscription.id}'),  # Current page
+        (f'/update-inscription/{pk}/', f'mise a jours Inscription: {inscription.id}'),  # Current page
     ]
 
     return render(request, 'scuelo/inscriptions/update.html', {
@@ -480,7 +481,7 @@ def update_annee_scolaire(request, pk):
     breadcrumbs = [
         {'label': 'Home', 'url': 'home'},
         {'label': 'Manage Annee Scolaire', 'url': 'manage_annee_scolaire'},
-        {'label': 'Update Annee Scolaire', 'url': None},  # Current page, no URL
+        {'label': 'Mise a  jours  Annee Scolaire', 'url': None},  # Current page, no URL
     ]
     return render(request, 'scuelo/anne_scolaire/update.html', 
                   {'form': form , 'annee_scolaire': annee_scolaire ,
@@ -492,7 +493,7 @@ def update_annee_scolaire(request, pk):
 def important_info(request):
     
     
-    breadcrumbs = [('/', 'Home'), ('/important-info/', 'Important Info')]
+    breadcrumbs = [('/', 'Home'), ('/important-info/', 'Dashboard')]
     tenue_payments = Paiement.objects.filter(causal='TEN')
 
     # Calculate total fees for 'tenue'
