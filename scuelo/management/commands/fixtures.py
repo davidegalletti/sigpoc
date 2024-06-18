@@ -5,10 +5,10 @@ import logging
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, User, Permission
 
-from scuelo.models import Classe, AnneeScolaire
+from scuelo.models import Ecole, Classe, AnneeScolaire, TypeClasse
 
 logger = logging.getLogger(__name__)
-
+ecole
 
 def attribuer_tous_autorisations(groups, modelli):
     if not type(groups) is list:
@@ -26,15 +26,37 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            Classe.objects.get_or_create(type_ecole='M', nom='PS',  legacy_id= '_PK-PS-Nas')
-            Classe.objects.get_or_create(type_ecole='M', nom='MS',  legacy_id= '_PK-MS-Nas')
-            Classe.objects.get_or_create(type_ecole='M', nom='GS',  legacy_id= '_PK-GS-Nas')
-            Classe.objects.get_or_create(type_ecole='P', nom='CP1', legacy_id= '_PK-CP1-Nas')
-            Classe.objects.get_or_create(type_ecole='P', nom='CP2', legacy_id= '_PK-CP2-Nas')
-            Classe.objects.get_or_create(type_ecole='P', nom='CE1', legacy_id= '_PK-CE1-Nas')
-            Classe.objects.get_or_create(type_ecole='P', nom='CE2', legacy_id= '_PK-CE2-Nas')
-            Classe.objects.get_or_create(type_ecole='P', nom='CM1', legacy_id= '_PK-CM1-Nas')
-            Classe.objects.get_or_create(type_ecole='P', nom='CM2', legacy_id= '_PK-CM2-Nas')
+            # TODO set appropriate type_ecole, mine is just a guess
+            TypeClasse.objects.get_or_create(nom='PS', ordre=1, type_ecole='M')
+            TypeClasse.objects.get_or_create(nom='MS', ordre=2, type_ecole='M')
+            TypeClasse.objects.get_or_create(nom='GS', ordre=3, type_ecole='M')
+            TypeClasse.objects.get_or_create(nom='CP1', ordre=4, type_ecole='P')
+            TypeClasse.objects.get_or_create(nom='CP2', ordre=5, type_ecole='P')
+            TypeClasse.objects.get_or_create(nom='CE1', ordre=6, type_ecole='P')
+            TypeClasse.objects.get_or_create(nom='CE2', ordre=7, type_ecole='P')
+            TypeClasse.objects.get_or_create(nom='CM1', ordre=8, type_ecole='P')
+            TypeClasse.objects.get_or_create(nom='CM2', ordre=9, type_ecole='P')
+            TypeClasse.objects.get_or_create(nom='6me', ordre=10, type_ecole='S')
+            TypeClasse.objects.get_or_create(nom='5me', ordre=11, type_ecole='S')
+            TypeClasse.objects.get_or_create(nom='4me', ordre=12, type_ecole='S')
+            TypeClasse.objects.get_or_create(nom='3me', ordre=13, type_ecole='S')
+            TypeClasse.objects.get_or_create(nom='2me', ordre=14, type_ecole='L')
+            TypeClasse.objects.get_or_create(nom='1me', ordre=15, type_ecole='L')
+            TypeClasse.objects.get_or_create(nom='Term', ordre=16, type_ecole='L')
+
+            ecole_interne = Ecole.objects.get_or_create(nom= 'SIG', ville='', nom_du_referent='', prenom_du_referent='', email_du_referent='', telephone_du_referent='', note='', externe=False)
+            ecole_externe_1 = Ecole.objects.get_or_create(nom= '', ville='', nom_du_referent='', prenom_du_referent='', email_du_referent='', telephone_du_referent='', note='')
+            ecole_externe_2 = Ecole.objects.get_or_create(nom= '', ville='', nom_du_referent='', prenom_du_referent='', email_du_referent='', telephone_du_referent='', note='')
+
+            Classe.objects.get_or_create(ecole=ecole_interne, nom='PS',  legacy_id= '_PK-PS-Nas')
+            Classe.objects.get_or_create(ecole=ecole_interne, nom='MS',  legacy_id= '_PK-MS-Nas')
+            Classe.objects.get_or_create(ecole=ecole_interne, nom='GS',  legacy_id= '_PK-GS-Nas')
+            Classe.objects.get_or_create(ecole=ecole_interne, nom='CP1', legacy_id= '_PK-CP1-Nas')
+            Classe.objects.get_or_create(ecole=ecole_interne, nom='CP2', legacy_id= '_PK-CP2-Nas')
+            Classe.objects.get_or_create(ecole=ecole_interne, nom='CE1', legacy_id= '_PK-CE1-Nas')
+            Classe.objects.get_or_create(ecole=ecole_interne, nom='CE2', legacy_id= '_PK-CE2-Nas')
+            Classe.objects.get_or_create(ecole=ecole_interne, nom='CM1', legacy_id= '_PK-CM1-Nas')
+            Classe.objects.get_or_create(ecole=ecole_interne, nom='CM2', legacy_id= '_PK-CM2-Nas')
             AnneeScolaire.objects.get_or_create(nom='Année scolaire 2023-24', date_initiale='2023-09-01',
                                                 date_finale='2024-06-01', actuel=False)
             AnneeScolaire.objects.get_or_create(nom='Année scolaire 2024-25', date_initiale='2024-09-01',

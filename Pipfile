@@ -9,6 +9,7 @@ django-jazzmin = "*"
 django-crispy-forms = "*"
 django-bootstrap-v5 = "*"
 crispy-bootstrap5 = "*"
+model_utils = "*"
 
 [dev-packages]
 
